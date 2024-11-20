@@ -22,10 +22,12 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# React Native specific
-/ios/Pods/
+# Android specific
 /android/app/build/
 /android/app/.cxx/
+
+# React Native specific
+/ios/Pods/
 .idea
 .gradle
 local.properties

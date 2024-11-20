@@ -29,4 +29,9 @@ yarn-error.log*
 .gradle
 local.properties
 *.iml
-node_modules
+
+# Ignore everything in node_modules
+node_modules/
+
+# Except this specific file
+!node_modules/react-native/ReactAndroid/cmake-utils/ReactNative-application.cmake

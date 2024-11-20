@@ -25,6 +25,7 @@ yarn-error.log*
 # React Native specific
 /ios/Pods/
 /android/app/build/
+/android/app/.cxx/
 .idea
 .gradle
 local.properties

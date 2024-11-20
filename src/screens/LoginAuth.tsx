@@ -4,7 +4,7 @@ import {View, Text, StyleSheet} from 'react-native';
 function LoginAuth(): React.JSX.Element {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Login Screen</Text>
+      <Text style={styles.text}>Login Auth</Text>
     </View>
   );
 }

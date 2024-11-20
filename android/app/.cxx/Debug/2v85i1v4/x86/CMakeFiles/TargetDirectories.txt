@@ -1,0 +1,9 @@
+D:/Code/3rd_Year/DOLFO_App/android/app/.cxx/Debug/2v85i1v4/x86/CMakeFiles/appmodules.dir
+D:/Code/3rd_Year/DOLFO_App/android/app/.cxx/Debug/2v85i1v4/x86/CMakeFiles/edit_cache.dir
+D:/Code/3rd_Year/DOLFO_App/android/app/.cxx/Debug/2v85i1v4/x86/CMakeFiles/rebuild_cache.dir
+D:/Code/3rd_Year/DOLFO_App/android/app/.cxx/Debug/2v85i1v4/x86/safeareacontext_autolinked_build/CMakeFiles/react_codegen_safeareacontext.dir
+D:/Code/3rd_Year/DOLFO_App/android/app/.cxx/Debug/2v85i1v4/x86/safeareacontext_autolinked_build/CMakeFiles/edit_cache.dir
+D:/Code/3rd_Year/DOLFO_App/android/app/.cxx/Debug/2v85i1v4/x86/safeareacontext_autolinked_build/CMakeFiles/rebuild_cache.dir
+D:/Code/3rd_Year/DOLFO_App/android/app/.cxx/Debug/2v85i1v4/x86/rnscreens_autolinked_build/CMakeFiles/react_codegen_rnscreens.dir
+D:/Code/3rd_Year/DOLFO_App/android/app/.cxx/Debug/2v85i1v4/x86/rnscreens_autolinked_build/CMakeFiles/edit_cache.dir
+D:/Code/3rd_Year/DOLFO_App/android/app/.cxx/Debug/2v85i1v4/x86/rnscreens_autolinked_build/CMakeFiles/rebuild_cache.dir

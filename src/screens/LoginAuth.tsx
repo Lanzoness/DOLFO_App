@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+type RootStackParamList = {
+  UserHomeScreen: undefined;
+};
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'UserHomeScreen'>;
 
 /*
   AuthPageColors and Fontsize could be added in a seprate
@@ -41,6 +48,7 @@ const FontType = {
 };
 
 function LoginAuth(): React.JSX.Element {
+  const navigation = useNavigation<NavigationProp>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -50,6 +58,7 @@ function LoginAuth(): React.JSX.Element {
     console.log('Email:', email);
     console.log('Password:', password);
     clearInputs();
+    navigation.navigate('UserHomeScreen');
   };
 
 

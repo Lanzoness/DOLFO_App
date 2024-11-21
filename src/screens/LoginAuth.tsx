@@ -127,14 +127,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 137,
     paddingTop: 100,
-    // backgroundColor: 'yellow',
   },
   logoContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 20,
     marginBottom: -50,
-    // backgroundColor: 'grey',
   },
   logo: {
     width: 93,
@@ -150,13 +148,14 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     backgroundColor: AuthPageColors.primary,
-    height: 550,
+    flex: 1,
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
     paddingLeft: 40,
     paddingRight: 40,
     paddingBottom: 152,
     paddingTop: 50,
+    minHeight: '100%', // prevents the form from having a gap at the bottom
   },
   loginAuthLabels: {
     fontFamily: 'ubuntu sans',

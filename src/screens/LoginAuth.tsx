@@ -35,6 +35,10 @@ const FontSize = {
   body_medium: 16,
 };
 
+const FontType = {
+  body_font: 'ubuntu sans',
+  header_font: 'Paytone One',
+};
 
 function LoginAuth(): React.JSX.Element {
   const [email, setEmail] = useState('');
@@ -62,12 +66,14 @@ function LoginAuth(): React.JSX.Element {
     <SafeAreaView style={styles.safeAreaView}>
       <ScrollView style={styles.scrollView}>
           <View style={styles.headerContainer}>
-            <Image
-              source={require('../assets/icons/DOLFO_Logo.png')}
-              resizeMode={'stretch'}
-              style={styles.logo}
-            />
-          <Text style={ styles.iconTitle }> DOLFO </Text>
+            <View style={styles.logoContainer}>
+              <Image
+                source={require('../assets/icons/DOLFO_Logo.png')}
+                resizeMode={'stretch'}
+                style={styles.logo}
+              />
+              <Text style={ styles.iconTitle }> DOLFO </Text>
+            </View>
           </View>
           <View style={styles.formContainer}>
             <Text style={styles.loginAuthLabels}>Email</Text>
@@ -107,35 +113,41 @@ const styles = StyleSheet.create({
     backgroundColor: AuthPageColors.surfaceContainerLowest,
   },
   headerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    // backgroundColor: 'red',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 137,
-    padding: 50,
+    paddingTop: 100,
+    // backgroundColor: 'yellow',
+  },
+  logoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 20,
+    marginBottom: -50,
+    // backgroundColor: 'grey',
   },
   logo: {
     width: 93,
     height: 93,
-    // paddingRight: 10,
-    backgroundColor: 'grey',
+    marginRight: 10,
   },
-  // Missing DOLFO Text
   iconTitle: {
     color: AuthPageColors.primary,
     fontSize: FontSize.icon_header,
-    fontWeight: 'bold',
+    fontFamily: FontType.header_font, // Replace with paytone one
+    fontWeight: '800',
     marginTop: 15,
   },
   formContainer: {
     backgroundColor: AuthPageColors.primary,
-    // flexBasis: 100,
-    height: 600,
+    height: 550,
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
-    // paddingTop: 5,
-    paddingLeft: 25,
-    paddingRight: 25,
+    paddingLeft: 40,
+    paddingRight: 40,
     paddingBottom: 152,
+    paddingTop: 50,
   },
   loginAuthLabels: {
     fontFamily: 'ubuntu sans',
@@ -143,22 +155,21 @@ const styles = StyleSheet.create({
     fontSize: FontSize.body_medium,
     marginBottom: 0,
     padding: 10,
-    // backgroundColor: 'grey',
   },
   input: {
     height: 45,
     borderColor: 'white',
     backgroundColor: 'white',
-    borderWidth: 1,
     marginBottom: 16,
     paddingHorizontal: 10,
-    paddingLeft: 10,
+    paddingLeft: 20,
     borderRadius: 14,
   },
   forgotPassStyle: {
     textDecorationLine: 'underline',
     color: 'white',
     textAlign: 'center',
+    padding: 10,
     marginBottom: 16,
   },
   loginButton: {
@@ -168,7 +179,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 3,
     paddingVertical: 14,
-    marginHorizontal: 130,
+    marginHorizontal: 80,
   },
   loginButtonLabel: {
     fontFamily: 'ubuntu sans',

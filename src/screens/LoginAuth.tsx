@@ -1,8 +1,16 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+type RootStackParamList = {
+  UserHomeScreen: undefined;
+};
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'UserHomeScreen'>;
 
 function LoginAuth(): React.JSX.Element {
+  const navigation = useNavigation<NavigationProp>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -12,6 +20,7 @@ function LoginAuth(): React.JSX.Element {
     console.log('Email:', email);
     console.log('Password:', password);
     clearInputs();
+    navigation.navigate('UserHomeScreen');
   };
 
 

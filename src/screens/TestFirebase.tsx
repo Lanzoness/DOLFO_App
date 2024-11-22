@@ -13,7 +13,21 @@ type RootStackParamList = {
 function TestFirebase(): React.JSX.Element {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const userButtonClick = () => {
-    addLostItem();
+    const newItem = {
+      Name: 'Lost Wallet',
+      Category: 'Accessories',
+      Picture: 'url_to_picture',
+      Description: 'Black leather wallet',
+      FinderName: 'John Doe',
+      FinderID: 'user123',
+      OwnerName: '',
+      OwnerID: '',
+      DateFound: new Date().toISOString(),
+      LocationFound: 'Central Park',
+      DateClaimed: '',
+      Status: 'Lost'
+    };
+    addLostItem(newItem);
   };
   const adminButtonClick = () => {
     retrieveAllLost();

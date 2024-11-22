@@ -127,12 +127,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 137,
     paddingTop: 100,
+    // backgroundColor: 'yellow',
   },
   logoContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 20,
     marginBottom: -50,
+    // backgroundColor: 'grey',
   },
   logo: {
     width: 93,

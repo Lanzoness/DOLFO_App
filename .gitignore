@@ -39,3 +39,12 @@ node_modules/
 
 # Except this specific file
 !node_modules/react-native/ReactAndroid/cmake-utils/ReactNative-application.cmake
+
+# Environment variables
+.env
+
+# Ignore the entire config folder
+/config/
+
+# Expo local settings
+.expo/

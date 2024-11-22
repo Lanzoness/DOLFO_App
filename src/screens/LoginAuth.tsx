@@ -5,9 +5,10 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 type RootStackParamList = {
   UserHomeScreen: undefined;
+  TestFirebase: undefined;
 };
 
-type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'UserHomeScreen'>;
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'TestFirebase'>;
 
 /*
   AuthPageColors and Fontsize could be added in a seprate
@@ -58,7 +59,7 @@ function LoginAuth(): React.JSX.Element {
     console.log('Email:', email);
     console.log('Password:', password);
     clearInputs();
-    navigation.navigate('UserHomeScreen');
+    navigation.navigate('TestFirebase');
   };
 
 
@@ -120,6 +121,9 @@ const styles = StyleSheet.create({
   safeAreaView: {
     flex: 2,
     backgroundColor: AuthPageColors.surfaceContainerLowest,
+  },
+  scrollView: {
+    flex: 1,
   },
   headerContainer: {
     flex: 1,

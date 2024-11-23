@@ -32,6 +32,7 @@ function LoginUserAdmin(): React.JSX.Element {
         <Button 
           label="User"
           onClick={userButtonClick}
+          variant="primary"
           style={{
             position: 'absolute',
             top: 128, 
@@ -41,6 +42,7 @@ function LoginUserAdmin(): React.JSX.Element {
         <Button 
           label="Admin"
           onClick={adminButtonClick}
+          variant="primary"
           style={{
             position: 'absolute',
             top: 193, 

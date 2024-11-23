@@ -9,7 +9,7 @@ export async function addLostItem(item) {
     console.error('Error adding document: ', e);
   }
 }
-
+/*
 // Example usage
 const newItem = {
   Name: 'Lost Wallet',
@@ -27,3 +27,4 @@ const newItem = {
 };
 
 addLostItem(newItem);
+*/

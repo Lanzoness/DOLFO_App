@@ -9,7 +9,7 @@ export async function addUser(item) {
     console.error('Error adding document: ', e);
   }
 }
-
+/*
 // Example usage
 const newUser = {
   Name: 'Lanzones',
@@ -19,3 +19,4 @@ const newUser = {
 };
 
 addUser(newUser);
+*/

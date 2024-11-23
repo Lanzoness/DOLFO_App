@@ -1,15 +1,20 @@
 import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, Text, ScrollView, SafeAreaView, Button } from 'react-native';
+import { View, TextInput, StyleSheet, Text, ScrollView, SafeAreaView, TouchableOpacity } from 'react-native';
+import UserPalette from '../constants/UserPalette';
 
 const SubmitLostItem = () => {
-  const [itemName, setItemName] = useState('');
-  const [itemCategory, setItemCategory] = useState('');
-  const [locationFound, setLocationFound] = useState('');
-  // const [itemDescription, setItemDescription] = useState('');
+  /**
+   * The use state variables are used to store the values of the input fields: Finder Name, Item Name, & Location Found
+   */
   const [finderName, setFinderName] = useState('');
+  const [itemName, setItemName] = useState('');
+  const [locationFound, setLocationFound] = useState('');
 
-  const [inputs, setInputs] = useState(['']); // Initialize with one input field.
-  const maxFields = 3; // Set the maximum number of fields.
+  /**
+   * The use state variable is used to store the values of the input fields: Item Description
+   */
+  const [inputs, setInputs] = useState<string[]>(['']);
+  const maxFields = 5; // Limits the add description button to 5 fields.
 
   const addInputField = () => {
     if (inputs.length < maxFields) {
@@ -17,76 +22,66 @@ const SubmitLostItem = () => {
     }
   };
 
-  const removeInputField = (index) => {
-    if (inputs.length > 1) {
-      setInputs(inputs.filter((_, i) => i !== index)); // Remove the field at the specified index.
-    }
+  const removeInputField = (index: number) => {
+    const newInputs = inputs.filter((_, i) => i !== index);
+    setInputs(newInputs);
   };
 
-  const handleInputChange = (text, index) => {
+  const handleInputChange = (text: string, index: number) => {
     const updatedInputs = [...inputs];
-    updatedInputs[index] = text; // Update the specific input value.
+    updatedInputs[index] = text;
     setInputs(updatedInputs);
   };
 
-
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.InputPlaceholerBlock}>
-      <Text style={styles.label}>Finder Name</Text>
+      <ScrollView contentContainerStyle={styles.scrollView}>
+        <Text style={styles.fieldLabel}>Finder Name</Text>
         <TextInput
-          style={styles.input}
+          style={styles.inputField}
           value={finderName}
           onChangeText={setFinderName}
           placeholder="Enter finder name"
         />
-        <Text style={styles.label}>Item Name</Text>
+        <Text style={styles.fieldLabel}>Item Name</Text>
         <TextInput
-          style={styles.input}
+          style={styles.inputField}
           value={itemName}
           onChangeText={setItemName}
           placeholder="Enter item name"
         />
-        <Text style={styles.label}>Item Category</Text>
+        <Text style={styles.fieldLabel}>Location Found</Text>
         <TextInput
-          style={styles.input}
-          value={itemCategory}
-          onChangeText={setItemCategory}
-          placeholder="Enter item category"
-        />
-        <Text style={styles.label}>Location Found</Text>
-        <TextInput
-          style={styles.input}
+          style={styles.inputField}
           value={locationFound}
           onChangeText={setLocationFound}
           placeholder="Enter location found"
         />
-      <Text>Enter description:</Text>
+        <Text style={styles.fieldLabel}>Enter description:</Text>
         {inputs.map((input, index) => (
           <View key={index} style={styles.inputRow}>
             <TextInput
-              style={styles.input}
+              style={styles.inputField}
               value={input}
               onChangeText={(text) => handleInputChange(text, index)}
               placeholder={`Input #${index + 1}`}
             />
             {index === 0 ? null : (
-              <Button title="REMOVE" onPress={() => removeInputField(index)} />
+              <TouchableOpacity style={styles.button} onPress={() => removeInputField(index)}>
+                <Text style={styles.buttonText}>REMOVE</Text>
+              </TouchableOpacity>
             )}
           </View>
         ))}
-        <Button
-          title={inputs.length < maxFields ? "Add Description" : "Limit Reached"}
+        <TouchableOpacity
+          style={[styles.button, inputs.length >= maxFields && styles.buttonDisabled]}
           onPress={addInputField}
           disabled={inputs.length >= maxFields} // Disable button when maxFields is reached.
-        />
-        {/* <Text style={styles.label}>Item Description</Text>
-        <TextInput
-          style={styles.input}
-          value={itemDescription}
-          onChangeText={setItemDescription}
-          placeholder="Enter item description"
-        /> */}
+        >
+          <Text style={styles.buttonText}>
+            {inputs.length < maxFields ? "Add Description" : "Limit Reached"}
+          </Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
@@ -95,36 +90,50 @@ const SubmitLostItem = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    // backgroundColor: '#fff',
+    backgroundColor: UserPalette.green,
   },
-  InputPlaceholerBlock: {
+  scrollView: {
     padding: 20,
-
   },
-  label: {
+  fieldLabel: {
     fontSize: 16,
-    marginBottom: 5,
+    marginBottom: 10,
+    color: UserPalette.white_font,
+    fontWeight: 'bold',
   },
-  input: {
+  inputField: {
     height: 40,
-    borderBottomColor: 'gray',
-    borderBottomWidth: 1,
+    borderBottomColor: 'white',
+    borderWidth: 1,
     marginBottom: 20,
     paddingHorizontal: 10,
+    borderRadius: 5,
+    backgroundColor: UserPalette.text_field_bg,
+    flex: 1,
   },
   inputRow: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
   },
-  // input: {
-  //   flex: 1,
-  //   borderWidth: 1,
-  //   borderColor: '#ccc',
-  //   padding: 10,
-  //   marginRight: 10,
-  //   borderRadius: 5,
-  // },
+  button: {
+    backgroundColor: UserPalette.green, // Flat button
+    borderColor: 'white', // White outline
+    borderWidth: 1,
+    paddingVertical: 5,
+    paddingHorizontal: 5,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    paddingHorizontal: 1,
+  },
+  buttonDisabled: {
+    opacity: 0.5, // Reduce opacity for disabled state
+  },
 });
 
 export default SubmitLostItem;

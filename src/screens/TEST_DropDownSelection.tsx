@@ -9,9 +9,7 @@ import { SelectList } from 'react-native-dropdown-select-list';
     they want to search up.
 */
 
-const DropdownSelection = () => {
-// State management is done using the useState hook.
-//  The selected state is initialized to an empty string.
+const TEST_DropDownSelection = () => {
 //  The setSelected function is used to update the selected state.
   const [selected, setSelected] = useState('');
 
@@ -37,4 +35,4 @@ const DropdownSelection = () => {
   );
 };
 
-export default DropdownSelection;
+export default TEST_DropDownSelection;

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { addUser } from '../test/addUser.js';
 
 type RootStackParamList = {
   UserHomeScreen: undefined;
@@ -50,24 +51,23 @@ const FontType = {
 
 function LoginAuth(): React.JSX.Element {
   const navigation = useNavigation<NavigationProp>();
-  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [dlsud_ID, setID] = useState('');
   const [password, setPassword] = useState('');
 
 
   const handleLogin = () => {
-    // Takes the user inputs from the email and password fields
-    console.log('Email:', email);
-    console.log('Password:', password);
-    clearInputs();
-    navigation.navigate('TestFirebase');
+    const newUser = {
+      Name: name,
+      DLSUD_ID: dlsud_ID,
+      Password: password,
+      isAdmin: 0
+    };
+    addUser(newUser);
+    navigation.navigate('UserHomeScreen');
   };
 
 
-  const clearInputs = () => {
-    // clears the email and password fields
-    setEmail('');
-    setPassword('');
-  };
 
 
 // FIX THE FONT COLOR OF THE USER INPUT
@@ -86,12 +86,21 @@ function LoginAuth(): React.JSX.Element {
             </View>
           </View>
           <View style={styles.formContainer}>
-            <Text style={styles.loginAuthLabels}>Email</Text>
+            <Text style={styles.loginAuthLabels}>Name</Text>
             <TextInput
               style={styles.input}
-              placeholder="Enter email address"
-              value={email}
-              onChangeText={setEmail}
+              placeholder="Enter Full Name (LastName, FirstName)"
+              value={name}
+              onChangeText={setName}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+            <Text style={styles.loginAuthLabels}>DLSUD ID</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter DLSUD ID"
+              value={dlsud_ID}
+              onChangeText={setID}
               keyboardType="email-address"
               autoCapitalize="none"
             />

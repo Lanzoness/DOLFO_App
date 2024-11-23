@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text } from 'react-native';
-import { SelectList } from 'react-native-dropdown-select-list'; // IMPORT THE DROPDOWN SELECT LIST
+import { SelectList } from 'react-native-dropdown-select-list'; 
+// Install the react-native-dropdown-select-list package to use this component
 
 
 /*

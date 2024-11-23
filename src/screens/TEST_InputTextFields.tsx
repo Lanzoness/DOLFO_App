@@ -1,24 +1,20 @@
 import React, { useState } from 'react';
 import { View, TextInput, StyleSheet, Text, ScrollView, SafeAreaView, TouchableOpacity } from 'react-native';
+import { SelectList } from 'react-native-dropdown-select-list';
 import UserPalette from '../constants/UserPalette';
 
 const SubmitLostItem = () => {
-  /**
-   * The use state variables are used to store the values of the input fields: Finder Name, Item Name, & Location Found
-   */
   const [finderName, setFinderName] = useState('');
   const [itemName, setItemName] = useState('');
   const [locationFound, setLocationFound] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
 
-  /**
-   * The use state variable is used to store the values of the input fields: Item Description
-   */
   const [inputs, setInputs] = useState<string[]>(['']);
-  const maxFields = 5; // Limits the add description button to 5 fields.
+  const maxFields = 5;
 
   const addInputField = () => {
     if (inputs.length < maxFields) {
-      setInputs([...inputs, '']); // Add a new blank input field.
+      setInputs([...inputs, '']);
     }
   };
 
@@ -32,6 +28,15 @@ const SubmitLostItem = () => {
     updatedInputs[index] = text;
     setInputs(updatedInputs);
   };
+
+  const categories = [
+    { key: '1', value: 'category 1' },
+    { key: '2', value: 'category 2' },
+    { key: '3', value: 'category 3' },
+    { key: '4', value: 'category 4' },
+    { key: '5', value: 'category 5' },
+    { key: '6', value: 'category 6' },
+  ];
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -50,6 +55,12 @@ const SubmitLostItem = () => {
           onChangeText={setItemName}
           placeholder="Enter item name"
         />
+        <Text style={styles.fieldLabel}>Category</Text>
+        <SelectList
+          setSelected={setSelectedCategory}
+          data={categories}
+          placeholder="Select a category"
+        />
         <Text style={styles.fieldLabel}>Location Found</Text>
         <TextInput
           style={styles.inputField}
@@ -67,7 +78,7 @@ const SubmitLostItem = () => {
               placeholder={`Input #${index + 1}`}
             />
             {index === 0 ? null : (
-              <TouchableOpacity style={styles.button} onPress={() => removeInputField(index)}>
+              <TouchableOpacity style={styles.buttonDescription} onPress={() => removeInputField(index)}>
                 <Text style={styles.buttonText}>REMOVE</Text>
               </TouchableOpacity>
             )}
@@ -76,7 +87,7 @@ const SubmitLostItem = () => {
         <TouchableOpacity
           style={[styles.button, inputs.length >= maxFields && styles.buttonDisabled]}
           onPress={addInputField}
-          disabled={inputs.length >= maxFields} // Disable button when maxFields is reached.
+          disabled={inputs.length >= maxFields}
         >
           <Text style={styles.buttonText}>
             {inputs.length < maxFields ? "Add Description" : "Limit Reached"}
@@ -116,9 +127,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 10,
   },
-  button: {
-    backgroundColor: UserPalette.green, // Flat button
-    borderColor: 'white', // White outline
+  buttonDescription: {
+    backgroundColor: UserPalette.green,
+    borderColor: 'white',
     borderWidth: 1,
     paddingVertical: 5,
     paddingHorizontal: 5,
@@ -132,7 +143,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 1,
   },
   buttonDisabled: {
-    opacity: 0.5, // Reduce opacity for disabled state
+    opacity: 0.5,
   },
 });
 

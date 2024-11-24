@@ -4,7 +4,7 @@ import { View, Text, StyleSheet } from 'react-native';
 const ViewLost = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Submit Lost Item</Text>
+      <Text style={styles.text}>View Lost Item</Text>
     </View>
   );
 };

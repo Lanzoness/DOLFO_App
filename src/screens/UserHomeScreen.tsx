@@ -7,6 +7,8 @@ const { width } = Dimensions.get('window');
 
 type YourStackParamList = {
   LoginAuth: undefined;
+  ViewLost: undefined;
+  SubmitLost: undefined;
   // Add other routes here if needed
 };
 
@@ -45,13 +47,13 @@ const UserHomeScreen = () => {
       <Button 
         label="View Lost Items"
         variant="secondary" 
-        onClick={() => {}} 
+        onClick={() => {navigation.navigate('ViewLost')}} 
         style={styles.button}
       />
       <Button 
         label="Submit Lost Item"
         variant="tertiary" 
-        onClick={() => {}} 
+        onClick={() => {navigation.navigate('SubmitLost')}} 
         style={styles.submitButton}
       />
 
@@ -97,7 +99,7 @@ const styles = StyleSheet.create({
   topBar: {
     position: 'absolute',
     top: 0,
-    width: 412,
+    width: '100%',
     height: 80,
     backgroundColor: '#00722A',
     flexShrink: 0,

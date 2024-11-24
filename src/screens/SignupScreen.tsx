@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ScrollView, SafeAreaView, Modal, Animated } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+
 
 const AuthPageColors = {
   primary: '#00722A',
@@ -19,9 +20,17 @@ const FontType = {
   header_font: 'Paytone One',
 };
 
+// Define the type for your navigation stack
+type RootStackParamList = {
+  SignupScreen: undefined;
+  UserHomeScreen: undefined;
+  // Add other routes here
+};
+
 const SignupScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [isModalVisible, setModalVisible] = useState(false);
+  const [isAccountCreatedVisible, setAccountCreatedVisible] = useState(false);
   const scaleValue = useRef(new Animated.Value(0)).current;
 
   const openModal = () => {
@@ -36,8 +45,14 @@ const SignupScreen = () => {
     }).start(() => setModalVisible(false));
   };
 
-  const handleSubmit = () => {
-    // Future functionality for submit button inside the overlay
+  const handleAccountCreatedClose = () => {
+    setAccountCreatedVisible(false);
+    navigation.navigate('UserHomeScreen');
+  };
+
+  const handleSignUp = () => {
+    // Simulate account creation logic
+    setAccountCreatedVisible(true);
   };
 
   useEffect(() => {
@@ -87,8 +102,8 @@ const SignupScreen = () => {
           <TouchableOpacity>
             <Text style={styles.getAdminAccess} onPress={openModal}>Admin? Get access</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.signupButton} onPress={() => { /* sign up button functionality goes here */ }}>
-            <Text style={styles.signupButtonLabel}>Create</Text>
+          <TouchableOpacity style={styles.signupButton} onPress={handleSignUp}>
+            <Text style={styles.signupButtonLabel}>Sign Up</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -109,7 +124,7 @@ const SignupScreen = () => {
               autoCapitalize="none"
             />
             <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+              <TouchableOpacity style={styles.submitButton} onPress={() => {}}>
                 <Text style={styles.buttonText}>Submit</Text>
               </TouchableOpacity>
               <View style={styles.buttonSpacer} />
@@ -118,6 +133,22 @@ const SignupScreen = () => {
               </TouchableOpacity>
             </View>
           </Animated.View>
+        </View>
+      </Modal>
+
+      <Modal
+        transparent={true}
+        visible={isAccountCreatedVisible}
+        animationType="fade"
+        onRequestClose={handleAccountCreatedClose}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>Account created</Text>
+            <TouchableOpacity style={styles.submitButton} onPress={handleAccountCreatedClose}>
+              <Text style={styles.buttonText}>Continue</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </Modal>
     </SafeAreaView>
@@ -158,8 +189,9 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   formContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
     backgroundColor: AuthPageColors.primary,
-    height: 550,
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
     paddingLeft: 40,

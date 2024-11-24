@@ -163,8 +163,9 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   formContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
     backgroundColor: AuthPageColors.primary,
-    height: 550,
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
     paddingLeft: 40,

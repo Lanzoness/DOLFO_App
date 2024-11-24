@@ -10,6 +10,7 @@ const SubmitLostItem = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [buttonText, setButtonText] = useState('Upload Image');
   const [buttonPressed, setButtonPressed] = useState(false);
+  const [isSubmitModalVisible, setIsSubmitModalVisible] = useState(false);
   const screenWidth = Dimensions.get('window').width; // Takes the width of the device screen
 
   // 📃 User Inputs: Finder Name, Item Name, & Location Found
@@ -24,12 +25,12 @@ const SubmitLostItem = () => {
 
   // Array of objects to store each category
   const categories = [
-    { key: '1', value: 'category 1', color: 'red' },
-    { key: '2', value: 'category 2', color: 'blue' },
-    { key: '3', value: 'category 3', color: 'green' },
-    { key: '4', value: 'category 4', color: 'orange' },
-    { key: '5', value: 'category 5', color: 'purple' },
-    { key: '6', value: 'category 6', color: 'brown' },
+    { key: '1', value: 'category 1' },
+    { key: '2', value: 'category 2' },
+    { key: '3', value: 'category 3' },
+    { key: '4', value: 'category 4' },
+    { key: '5', value: 'category 5' },
+    { key: '6', value: 'category 6' },
   ];
 
   // Function to add an item description input field
@@ -54,9 +55,6 @@ const SubmitLostItem = () => {
 
   /**
    * 📸 Function to handle image upload
-   * @mediaType {string} - Type of media to pick
-   * @cameraType {string} - The camera accessed
-   * @saveToPhotos {boolean} - Save image to gallery
    */
   const handleTakePhoto = () => {
     const options = {
@@ -65,12 +63,6 @@ const SubmitLostItem = () => {
       saveToPhotos: true,
     };
 
-    /**
-     * 📸 Launch camera to take a photo
-     * @options {object} - configuration options of the device camera.
-     * @response {object} -  A callback function that processes the response from the camera.
-     *
-    */
     launchCamera(options, (response) => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
@@ -86,50 +78,38 @@ const SubmitLostItem = () => {
   };
 
   /**
-   * Button on-press event handler
-   * to show the modal (overlay)
-   * Take a photo or cancel overlay
-  */
-  const handleButtonClick = () => {
-    setIsModalVisible(true);
-  };
-
-  /**
    * Function to handle form submission
-   * Prints user inputs to the terminal
-  */
+   */
   const handleSubmit = () => {
     console.log('Finder Name:', finderName);
     console.log('Item Name:', itemName);
     console.log('Selected Category:', selectedCategory);
     console.log('Location Found:', locationFound);
     console.log('Entered Descriptions:', inputs);
+    setIsSubmitModalVisible(false); // Close the confirmation modal
   };
 
-  // Function to render each item with custom styles
-  const renderCategoryItem = ({ item }) => (
-    <Text style={[styles.categoryItem, { color: item.color }]}>{item.value}</Text>
-  );
+  const handleEdit = () => {
+    setIsSubmitModalVisible(false); // Close the confirmation modal
+  };
 
-  // 📱 content of the screen starts here
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView scrollEnabled={true} contentInsetAdjustmentBehavior="automatic" style={styles.scrollView}>
         <View style={styles.container}>
           <View style={styles.topContainer}>
 
-            {/* Upload image box start */}
-            <View style={[styles.uploadBox, { maxWidth: screenWidth / 3 }]}>
+            {/* Upload image box */}
+            <View style={styles.uploadBox}>
               <Text style={styles.uploadBoxLabel}> Limit: 1 Image </Text>
               {imageData ? (
                 <Image
                   source={{ uri: imageData.uri }}
                   style={{
                     width: '100%',
-                    height: undefined,
-                    aspectRatio: imageData.width / imageData.height, // Maintain image aspect ratio
+                    height: '100%',
+                    resizeMode: 'contain', // Maintain image aspect ratio
                   }}
-                  resizeMode="contain"
                 />
               ) : null}
             </View>
@@ -141,7 +121,7 @@ const SubmitLostItem = () => {
               underlayColor={UserPalette.active_button}
               onShowUnderlay={() => setButtonPressed(true)}
               onHideUnderlay={() => setButtonPressed(false)}
-              onPress={handleButtonClick}
+              onPress={() => setIsModalVisible(true)}
             >
               <Text style={styles.uploadButtonText}>{buttonText}</Text>
             </TouchableHighlight>
@@ -153,36 +133,32 @@ const SubmitLostItem = () => {
                 </View>
               </View>
             </Modal>
-            {/* Upload image box end */}
 
           </View>
 
           <View style={styles.formContainer}>
             <View style={styles.formContentPlaceholder}>
-
-              {/* Replace with text inputs */}
-              <Text style={styles.fieldLabel}>Finder Name</Text>
+              <Text style={styles.fieldLabel}> Finder Name: </Text>
               <TextInput
                 style={styles.inputField}
                 value={finderName}
                 onChangeText={setFinderName}
                 placeholder="Enter finder name"
               />
-              <Text style={styles.fieldLabel}>Item Name</Text>
+              <Text style={styles.fieldLabel}> Item Name: </Text>
               <TextInput
                 style={styles.inputField}
                 value={itemName}
                 onChangeText={setItemName}
                 placeholder="Enter item name"
               />
-              <Text style={[ styles.fieldLabel ]}>Category</Text>
+              <Text style={[styles.fieldLabel]}> Category: </Text>
               <SelectList
                 setSelected={setSelectedCategory}
                 data={categories}
                 placeholder="Select a category"
-                boxStyles={styles.dropdownBox} // Apply the new style here
-                dropdownStyles={styles.dropdown} // Apply the new style here
-                renderItem={renderCategoryItem} // Use custom rendering function
+                boxStyles={styles.dropdownBox}
+                dropdownStyles={styles.dropdown}
               />
               <Text style={styles.fieldLabel}>Location Found</Text>
               <TextInput
@@ -216,7 +192,6 @@ const SubmitLostItem = () => {
                   {inputs.length < maxFields ? 'Add Description' : 'Limit Reached'}
                 </Text>
               </TouchableOpacity>
-              {/* Text input end */}
 
               <TouchableHighlight
                 style={[
@@ -226,14 +201,27 @@ const SubmitLostItem = () => {
                 underlayColor={UserPalette.active_button}
                 onShowUnderlay={() => setButtonPressed(true)}
                 onHideUnderlay={() => setButtonPressed(false)}
-                onPress={handleSubmit}
+                onPress={() => setIsSubmitModalVisible(true)}
               >
-                <Text style={ styles.uploadButtonText }>Submit Lost Item</Text>
+                <Text style={styles.submituploadBtnText}>Submit Lost Item</Text>
               </TouchableHighlight>
 
+              {/* Submission confirmation modal */}
+              <Modal visible={isSubmitModalVisible} transparent>
+                <View style={styles.overlay}>
+                  <View style={styles.modalContent}>
+                    <Text style={styles.modalOption}>Do you want to submit this item?</Text>
+                    <TouchableOpacity onPress={handleSubmit}>
+                      <Text style={styles.modalOption}>Confirm</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={handleEdit}>
+                      <Text style={styles.modalCancel}>Edit</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </Modal>
             </View>
           </View>
-
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -255,16 +243,13 @@ const styles = StyleSheet.create({
   },
   topContainer: {
     width: '100%',
-    padding: 10,
+    paddingVertical: 20,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: UserPalette.green,
-    borderBottomWidth: 2,
-    borderBottomColor: UserPalette.default_background,
-    // backgroundColor: 'red',
   },
   uploadBox: {
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: UserPalette.default_background,
     backgroundColor: UserPalette.default_background,
     borderRadius: 15,
@@ -272,13 +257,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: Math.max(200, Dimensions.get('window').height / 3), // Ensure minimum height of 200px
     width: Math.max(200, Dimensions.get('window').height / 3), // Set the width to be equal to the height
-    marginBottom: 10,
-    paddingTop: 40,
+    marginTop: 20,
+    marginBottom: 20,
   },
   uploadBoxLabel: {
-    fontWeight: '700',
-    fontSize: FontSize.body_large,
-    color: 'rgba(128, 128, 128, 0.7)',
+    fontWeight: '500',
+    fontSize: FontSize.body_medium,
+    color: UserPalette.grey_font,
   },
   overlay: {
     flex: 1,
@@ -310,8 +295,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 20,
   },
   uploadButtonText: {
     color: 'white',
@@ -319,6 +302,7 @@ const styles = StyleSheet.create({
   },
   activeButton: {
     backgroundColor: UserPalette.active_button,
+    borderColor: UserPalette.active_button,
   },
   formContainer: {
     flex: 1,
@@ -336,9 +320,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     color: UserPalette.white_font,
     fontWeight: 'bold',
-  },
-  categoryLabel: {
-    color: 'blue', // Change this to the desired color for the category label
   },
   inputField: {
     height: 40,
@@ -373,24 +354,29 @@ const styles = StyleSheet.create({
   buttonDisabled: {
     opacity: 0.5,
   },
-  dropdownBox: {
-    backgroundColor: UserPalette.text_field_bg,
+  submitButton: {
+    marginTop: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: UserPalette.green,
+    borderRadius: 20,
+    borderWidth: 2,
     borderColor: 'white',
-    borderWidth: 1,
+    alignItems: 'center',
+  },
+  submituploadBtnText: {
+    color: 'white',
+    fontSize: FontSize.body_small,
+  },
+  dropdownBox: {
+    width: '100%',
+    backgroundColor: UserPalette.default_background,
     borderRadius: 5,
-    paddingHorizontal: 10,
-    height: 40,
-    justifyContent: 'center',
+    marginBottom: 20,
   },
   dropdown: {
-    backgroundColor: UserPalette.text_field_bg,
-    borderColor: 'white',
-    borderWidth: 1,
+    backgroundColor: UserPalette.default_background,
     borderRadius: 5,
-  },
-  categoryItem: {
-    padding: 10,
-    fontSize: FontSize.body_medium,
   },
 });
 

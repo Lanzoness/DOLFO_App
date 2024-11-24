@@ -6,7 +6,7 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 const { width } = Dimensions.get('window');
 
 type YourStackParamList = {
-  LoginUserAdmin: undefined;
+  LoginAuth: undefined;
   // Add other routes here if needed
 };
 
@@ -70,7 +70,12 @@ const UserHomeScreen = () => {
                 </TouchableOpacity>
                 <View style={styles.divider} />
                 
-                <TouchableOpacity onPress={() => navigation.navigate('LoginUserAdmin')}>
+                <TouchableOpacity onPress={() => { /* Handle Update Local Database press */ }}>
+                  <Text style={styles.drawerText}>Update Local Database</Text>
+                </TouchableOpacity>
+                <View style={styles.divider} />
+                
+                <TouchableOpacity onPress={() => navigation.navigate('LoginAuth')}>
                   <Text style={styles.drawerText}>Logout</Text>
                 </TouchableOpacity>
                 <View style={styles.divider} />

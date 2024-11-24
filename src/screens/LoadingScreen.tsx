@@ -4,10 +4,10 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 type RootStackParamList = {
-  LoginUserAdmin: undefined;
+  LoginAuth: undefined;
 };
 
-type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'LoginUserAdmin'>;
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'LoginAuth'>;
 
 function LoadingScreen(): React.JSX.Element {
   const navigation = useNavigation<NavigationProp>();
@@ -24,7 +24,7 @@ function LoadingScreen(): React.JSX.Element {
       }).start();
 
       const timer = setTimeout(() => {
-        navigation.navigate('LoginUserAdmin');
+        navigation.navigate('LoginAuth');
       }, 2000);
 
       return () => clearTimeout(timer);

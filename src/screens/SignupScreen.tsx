@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ScrollView, SafeAreaView, Modal, Animated } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { addUser } from '../test/addUser.js';
+import { matchUser } from '../test/matchUser.js';
 
 
 const AuthPageColors = {
@@ -33,6 +35,11 @@ const SignupScreen = () => {
   const [isAccountCreatedVisible, setAccountCreatedVisible] = useState(false);
   const scaleValue = useRef(new Animated.Value(0)).current;
 
+  //tracked user input
+  const [name, setName] = useState('');
+  const [dlsud_ID, setID] = useState('');
+  const [password, setPassword] = useState('');
+
   const openModal = () => {
     setModalVisible(true);
   };
@@ -45,14 +52,27 @@ const SignupScreen = () => {
     }).start(() => setModalVisible(false));
   };
 
-  const handleAccountCreatedClose = () => {
+  const handleAccountCreatedClose = async () => {
     setAccountCreatedVisible(false);
     navigation.navigate('UserHomeScreen');
   };
 
-  const handleSignUp = () => {
-    // Simulate account creation logic
-    setAccountCreatedVisible(true);
+  const handleSignUp = async() => {
+    const newUser = {
+      Name: name,
+      DLSUD_ID: dlsud_ID,
+      Password: password,
+      isAdmin: 0
+    };
+    const isMatch = await matchUser(newUser);
+
+    if (!isMatch) {
+      addUser(newUser);
+      setAccountCreatedVisible(true);
+    } else {
+      // TODO: Add popup. "The entered credentials belong to an existing account."
+      console.log('The entered credentials belong to an existing account.');
+    }
   };
 
   useEffect(() => {
@@ -82,6 +102,8 @@ const SignupScreen = () => {
           <TextInput
             style={styles.input}
             placeholder="Enter Full Name (LastName, FirstName)"
+            value={name}
+            onChangeText={setName}
             keyboardType="email-address"
             autoCapitalize="none"
           />
@@ -89,6 +111,8 @@ const SignupScreen = () => {
           <TextInput
             style={styles.input}
             placeholder="Enter DLSUD ID"
+            value={dlsud_ID}
+            onChangeText={setID}
             keyboardType="email-address"
             autoCapitalize="none"
           />
@@ -96,6 +120,8 @@ const SignupScreen = () => {
           <TextInput
             style={styles.input}
             placeholder="Enter password"
+            value={password}
+            onChangeText={setPassword}
             secureTextEntry
             autoCapitalize="none"
           />

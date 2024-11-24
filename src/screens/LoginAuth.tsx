@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { addUser } from '../test/addUser.js';
+import { matchUser } from '../test/matchUser.js';
 
 type RootStackParamList = {
   UserHomeScreen: undefined;
@@ -57,15 +57,22 @@ function LoginAuth(): React.JSX.Element {
   const [password, setPassword] = useState('');
 
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     const newUser = {
       Name: name,
       DLSUD_ID: dlsud_ID,
       Password: password,
       isAdmin: 0
     };
-    addUser(newUser);
-    navigation.navigate('UserHomeScreen');
+    
+    const isMatch = await matchUser(newUser);
+
+    if (isMatch) {
+      navigation.navigate('UserHomeScreen');
+    } else {
+      // TODO: Add popup. "The entered credentials do not match an existing account."
+      console.log('The entered credentials do not match an existing account.');
+    }
   };
 
 
@@ -170,9 +177,9 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 50,
     paddingLeft: 40,
     paddingRight: 40,
-    paddingBottom: 152,
-    paddingTop: 50,
-    minHeight: '100%', // prevents the form from having a gap at the bottom
+    paddingBottom: '100%',
+    paddingTop: 20,
+    minHeight: '70%',
   },
   loginAuthLabels: {
     fontFamily: 'ubuntu sans',

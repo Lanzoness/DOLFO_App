@@ -172,6 +172,7 @@ const styles = StyleSheet.create({
     paddingRight: 40,
     paddingBottom: 152,
     paddingTop: 50,
+    minHeight: '100%', // prevents the form from having a gap at the bottom
   },
   loginAuthLabels: {
     fontFamily: 'ubuntu sans',

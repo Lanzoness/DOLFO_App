@@ -15,9 +15,15 @@ const SubmitLostItem = () => {
 
   // 📃 User Inputs: Finder Name, Item Name, & Location Found
   const [finderName, setFinderName] = useState('');
+  const [finderID, setFinderID] = useState('');
   const [itemName, setItemName] = useState('');
   const [locationFound, setLocationFound] = useState('');
+  const [ownerName, setownerName] = useState('');
+  const [ownerID, setownerID] = useState('');
+
+  // 🗃️ handles chosen categories
   const [selectedCategory, setSelectedCategory] = useState('');
+
 
   // ➕ handles additional inputs for item description (limited to 3 inputs)
   const [inputs, setInputs] = useState<string[]>(['']);
@@ -82,10 +88,13 @@ const SubmitLostItem = () => {
    */
   const handleSubmit = () => {
     console.log('Finder Name:', finderName);
+    console.log('Finder ID:', finderID);
     console.log('Item Name:', itemName);
     console.log('Selected Category:', selectedCategory);
     console.log('Location Found:', locationFound);
     console.log('Entered Descriptions:', inputs);
+    console.log('Owner Name:', ownerName);
+    console.log('Owner ID:', ownerID);
     setIsSubmitModalVisible(false); // Close the confirmation modal
   };
 
@@ -101,7 +110,7 @@ const SubmitLostItem = () => {
 
             {/* Upload image box */}
             <View style={styles.uploadBox}>
-              <Text style={styles.uploadBoxLabel}> Limit: 1 Image </Text>
+              {/* <Text style={styles.uploadBoxLabel}> Limit: 1 Image </Text> */}
               {imageData ? (
                 <Image
                   source={{ uri: imageData.uri }}
@@ -145,6 +154,13 @@ const SubmitLostItem = () => {
                 onChangeText={setFinderName}
                 placeholder="Enter finder name"
               />
+              <Text style={styles.fieldLabel}> Finder ID: </Text>
+              <TextInput
+                style={styles.inputField}
+                value={itemName}
+                onChangeText={setFinderID}
+                placeholder="Enter Finder ID"
+              />
               <Text style={styles.fieldLabel}> Item Name: </Text>
               <TextInput
                 style={styles.inputField}
@@ -160,31 +176,49 @@ const SubmitLostItem = () => {
                 boxStyles={styles.dropdownBox}
                 dropdownStyles={styles.dropdown}
               />
-              <Text style={styles.fieldLabel}>Location Found</Text>
+              <Text style={styles.locationLabel}>Location Found:</Text>
               <TextInput
                 style={styles.inputField}
                 value={locationFound}
                 onChangeText={setLocationFound}
                 placeholder="Enter location found"
               />
-              <Text style={styles.fieldLabel}>Enter description:</Text>
+              <Text style={styles.fieldSubLabel}>
+              (Optional) <Text style={styles.fieldLabel}> Owner Name:</Text>
+              </Text>
+              <TextInput
+                style={styles.inputField}
+                value={ownerName}
+                onChangeText={setownerName}
+                placeholder="Enter Owner Name"
+              />
+              <Text style={styles.fieldSubLabel}>
+              (Optional) <Text style={styles.fieldLabel}> Owner ID:</Text>
+              </Text>
+              <TextInput
+                style={styles.inputField}
+                value={ownerID}
+                onChangeText={setownerID}
+                placeholder="Enter Finder ID"
+              />
+              <Text style={styles.fieldLabel}> Item Description:</Text>
               {inputs.map((input, index) => (
                 <View key={index} style={styles.inputRow}>
                   <TextInput
-                    style={styles.inputField}
+                    style={styles.descriptionField}
                     value={input}
                     onChangeText={(text) => handleInputChange(text, index)}
                     placeholder={`Input #${index + 1}`}
                   />
                   {index === 0 ? null : (
-                    <TouchableOpacity style={styles.buttonDescription} onPress={() => removeInputField(index)}>
+                    <TouchableOpacity style={styles.removeButton} onPress={() => removeInputField(index)}>
                       <Text style={styles.buttonText}>REMOVE</Text>
                     </TouchableOpacity>
                   )}
                 </View>
               ))}
               <TouchableOpacity
-                style={[styles.buttonDescription, inputs.length >= maxFields && styles.buttonDisabled]}
+                style={[styles.addButton, inputs.length >= maxFields && styles.buttonDisabled]}
                 onPress={addInputField}
                 disabled={inputs.length >= maxFields}
               >
@@ -196,7 +230,7 @@ const SubmitLostItem = () => {
               <TouchableHighlight
                 style={[
                   styles.uploadButton,
-                  { backgroundColor: buttonPressed ? UserPalette.active_button : UserPalette.green },
+                  { backgroundColor: buttonPressed ? UserPalette.active_button : UserPalette.secondary_green },
                 ]}
                 underlayColor={UserPalette.active_button}
                 onShowUnderlay={() => setButtonPressed(true)}
@@ -231,39 +265,37 @@ const SubmitLostItem = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
-    backgroundColor: UserPalette.green,
+    // backgroundColor: UserPalette.green,
+    backgroundColor: 'red',
   },
   safeArea: {
     flex: 1,
-    backgroundColor: UserPalette.green,
+    // backgroundColor: UserPalette.green,
+    backgroundColor: 'blue',
   },
   scrollView: {
     flex: 1,
   },
   topContainer: {
-    width: '100%',
-    paddingVertical: 20,
+    backgroundColor: UserPalette.secondary_green,
+    borderBottomColor: UserPalette.white_font,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: UserPalette.green,
+    width: '100%',
+    paddingVertical: 20,
+    borderBottomWidth: 2,
   },
   uploadBox: {
     borderWidth: 2,
     borderColor: UserPalette.default_background,
     backgroundColor: UserPalette.default_background,
-    borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
     height: Math.max(200, Dimensions.get('window').height / 3), // Ensure minimum height of 200px
     width: Math.max(200, Dimensions.get('window').height / 3), // Set the width to be equal to the height
     marginTop: 20,
+    borderRadius: 15,
     marginBottom: 20,
-  },
-  uploadBoxLabel: {
-    fontWeight: '500',
-    fontSize: FontSize.body_medium,
-    color: UserPalette.grey_font,
   },
   overlay: {
     flex: 1,
@@ -278,27 +310,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalOption: {
-    padding: 10,
-    fontSize: FontSize.body_small,
-    color: 'blue',
+    fontSize: FontSize.body_medium,
+    color: UserPalette.green,
+    fontWeight: 'bold',
     marginBottom: 10,
+    padding: 10,
   },
   modalCancel: {
-    padding: 10,
-    fontSize: FontSize.body_small,
+    fontSize: FontSize.body_medium,
+    fontWeight: 'bold',
     color: 'red',
+    padding: 10,
   },
   uploadButton: {
     borderWidth: 2,
     borderColor: 'white',
-    borderRadius: 20,
+    borderRadius: 14,
     paddingVertical: 10,
     paddingHorizontal: 20,
     alignItems: 'center',
   },
   uploadButtonText: {
     color: 'white',
-    fontSize: FontSize.body_medium,
+    fontSize: FontSize.body_small,
   },
   activeButton: {
     backgroundColor: UserPalette.active_button,
@@ -307,48 +341,91 @@ const styles = StyleSheet.create({
   formContainer: {
     flex: 1,
     width: '100%',
-    paddingHorizontal: 20,
+    paddingHorizontal: 30,
+    backgroundColor: UserPalette.green,
   },
   formContentPlaceholder: {
     width: '100%',
-    paddingVertical: 20,
+    paddingVertical: 30,
     alignItems: 'center',
-    backgroundColor: '#00722a',
   },
   fieldLabel: {
-    fontSize: 16,
-    marginBottom: 10,
+    marginBottom: 7,
+    fontSize: FontSize.body_medium,
     color: UserPalette.white_font,
     fontWeight: 'bold',
+    alignSelf: 'flex-start',
+    paddingLeft: 5,
+  },
+  locationLabel : {
+    marginBottom: 7,
+    marginTop: 30,
+    fontSize: FontSize.body_medium,
+    color: UserPalette.white_font,
+    fontWeight: 'bold',
+    alignSelf: 'flex-start',
+    paddingLeft: 5,
+  },
+  fieldSubLabel: {
+    marginBottom: 7,
+    fontSize: FontSize.body_extra_small,
+    color: UserPalette.white_font,
+    fontStyle: 'italic',
+    fontWeight: '400',
+    alignSelf: 'flex-start',
+    paddingLeft: 5,
   },
   inputField: {
-    height: 40,
+    height: 45,
     borderBottomColor: 'white',
-    borderWidth: 1,
+    borderWidth: 3,
     marginBottom: 20,
     paddingHorizontal: 10,
-    borderRadius: 5,
-    backgroundColor: UserPalette.text_field_bg,
+    borderRadius: 10,
     width: '100%',
+    backgroundColor: UserPalette.white_font,
+    borderColor: UserPalette.field_border,
   },
   inputRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 5,
   },
-  buttonDescription: {
-    backgroundColor: UserPalette.green,
-    borderColor: 'white',
-    borderWidth: 1,
-    paddingVertical: 5,
-    paddingHorizontal: 5,
-    borderRadius: 5,
+  descriptionField: {
+    flex: 1, // Make the input field take up the remaining space
+    height: 45,
+    borderWidth: 2,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    borderColor: UserPalette.field_border,
+    backgroundColor: UserPalette.white_font,
+  },
+  removeButton: {
+    backgroundColor: UserPalette.red_button,
+    borderColor: UserPalette.default_background,
+    borderRadius: 8,
+    borderWidth: 2,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
     alignItems: 'center',
-    marginVertical: 10,
+    marginLeft: 10, // Add some space between the input field and the button
+  },
+  addButton: {
+    fontSize: FontSize.body_small,
+    backgroundColor: UserPalette.active_button,
+    borderColor: 'white',
+    borderWidth: 2,
+    paddingVertical: 8,
+    paddingHorizontal: 30,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginBottom: 15,
   },
   buttonText: {
+    fontSize: FontSize.body_extra_small,
     color: 'white',
-    fontSize: 16,
+    fontWeight: 'bold',
     paddingHorizontal: 1,
   },
   buttonDisabled: {
@@ -358,21 +435,23 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingVertical: 10,
     paddingHorizontal: 20,
-    backgroundColor: UserPalette.green,
-    borderRadius: 20,
+    borderRadius: 10,
     borderWidth: 2,
     borderColor: 'white',
     alignItems: 'center',
   },
   submituploadBtnText: {
-    color: 'white',
+    color: UserPalette.white_font,
     fontSize: FontSize.body_small,
   },
   dropdownBox: {
     width: '100%',
     backgroundColor: UserPalette.default_background,
-    borderRadius: 5,
-    marginBottom: 20,
+    borderColor: UserPalette.field_border,
+    height: 55,
+    borderWidth: 3,
+    borderRadius: 10,
+    marginBottom: -10,
   },
   dropdown: {
     backgroundColor: UserPalette.default_background,

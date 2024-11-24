@@ -7,6 +7,7 @@ import { addUser } from '../test/addUser.js';
 type RootStackParamList = {
   UserHomeScreen: undefined;
   TestFirebase: undefined;
+  SignupScreen: undefined;
 };
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'TestFirebase'>;
@@ -114,7 +115,7 @@ function LoginAuth(): React.JSX.Element {
               autoCapitalize="none"
             />
             <TouchableOpacity>
-              <Text style={styles.forgotPassStyle}>Forgot password?</Text>
+              <Text style={styles.signupStyle} onPress={() => navigation.navigate('SignupScreen')}>New? Sign up</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
               <Text style={styles.loginButtonLabel}>Login</Text>
@@ -187,7 +188,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     borderRadius: 14,
   },
-  forgotPassStyle: {
+  signupStyle: {
     textDecorationLine: 'underline',
     color: 'white',
     textAlign: 'center',

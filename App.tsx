@@ -8,6 +8,7 @@ import UserHomeScreen from './src/screens/UserHomeScreen';
 import SubmitLost from './src/screens/SubmitLost';
 import ViewLost from './src/screens/ViewLost';
 import TestFirebase from './src/screens/TestFirebase';
+import SignupScreen from './src/screens/SignupScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -48,6 +49,11 @@ function App(): React.JSX.Element {
         <Stack.Screen 
           name="TestFirebase" 
           component={TestFirebase}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen 
+          name="SignupScreen" 
+          component={SignupScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

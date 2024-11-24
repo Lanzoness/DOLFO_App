@@ -16,9 +16,6 @@ function LoginUserAdmin(): React.JSX.Element {
   const adminButtonClick = () => { //Button click logic here
     navigation.navigate('LoginAuth');
   };
-  const handleCreateAccount = () => { //Button click logic here
-    navigation.navigate('LoginAuth'); //Temporarily set to LoginAuth
-  };
 
   return (
     <View style={styles.container}>
@@ -49,12 +46,6 @@ function LoginUserAdmin(): React.JSX.Element {
             alignSelf: 'center'
           }}
         />
-        <Text 
-          style={styles.createAccountText}
-          onPress={handleCreateAccount}
-        >
-          Create Account
-        </Text>
       </View>
     </View>
   );
@@ -94,19 +85,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-  },
-
-  createAccountText: {
-    position: 'absolute',
-    bottom: 152,
-    width: '100%',
-    textAlign: 'center',
-    color: 'white',
-    fontSize: 12,
-    fontFamily: 'Ubuntu Sans',
-    fontWeight: '500',
-    textDecorationLine: 'underline',
-    letterSpacing: 0.48,
   },
 
   titleText: {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Button, Image, StyleSheet, Dimensions, Modal, Text, TouchableOpacity } from 'react-native';
+import { View, Image, StyleSheet, Dimensions, Modal, Text, TouchableOpacity, TouchableHighlight } from 'react-native';
 import { launchCamera } from 'react-native-image-picker';
 import UserPalette from '../constants/UserPalette';
 import FontSize from '../constants/FontSize';
@@ -9,9 +9,9 @@ import FontSize from '../constants/FontSize';
  */
 const UploadImageBox = () => {
   const [imageData, setImageData] = useState(null); // Stores image URI for display
-   // isModalVisible state variable is used to control the visibility of the modal in the UploadImageBox component.
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [buttonText, setButtonText] = useState('Upload Image'); // State for button text
+  const [buttonPressed, setButtonPressed] = useState(false); // State for button press
 
   const screenWidth = Dimensions.get('window').width; // takes the width of the screen
 
@@ -27,7 +27,6 @@ const UploadImageBox = () => {
       cameraType: 'back',
       saveToPhotos: true,
     };
-
 
     /**
      * Launch camera to take a photo
@@ -54,6 +53,7 @@ const UploadImageBox = () => {
   return (
     <View style={styles.container}>
       <View style={[styles.uploadBox, { maxWidth: screenWidth / 3 }]}>
+        <Text style={styles.uploadBoxLabel}> Limit: 1 Image </Text>
         {imageData ? (
           <Image
             source={{ uri: imageData.uri }}
@@ -64,20 +64,32 @@ const UploadImageBox = () => {
             }}
             resizeMode="contain"
           />
-        ) : (
-          <Text style={styles.placeholder}>[Upload Image Box]</Text>
-        )}
+        ) : null}
       </View>
-      <Button title={buttonText} onPress={handleButtonClick} />
+      <TouchableHighlight
+        style={[
+          styles.uploadButton,
+          { backgroundColor: buttonPressed ? UserPalette.active_button : UserPalette.green },
+        ]}
+        underlayColor={UserPalette.active_button}
+        onShowUnderlay={() => setButtonPressed(true)}
+        onHideUnderlay={() => setButtonPressed(false)}
+      >
+        <View>
+          <TouchableOpacity style={[
+          styles.uploadButton,
+          { backgroundColor: buttonPressed ? UserPalette.active_button : UserPalette.green },
+        ]}
+        onPress={handleButtonClick}>
+            <Text style={styles.uploadButtonText}>{buttonText}</Text>
+          </TouchableOpacity>
+        </View>
+      </TouchableHighlight>
       <Modal visible={isModalVisible} transparent>
         <View style={styles.overlay}>
           <View style={styles.modalContent}>
-            <TouchableOpacity onPress={handleTakePhoto}>
-              <Text style={styles.modalOption}>Take a Photo</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => setIsModalVisible(false)}>
-              <Text style={styles.modalCancel}>Cancel</Text>
-            </TouchableOpacity>
+            <Text style={styles.modalOption} onPress={handleTakePhoto}>Take a Photo</Text>
+            <Text style={styles.modalCancel} onPress={() => setIsModalVisible(false)}>Cancel</Text>
           </View>
         </View>
       </Modal>
@@ -91,10 +103,12 @@ const styles = StyleSheet.create({
     padding: 20,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: UserPalette.green,
   },
   uploadBox: {
     borderWidth: 2,
     borderColor: UserPalette.default_background,
+    backgroundColor: UserPalette.default_background,
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
@@ -105,8 +119,10 @@ const styles = StyleSheet.create({
     maxWidth: '100%', // Box doesn't exceed the width of the screen
     marginBottom: 20,
   },
-  placeholder: {
-    color: UserPalette.default_background,
+  uploadBoxLabel: {
+    fontWeight: '700',
+    fontSize: FontSize.sub_heading,
+    color: 'rgba(128, 128, 128, 0.7)',
   },
   overlay: {
     flex: 1,
@@ -130,6 +146,22 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: FontSize.body_small,
     color: 'red',
+  },
+  uploadButton: {
+    borderWidth: 2,
+    borderColor: 'white',
+    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+  },
+  uploadButtonText: {
+    color: 'white',
+    fontSize: FontSize.body_medium,
+  },
+  activeButton: {
+    backgroundColor: UserPalette.active_button,
+    borderColor: UserPalette.active_button,
   },
 });
 

@@ -1,12 +1,24 @@
 import React, { useState } from 'react';
 import { View, TextInput, StyleSheet, Text, ScrollView, SafeAreaView, Dimensions, Image, Modal, TouchableOpacity, TouchableHighlight } from 'react-native';
-import { launchCamera } from 'react-native-image-picker';
+import { CameraOptions, launchCamera } from 'react-native-image-picker';
 import { SelectList } from 'react-native-dropdown-select-list';
 import UserPalette from '../constants/UserPalette';
 import FontSize from '../constants/FontSize';
+import { addLostItem } from '../test/addLostItem.js';
+import { addImage } from '../test/addImage.js';
+
+// Define CameraType as a type instead of a constant
+type CameraType = 'back' | 'front';
+
+// Define a type for the image data
+type ImageData = {
+  uri: string;
+  width: number;
+  height: number;
+};
 
 const SubmitLostItem = () => {
-  const [imageData, setImageData] = useState(null); // Stores image URI
+  const [imageData, setImageData] = useState<ImageData | null>(null); // Stores image URI
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [buttonText, setButtonText] = useState('Upload Image');
   const [buttonPressed, setButtonPressed] = useState(false);
@@ -63,7 +75,7 @@ const SubmitLostItem = () => {
    * 📸 Function to handle image upload
    */
   const handleTakePhoto = () => {
-    const options = {
+    const options: CameraOptions = {
       mediaType: 'photo',
       cameraType: 'back',
       saveToPhotos: true,
@@ -74,10 +86,12 @@ const SubmitLostItem = () => {
         console.log('User cancelled image picker');
       } else if (response.errorMessage) {
         console.error('ImagePicker Error: ', response.errorMessage);
-      } else if (response.assets) {
+      } else if (response.assets && response.assets[0]) {
         const { uri, width, height } = response.assets[0];
-        setImageData({ uri, width, height }); // Save image data
-        setButtonText('Change Image'); // Change button text after image upload
+        if (uri && width && height) {
+          setImageData({ uri, width, height }); // Save image data
+          setButtonText('Change Image'); // Change button text after image upload
+        }
       }
       setIsModalVisible(false); // Close modal after action
     });
@@ -86,20 +100,51 @@ const SubmitLostItem = () => {
   /**
    * Function to handle form submission
    */
-  const handleSubmit = () => {
-    console.log('Finder Name:', finderName);
-    console.log('Finder ID:', finderID);
-    console.log('Item Name:', itemName);
-    console.log('Selected Category:', selectedCategory);
-    console.log('Location Found:', locationFound);
-    console.log('Entered Descriptions:', inputs);
-    console.log('Owner Name:', ownerName);
-    console.log('Owner ID:', ownerID);
+  const handleSubmit = async () => {
+    console.log('Image Data:', imageData);
+
+    if (!imageData || !imageData.uri) {
+      console.error('No image data available');
+      return;
+    }
+
+    const newItem = {
+      'Finder Name': finderName,
+      'Finder ID': finderID,
+      'Item Name': itemName,
+      Image: imageData,
+      'Category': selectedCategory,
+      'Location Found': locationFound,
+      'Description': inputs,
+      'Owner Name': ownerName,
+      'Owner ID': ownerID,
+      'Date Submitted': new Date().toISOString(),
+      'Is Retrieved': 0,
+      'Date Retrieved': null,
+    };
+
+    try {
+      await addImage(imageData.uri); // Use imageData.uri
+      await addLostItem(newItem);
+    } catch (error) {
+      console.error('Error submitting item:', error);
+    }
+
     setIsSubmitModalVisible(false); // Close the confirmation modal
   };
 
   const handleEdit = () => {
     setIsSubmitModalVisible(false); // Close the confirmation modal
+    console.log('Finder Name:', finderName);
+    console.log('Finder ID:', finderID);
+    console.log('Item Name:', itemName);
+    console.log('Image Data:', imageData);
+    console.log('Selected Category:', selectedCategory);
+    console.log('Location Found:', locationFound);
+    console.log('Entered Descriptions:', inputs);
+    console.log('Owner Name:', ownerName);
+    console.log('Owner ID:', ownerID);
+    console.log('Date Submitted:', new Date().toISOString());
   };
 
   return (
@@ -157,7 +202,7 @@ const SubmitLostItem = () => {
               <Text style={styles.fieldLabel}> Finder ID: </Text>
               <TextInput
                 style={styles.inputField}
-                value={itemName}
+                value={finderID}
                 onChangeText={setFinderID}
                 placeholder="Enter Finder ID"
               />

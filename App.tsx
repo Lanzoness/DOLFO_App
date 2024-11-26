@@ -8,7 +8,9 @@ import SubmitLost from './src/screens/SubmitLost';
 import ViewLost from './src/screens/ViewLost';
 import TestFirebase from './src/screens/TestFirebase';
 import SignupScreen from './src/screens/SignupScreen';
-
+import AdminHomeScreen from './src/screens/AdminHomeScreen';
+import EditLost from './src/screens/EditLost';
+import AdminSubmitLost from './src/screens/AdminSubmitLost';
 const Stack = createNativeStackNavigator();
 
 function App(): React.JSX.Element {
@@ -48,6 +50,21 @@ function App(): React.JSX.Element {
         <Stack.Screen 
           name="SignupScreen" 
           component={SignupScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen 
+          name="AdminHomeScreen" 
+          component={AdminHomeScreen} 
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen 
+          name="EditLost" 
+          component={EditLost}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen 
+          name="AdminSubmitLost" 
+          component={AdminSubmitLost}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

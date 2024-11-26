@@ -2,6 +2,8 @@ import React, { useState, useRef } from 'react';
 import { View, StyleSheet, Animated, Dimensions, TouchableWithoutFeedback, Text, TouchableOpacity } from 'react-native';
 import Button from '../components/button';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { downloadLostItems } from '../test/downloadLostItems';
+import { readLostItems } from '../test/readLostItemsjson';
 
 const { width } = Dimensions.get('window');
 
@@ -32,6 +34,15 @@ const UserHomeScreen = () => {
       duration: 300,
       useNativeDriver: true,
     }).start(() => setDrawerVisible(false));
+  };
+
+  const handleUpdateLocalDatabase = async () => {
+    try {
+      await downloadLostItems();
+      await readLostItems();
+    } catch (error) {
+      console.error('Error updating local database:', error);
+    }
   };
 
   return (
@@ -72,7 +83,7 @@ const UserHomeScreen = () => {
                 </TouchableOpacity>
                 <View style={styles.divider} />
                 
-                <TouchableOpacity onPress={() => { /* Handle Update Local Database press */ }}>
+                <TouchableOpacity onPress={handleUpdateLocalDatabase}>
                   <Text style={styles.drawerText}>Update Local Database</Text>
                 </TouchableOpacity>
                 <View style={styles.divider} />

@@ -60,6 +60,10 @@ function LoginAuth(): React.JSX.Element {
   const scaleValue = useRef(new Animated.Value(0)).current;
 
   const handleLogin = async () => {
+    fetch('https://firestore.googleapis.com')
+      .then(response => console.log('Connection successful:', response))
+      .catch(error => console.error('Connection failed:', error));
+
     const newUser = {
       Name: name,
       DLSUD_ID: dlsud_ID,

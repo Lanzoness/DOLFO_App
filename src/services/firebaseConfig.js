@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, initializeFirestore } from "firebase/firestore";
 import { getAnalytics, isSupported } from "firebase/analytics";
 import {
   FIREBASE_API_KEY,
@@ -23,13 +23,16 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
+const db = initializeFirestore(app, {
+  experimentalAutoDetectLongPolling: true,
+  merge: true
+});
+
 let analytics;
 isSupported().then((supported) => {
   if (supported) {
     analytics = getAnalytics(app);
   }
 });
-
-const db = getFirestore(app);
 
 export { db, analytics };

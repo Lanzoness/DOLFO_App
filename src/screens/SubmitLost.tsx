@@ -6,6 +6,7 @@ import UserPalette from '../constants/UserPalette';
 import FontSize from '../constants/FontSize';
 import { addLostItem } from '../test/addLostItem.js';
 import { addImage } from '../test/addImage.js';
+import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 
 // Define CameraType as a type instead of a constant
 type CameraType = 'back' | 'front';
@@ -74,7 +75,22 @@ const SubmitLostItem = () => {
   /**
    * 📸 Function to handle image upload
    */
-  const handleTakePhoto = () => {
+  const handleTakePhoto = async () => {
+    const permission = await check(PERMISSIONS.ANDROID.CAMERA);
+
+    if (permission === RESULTS.GRANTED) {
+      launchCameraWithOptions();
+    } else {
+      const requestResult = await request(PERMISSIONS.ANDROID.CAMERA);
+      if (requestResult === RESULTS.GRANTED) {
+        launchCameraWithOptions();
+      } else {
+        console.error('Camera permission denied');
+      }
+    }
+  };
+
+  const launchCameraWithOptions = () => {
     const options: CameraOptions = {
       mediaType: 'photo',
       cameraType: 'back',

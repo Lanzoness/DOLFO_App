@@ -8,6 +8,8 @@ import SubmitLost from './src/screens/SubmitLost';
 import ViewLost from './src/screens/ViewLost';
 import TestFirebase from './src/screens/TestFirebase';
 import SignupScreen from './src/screens/SignupScreen';
+import TEST_FlatlistGrid from './src/screens/TEST_FlatlistGrid
+import UserPalette from './src/constants/UserPalette';
 
 const Stack = createNativeStackNavigator();
 
@@ -49,6 +51,14 @@ function App(): React.JSX.Element {
           name="SignupScreen" 
           component={SignupScreen}
           options={{ headerShown: false }}
+        />
+        <Stack.Screen 
+          name="TEST_FlatlistGrid" 
+          component={TEST_FlatlistGrid}
+          options={{ 
+            headerTitle: '',
+            headerTintColor: UserPalette.green,
+           }}
         />
       </Stack.Navigator>
     </NavigationContainer>

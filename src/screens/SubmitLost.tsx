@@ -1,12 +1,25 @@
 import React, { useState } from 'react';
 import { View, TextInput, StyleSheet, Text, ScrollView, SafeAreaView, Dimensions, Image, Modal, TouchableOpacity, TouchableHighlight } from 'react-native';
-import { launchCamera } from 'react-native-image-picker';
+import { CameraOptions, launchCamera } from 'react-native-image-picker';
 import { SelectList } from 'react-native-dropdown-select-list';
 import UserPalette from '../constants/UserPalette';
 import FontSize from '../constants/FontSize';
+import { addLostItem } from '../test/addLostItem.js';
+import { addImage } from '../test/addImage.js';
+import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
+
+// Define CameraType as a type instead of a constant
+type CameraType = 'back' | 'front';
+
+// Define a type for the image data
+type ImageData = {
+  uri: string;
+  width: number;
+  height: number;
+};
 
 const SubmitLostItem = () => {
-  const [imageData, setImageData] = useState(null); // Stores image URI
+  const [imageData, setImageData] = useState<ImageData | null>(null); // Stores image URI
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [buttonText, setButtonText] = useState('Upload Image');
   const [buttonPressed, setButtonPressed] = useState(false);
@@ -62,8 +75,23 @@ const SubmitLostItem = () => {
   /**
    * 📸 Function to handle image upload
    */
-  const handleTakePhoto = () => {
-    const options = {
+  const handleTakePhoto = async () => {
+    const permission = await check(PERMISSIONS.ANDROID.CAMERA);
+
+    if (permission === RESULTS.GRANTED) {
+      launchCameraWithOptions();
+    } else {
+      const requestResult = await request(PERMISSIONS.ANDROID.CAMERA);
+      if (requestResult === RESULTS.GRANTED) {
+        launchCameraWithOptions();
+      } else {
+        console.error('Camera permission denied');
+      }
+    }
+  };
+
+  const launchCameraWithOptions = () => {
+    const options: CameraOptions = {
       mediaType: 'photo',
       cameraType: 'back',
       saveToPhotos: true,
@@ -74,10 +102,12 @@ const SubmitLostItem = () => {
         console.log('User cancelled image picker');
       } else if (response.errorMessage) {
         console.error('ImagePicker Error: ', response.errorMessage);
-      } else if (response.assets) {
+      } else if (response.assets && response.assets[0]) {
         const { uri, width, height } = response.assets[0];
-        setImageData({ uri, width, height }); // Save image data
-        setButtonText('Change Image'); // Change button text after image upload
+        if (uri && width && height) {
+          setImageData({ uri, width, height }); // Save image data
+          setButtonText('Change Image'); // Change button text after image upload
+        }
       }
       setIsModalVisible(false); // Close modal after action
     });
@@ -86,20 +116,56 @@ const SubmitLostItem = () => {
   /**
    * Function to handle form submission
    */
-  const handleSubmit = () => {
-    console.log('Finder Name:', finderName);
-    console.log('Finder ID:', finderID);
-    console.log('Item Name:', itemName);
-    console.log('Selected Category:', selectedCategory);
-    console.log('Location Found:', locationFound);
-    console.log('Entered Descriptions:', inputs);
-    console.log('Owner Name:', ownerName);
-    console.log('Owner ID:', ownerID);
+  const handleSubmit = async () => {
+    console.log('Image Data:', imageData);
+
+    if (!imageData || !imageData.uri) {
+        console.error('No image data available');
+        return;
+    }
+
+    try {
+        const imageUrl = await addImage(imageData.uri); // Use imageData.uri
+        if (!imageUrl) {
+            console.error('Failed to upload image');
+            return;
+        }
+
+        const newItem = {
+            'Finder Name': finderName,
+            'Finder ID': finderID,
+            'Item Name': itemName,
+            Image: imageUrl, // Use the URL returned by addImage
+            'Category': selectedCategory,
+            'Location Found': locationFound,
+            'Description': inputs,
+            'Owner Name': ownerName,
+            'Owner ID': ownerID,
+            'Date Submitted': new Date().toISOString(),
+            'Is Retrieved': 0,
+            'Date Retrieved': null,
+        };
+
+        await addLostItem(newItem);
+    } catch (error) {
+        console.error('Error submitting item:', error);
+    }
+
     setIsSubmitModalVisible(false); // Close the confirmation modal
   };
 
   const handleEdit = () => {
     setIsSubmitModalVisible(false); // Close the confirmation modal
+    console.log('Finder Name:', finderName);
+    console.log('Finder ID:', finderID);
+    console.log('Item Name:', itemName);
+    console.log('Image Data:', imageData);
+    console.log('Selected Category:', selectedCategory);
+    console.log('Location Found:', locationFound);
+    console.log('Entered Descriptions:', inputs);
+    console.log('Owner Name:', ownerName);
+    console.log('Owner ID:', ownerID);
+    console.log('Date Submitted:', new Date().toISOString());
   };
 
   return (
@@ -157,7 +223,7 @@ const SubmitLostItem = () => {
               <Text style={styles.fieldLabel}> Finder ID: </Text>
               <TextInput
                 style={styles.inputField}
-                value={itemName}
+                value={finderID}
                 onChangeText={setFinderID}
                 placeholder="Enter Finder ID"
               />

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "293844639034",
+    "project_id": "dolfo-app",
+    "storage_bucket": "dolfo-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:293844639034:android:ae2a601d11249dc3710403",
+        "android_client_info": {
+          "package_name": "com.test"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANjQnc2NjTNUfO0OZ6PKVTYoPWobCJ-yY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -120,30 +120,35 @@ const SubmitLostItem = () => {
     console.log('Image Data:', imageData);
 
     if (!imageData || !imageData.uri) {
-      console.error('No image data available');
-      return;
+        console.error('No image data available');
+        return;
     }
 
-    const newItem = {
-      'Finder Name': finderName,
-      'Finder ID': finderID,
-      'Item Name': itemName,
-      Image: imageData,
-      'Category': selectedCategory,
-      'Location Found': locationFound,
-      'Description': inputs,
-      'Owner Name': ownerName,
-      'Owner ID': ownerID,
-      'Date Submitted': new Date().toISOString(),
-      'Is Retrieved': 0,
-      'Date Retrieved': null,
-    };
-
     try {
-      await addImage(imageData.uri); // Use imageData.uri
-      await addLostItem(newItem);
+        const imageUrl = await addImage(imageData.uri); // Use imageData.uri
+        if (!imageUrl) {
+            console.error('Failed to upload image');
+            return;
+        }
+
+        const newItem = {
+            'Finder Name': finderName,
+            'Finder ID': finderID,
+            'Item Name': itemName,
+            Image: imageUrl, // Use the URL returned by addImage
+            'Category': selectedCategory,
+            'Location Found': locationFound,
+            'Description': inputs,
+            'Owner Name': ownerName,
+            'Owner ID': ownerID,
+            'Date Submitted': new Date().toISOString(),
+            'Is Retrieved': 0,
+            'Date Retrieved': null,
+        };
+
+        await addLostItem(newItem);
     } catch (error) {
-      console.error('Error submitting item:', error);
+        console.error('Error submitting item:', error);
     }
 
     setIsSubmitModalVisible(false); // Close the confirmation modal

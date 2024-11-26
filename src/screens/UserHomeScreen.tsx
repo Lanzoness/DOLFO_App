@@ -4,6 +4,7 @@ import Button from '../components/button';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { downloadLostItems } from '../test/downloadLostItems';
 import { readLostItems } from '../test/readLostItemsjson';
+import { TEST_FlatlistGrid } from '../screens/TEST_Screens/TEST_FlatlistGrid';
 
 const { width } = Dimensions.get('window');
 
@@ -11,6 +12,7 @@ type YourStackParamList = {
   LoginAuth: undefined;
   ViewLost: undefined;
   SubmitLost: undefined;
+  TEST_FlatlistGrid: undefined;
   // Add other routes here if needed
 };
 
@@ -58,7 +60,7 @@ const UserHomeScreen = () => {
       <Button 
         label="View Lost Items"
         variant="secondary" 
-        onClick={() => {navigation.navigate('ViewLost')}} 
+        onClick={() => {navigation.navigate('TEST_FlatlistGrid')}} 
         style={styles.button}
       />
       <Button 

@@ -8,7 +8,7 @@ import SubmitLost from './src/screens/SubmitLost';
 import ViewLost from './src/screens/ViewLost';
 import TestFirebase from './src/screens/TestFirebase';
 import SignupScreen from './src/screens/SignupScreen';
-import TEST_FlatlistGrid from './src/screens/TEST_FlatlistGrid
+import TEST_FlatlistGrid from './src/screens/TEST_FlatlistGrid';
 import UserPalette from './src/constants/UserPalette';
 import AdminHomeScreen from './src/screens/AdminHomeScreen';
 import EditLost from './src/screens/EditLost';

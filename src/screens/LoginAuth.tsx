@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ScrollView, SafeAreaView, Modal, Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { matchUser } from '../test/matchUser.js';
@@ -43,6 +43,7 @@ const FontSize = {
   icon_header: 47,
   body_small: 14,
   body_medium: 16,
+  body_large: 18,
 };
 
 const FontType = {
@@ -55,7 +56,8 @@ function LoginAuth(): React.JSX.Element {
   const [name, setName] = useState('');
   const [dlsud_ID, setID] = useState('');
   const [password, setPassword] = useState('');
-
+  const [modalVisible, setModalVisible] = useState(false);
+  const scaleValue = useRef(new Animated.Value(0)).current;
 
   const handleLogin = async () => {
     const newUser = {
@@ -70,69 +72,93 @@ function LoginAuth(): React.JSX.Element {
     if (isMatch) {
       navigation.navigate('UserHomeScreen');
     } else {
-      // TODO: Add popup. "The entered credentials do not match an existing account."
-      console.log('The entered credentials do not match an existing account.');
+      setModalVisible(true);
     }
   };
 
-
-
-
-// FIX THE FONT COLOR OF THE USER INPUT
+  useEffect(() => {
+    if (modalVisible) {
+      Animated.spring(scaleValue, {
+        toValue: 1,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      Animated.timing(scaleValue, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [modalVisible, scaleValue]);
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
       <ScrollView style={styles.scrollView}>
-          <View style={styles.headerContainer}>
-            <View style={styles.logoContainer}>
-              <Image
-                source={require('../assets/icons/DOLFO_Logo.png')}
-                resizeMode={'stretch'}
-                style={styles.logo}
-              />
-              <Text style={ styles.iconTitle }> DOLFO </Text>
-            </View>
+        <View style={styles.headerContainer}>
+          <View style={styles.logoContainer}>
+            <Image
+              source={require('../assets/icons/DOLFO_Logo.png')}
+              resizeMode={'stretch'}
+              style={styles.logo}
+            />
+            <Text style={styles.iconTitle}> DOLFO </Text>
           </View>
-          <View style={styles.formContainer}>
-            <Text style={styles.loginAuthLabels}>Name</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter Full Name (LastName, FirstName)"
-              value={name}
-              onChangeText={setName}
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
-            <Text style={styles.loginAuthLabels}>DLSUD ID</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter DLSUD ID"
-              value={dlsud_ID}
-              onChangeText={setID}
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
-            <Text style={styles.loginAuthLabels}>Password</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter password"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-              autoCapitalize="none"
-            />
-            <TouchableOpacity>
-              <Text style={styles.signupStyle} onPress={() => navigation.navigate('SignupScreen')}>New? Sign up</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-              <Text style={styles.loginButtonLabel}>Login</Text>
-            </TouchableOpacity>
+        </View>
+        <View style={styles.formContainer}>
+          <Text style={styles.loginAuthLabels}>Name</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter Full Name (LastName, FirstName)"
+            value={name}
+            onChangeText={setName}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+          <Text style={styles.loginAuthLabels}>DLSUD ID</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter DLSUD ID"
+            value={dlsud_ID}
+            onChangeText={setID}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+          <Text style={styles.loginAuthLabels}>Password</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            autoCapitalize="none"
+          />
+          <TouchableOpacity>
+            <Text style={styles.signupStyle} onPress={() => navigation.navigate('SignupScreen')}>New? Sign up</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+            <Text style={styles.loginButtonLabel}>Login</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
+
+      <Modal
+        transparent={true}
+        visible={modalVisible}
+        animationType="none"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <Animated.View style={[styles.modalContent, { transform: [{ scale: scaleValue }] }]}>
+            <Text style={styles.modalText}>The entered credentials do not match an existing account.</Text>
+            <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+          </Animated.View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
-
 
 const styles = StyleSheet.create({
   safeAreaView: {
@@ -217,6 +243,42 @@ const styles = StyleSheet.create({
     fontFamily: 'ubuntu sans',
     color: 'white',
     fontSize: FontSize.body_medium,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: '80%',
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalText: {
+    fontSize: FontSize.body_large,
+    fontWeight: 'bold',
+    color: AuthPageColors.primary,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  closeButton: {
+    width: 95,
+    borderColor: AuthPageColors.primary,
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  closeButtonText: {
+    color: AuthPageColors.primary,
+    fontSize: FontSize.body_medium,
+    textAlign: 'center',
   },
 });
 

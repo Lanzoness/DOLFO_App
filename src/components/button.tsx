@@ -3,10 +3,12 @@ import { TouchableOpacity, Text, StyleSheet, Image, View } from 'react-native';
 
 interface ButtonProps {
     label: string;
-    variant?: 'primary' | 'secondary' | 'tertiary' | 'quaternary';
+    variant?: 'primary' | 'secondary' | 'tertiary' | 'quaternary' | 'quinary';
     onClick: () => void;
     children?: React.ReactNode;
     style?: any;
+    color?: string;
+    isAdmin?: boolean; //change between UserProfile and UserAdminProfile pictures
 }
 
 const Button: React.FC<ButtonProps> = ({ 
@@ -14,29 +16,40 @@ const Button: React.FC<ButtonProps> = ({
     variant = 'primary', 
     onClick, 
     children, 
-    style
+    style,
+    color = '#00722A',
+    isAdmin = false
 }) => {
     return (
         <TouchableOpacity 
             onPress={onClick}
-            style={[styles.base, styles[variant], style]}
+            style={[
+                styles.base, 
+                styles[variant], 
+                (variant === 'secondary' || variant === 'tertiary' || variant === 'quinary') ? { backgroundColor: color, borderColor: color } : {},
+                style
+            ]}
         >
-            {(variant === 'secondary' || variant === 'tertiary') ? (
+            {(variant === 'secondary' || variant === 'tertiary' || variant === 'quinary') ? (
                 <>
                     <Text style={[styles.baseText, styles[`${variant}Text`]]}>
-                        {variant === 'secondary' ? 'View Lost\nItems' : 'Submit Lost\nItem'}
+                        {variant === 'secondary' ? 'View Lost\nItems' : variant === 'tertiary' ? 'Submit Lost\nItem' : 'Edit Lost\nItems'}
                     </Text>
                     <Image 
                         source={variant === 'secondary' 
                             ? require('../assets/icons/ViewLost.png')
-                            : require('../assets/icons/SubmitLost.png')}
-                        style={styles.secondaryImage}
+                            : variant === 'tertiary' 
+                            ? require('../assets/icons/SubmitLost.png')
+                            : require('../assets/icons/EditLost.png')}
+                        style={[styles.secondaryImage, variant === 'quinary' && styles.editLostImage]}
                     />
                 </>
             ) : variant === 'quaternary' ? (
                 <View style={styles.quaternaryContainer}>
                     <Image 
-                        source={require('../assets/icons/UserProfile.png')}
+                        source={isAdmin 
+                            ? require('../assets/icons/UserAdminProfile.png') 
+                            : require('../assets/icons/UserProfile.png')}
                         style={styles.smallQuaternaryImage}
                     />
                 </View>
@@ -139,6 +152,30 @@ const styles = StyleSheet.create({
     quaternaryText: {},
     quaternary: {
         backgroundColor: 'transparent',
+    },
+    quinary: {
+        backgroundColor: '#00722A',
+        borderWidth: 3,
+        borderColor: '#00722A',
+        paddingHorizontal: 40,
+        paddingVertical: 20,
+        borderRadius: 20,
+        gap: 16,
+        width: 212,
+        height: 155,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    quinaryText: {
+        color: '#FCFCFC',
+        fontSize: 20,
+        fontFamily: 'Ubuntu Sans',
+        fontWeight: '700',
+        letterSpacing: 0.8,
+        textAlign: 'center',
+    },
+    editLostImage: {
+        resizeMode: 'contain',
     },
 });
 

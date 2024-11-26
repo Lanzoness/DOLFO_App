@@ -26,8 +26,10 @@ const FontType = {
 type RootStackParamList = {
   SignupScreen: undefined;
   UserHomeScreen: undefined;
+  AdminHomeScreen: undefined;
   // Add other routes here
 };
+
 
 const SignupScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -39,6 +41,9 @@ const SignupScreen = () => {
   const [name, setName] = useState('');
   const [dlsud_ID, setID] = useState('');
   const [password, setPassword] = useState('');
+  const [isInputValid, setInputValid] = useState(true);
+  const [adminPassword, setAdminPassword] = useState('');
+  const [isAdminInputValid, setAdminInputValid] = useState(true);
 
   const openModal = () => {
     setModalVisible(true);
@@ -64,14 +69,25 @@ const SignupScreen = () => {
       Password: password,
       isAdmin: 0
     };
+    
     const isMatch = await matchUser(newUser);
 
-    if (!isMatch) {
+    if (!isMatch) { 
       addUser(newUser);
+      setInputValid(true);
       setAccountCreatedVisible(true);
     } else {
-      // TODO: Add popup. "The entered credentials belong to an existing account."
+      setInputValid(false); // Returns pop up. "The entered credentials belong to an existing account." on line 169
       console.log('The entered credentials belong to an existing account.');
+    }
+  };
+
+  const handleAdminSubmit = () => {
+    if (adminPassword.trim() === '') { // Check if the adminPassword is empty
+      setAdminInputValid(false);
+    } else {
+      closeModal();
+      navigation.navigate('AdminHomeScreen');
     }
   };
 
@@ -148,9 +164,11 @@ const SignupScreen = () => {
               placeholder="Admin Password"
               secureTextEntry
               autoCapitalize="none"
+              value={adminPassword}
+              onChangeText={setAdminPassword}
             />
             <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.submitButton} onPress={() => {}}>
+              <TouchableOpacity style={styles.submitButton} onPress={handleAdminSubmit}>
                 <Text style={styles.buttonText}>Submit</Text>
               </TouchableOpacity>
               <View style={styles.buttonSpacer} />
@@ -159,6 +177,38 @@ const SignupScreen = () => {
               </TouchableOpacity>
             </View>
           </Animated.View>
+        </View>
+      </Modal>
+
+      <Modal
+        transparent={true}
+        visible={!isInputValid}
+        animationType="fade"
+        onRequestClose={() => setInputValid(true)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>Invalid Input</Text>
+            <TouchableOpacity style={styles.submitButton} onPress={() => setInputValid(true)}>
+              <Text style={styles.buttonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        transparent={true}
+        visible={!isAdminInputValid}
+        animationType="fade"
+        onRequestClose={() => setAdminInputValid(true)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>Invalid Input</Text>
+            <TouchableOpacity style={styles.submitButton} onPress={() => setAdminInputValid(true)}>
+              <Text style={styles.buttonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </Modal>
 

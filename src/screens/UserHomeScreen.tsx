@@ -4,7 +4,6 @@ import Button from '../components/button';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { downloadLostItems } from '../test/downloadLostItems';
 import { readLostItems } from '../test/readLostItemsjson';
-import { TEST_FlatlistGrid } from '../screens/TEST_Screens/TEST_FlatlistGrid';
 
 const { width } = Dimensions.get('window');
 

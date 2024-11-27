@@ -1,9 +1,16 @@
 import { db } from '../services/firebaseConfig';
 import { collection, getDocs, query, where } from 'firebase/firestore';
+import { algoHashing } from './algoHashing';
 
 export async function matchUser(credentials) {
   const itemsRef = collection(db, 'Users');
-  const q = query(itemsRef, where('DLSUD_ID', '==', credentials.DLSUD_ID), where('Password', '==', credentials.Password));
+  const hashedPassword = algoHashing(credentials.Password);
+  
+  const q = query(
+    itemsRef, 
+    where('DLSUD_ID', '==', credentials.DLSUD_ID), 
+    where('Password Hash', '==', hashedPassword['Password Hash'])
+  );
   const querySnapshot = await getDocs(q);
 
   if (!querySnapshot.empty) {

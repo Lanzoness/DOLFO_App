@@ -3,6 +3,7 @@ import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ScrollView,
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { addUser } from '../test/addUser.js';
 import { matchUser } from '../test/matchUser.js';
+import { addPasswordAdmin } from '../test/addPasswordAdmin.js';
 
 
 const AuthPageColors = {
@@ -83,6 +84,7 @@ const SignupScreen = () => {
   };
 
   const handleAdminSubmit = () => {
+    addPasswordAdmin(adminPassword);
     if (adminPassword.trim() === '') { // Check if the adminPassword is empty
       setAdminInputValid(false);
     } else {

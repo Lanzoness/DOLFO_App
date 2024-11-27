@@ -12,7 +12,7 @@ export async function matchUser(credentials) {
     console.log(`Database User ID: ${firstDoc.id}, Data: `, firstDoc.data());
     return {
       isAuthenticated: true,
-      isAdmin: userData.isAdmin == 1
+      isAdmin: userData.isAdmin === 1
     };
   } else {
     console.log('No user found.');

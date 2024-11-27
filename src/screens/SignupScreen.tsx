@@ -4,6 +4,7 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { addUser } from '../test/addUser.js';
 import { matchUser } from '../test/matchUser.js';
 import { addPasswordAdmin } from '../test/addPasswordAdmin.js';
+import { matchPasswordAdmin } from '../test/matchPasswordAdmin.js';
 
 
 const AuthPageColors = {
@@ -71,25 +72,28 @@ const SignupScreen = () => {
       isAdmin: 0
     };
     
-    const isMatch = await matchUser(newUser);
+    const { isAuthenticated } = await matchUser(newUser);
 
-    if (!isMatch) { 
+    if (!isAuthenticated) { 
+      if (isAdminInputValid && adminPassword) {
+        newUser.isAdmin = 1;
+      }
       addUser(newUser);
       setInputValid(true);
       setAccountCreatedVisible(true);
     } else {
-      setInputValid(false); // Returns pop up. "The entered credentials belong to an existing account." on line 169
+      setInputValid(false);
       console.log('The entered credentials belong to an existing account.');
     }
   };
 
-  const handleAdminSubmit = () => {
-    addPasswordAdmin(adminPassword);
-    if (adminPassword.trim() === '') { // Check if the adminPassword is empty
-      setAdminInputValid(false);
-    } else {
+  const handleAdminSubmit = async () => {
+    const isAdmin = await matchPasswordAdmin(adminPassword);
+    if (isAdmin) {
+      setAdminInputValid(true);
       closeModal();
-      navigation.navigate('AdminHomeScreen');
+    } else {
+      setAdminInputValid(false);
     }
   };
 

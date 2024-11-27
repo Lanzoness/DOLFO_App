@@ -37,7 +37,10 @@ function App(): React.JSX.Element {
         <Stack.Screen 
           name="SubmitLost" 
           component={SubmitLost}
-          options={{ headerShown: false }}
+          options={{ 
+            headerTitle: '',
+            headerTintColor: UserPalette.green,
+           }}
         />
         <Stack.Screen 
           name="ViewLost" 

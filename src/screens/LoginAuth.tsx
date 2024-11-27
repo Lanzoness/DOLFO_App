@@ -3,14 +3,13 @@ import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ScrollView,
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { matchUser } from '../test/matchUser.js';
+import { NavigationProp } from '@react-navigation/native';
 
 type RootStackParamList = {
   UserHomeScreen: undefined;
-  TestFirebase: undefined;
   SignupScreen: undefined;
+  AdminHomeScreen: undefined;
 };
-
-type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'TestFirebase'>;
 
 /*
   AuthPageColors and Fontsize could be added in a seprate
@@ -52,7 +51,7 @@ const FontType = {
 };
 
 function LoginAuth(): React.JSX.Element {
-  const navigation = useNavigation<NavigationProp>();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [name, setName] = useState('');
   const [dlsud_ID, setID] = useState('');
   const [password, setPassword] = useState('');
@@ -60,21 +59,20 @@ function LoginAuth(): React.JSX.Element {
   const scaleValue = useRef(new Animated.Value(0)).current;
 
   const handleLogin = async () => {
-    fetch('https://firestore.googleapis.com')
-      .then(response => console.log('Connection successful:', response))
-      .catch(error => console.error('Connection failed:', error));
-
     const newUser = {
       Name: name,
       DLSUD_ID: dlsud_ID,
-      Password: password,
-      isAdmin: 0
+      Password: password
     };
     
-    const isMatch = await matchUser(newUser);
+    const { isAuthenticated, isAdmin } = await matchUser(newUser);
 
-    if (isMatch) {
-      navigation.navigate('UserHomeScreen');
+    if (isAuthenticated) {
+      if (isAdmin) {
+        navigation.navigate('AdminHomeScreen');
+      } else {
+        navigation.navigate('UserHomeScreen');
+      }
     } else {
       setModalVisible(true);
     }

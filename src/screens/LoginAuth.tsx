@@ -127,7 +127,7 @@ function LoginAuth(): React.JSX.Element {
           />
           <Text style={styles.loginAuthLabels}>Password</Text>
           <TextInput
-            style={styles.input}
+            style={[styles.input, { color: 'black' }]}
             placeholder="Enter password"
             value={password}
             onChangeText={setPassword}

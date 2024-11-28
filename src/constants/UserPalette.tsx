@@ -12,6 +12,7 @@ const UserPalette = {
   light_blue: 'rgba(10, 48, 105, 0.05)',
   red_button: '#97233F',
   field_border: '#004526',
+  textbox_border_color: '#ccc',
 
   blue: '#1D68B3',
   secondary_blue: '#003569',

@@ -46,6 +46,7 @@ const FlatListGrid = () => {
   );
 };
 
+
 const styles = StyleSheet.create({
   scrollView: {
     flexGrow: 1,

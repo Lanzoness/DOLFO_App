@@ -236,7 +236,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     fontWeight: 'bold',
     fontSize: FontSize.body_large,
-    borderBottomColor: UserPalette.secondary_blue,
+    color: 'rgba(0, 105, 62, 0.8)',
+    borderBottomColor: 'rgba(0, 105, 62, 0.4)',
   },
   filterSection: {
     marginBottom: 20,
@@ -260,7 +261,7 @@ const styles = StyleSheet.create({
   },
   dateInput: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: UserPalette.textbox_border_color,
     borderRadius: 5,
     padding: 8,
     width: 110,
@@ -276,7 +277,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: 8,
     overflow: 'hidden',
-    borderColor: '#ccc',
+    borderColor: UserPalette.textbox_border_color,
+    backgroundColor: 'white',
   },
   picker: {
     width: '100%',
@@ -286,12 +288,18 @@ const styles = StyleSheet.create({
   },
   pickerPlaceholder: {
     fontSize: FontSize.body_medium,
-    color: UserPalette.secondary_green,
+    color: UserPalette.secondary_blue,
     backgroundColor: 'white',
   },
   pickerItem: {
     fontSize: FontSize.body_small,
     backgroundColor: 'white',
+  },
+  selectedItem: {
+    fontWeight: 'bold',
+    borderLeftWidth: 3,
+    borderLeftColor: UserPalette.secondary_blue,
+    paddingLeft: 10,  // Add some padding to offset the border
   },
   buttonRow: {
     flexDirection: 'row',
@@ -328,6 +336,9 @@ const styles = StyleSheet.create({
     color: UserPalette.white_font,
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  pickerPressedState: {
+    backgroundColor: 'rgba(0, 122, 255, 0.2)', // Slightly darker when pressed
   },
 });
 

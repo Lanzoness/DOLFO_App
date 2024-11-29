@@ -19,13 +19,17 @@ import SearchBar from './src/components/SearchBar'; // Addded  search bar compne
 import FilterDrawer, { FilterDrawerRef } from './src/components/FilterDrawer';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StyleSheet } from 'react-native';
+import AdminViewLost from './src/screens/AdminViewLost';
+import AdminSearchBar from './src/components/AdminSearchBar';
+import AdminFilterDrawer from './src/components/AdminFilterDrawer';
+
 
 const Stack = createNativeStackNavigator();
 
 interface Filters {
   category?: string;
   date?: string;
-  // ... other filter properties
+
 }
 
 function App(): React.JSX.Element {
@@ -140,6 +144,42 @@ function App(): React.JSX.Element {
                 <FilterDrawer ref={drawerRef} onApply={applyFilters} onReset={resetFilters}>
                   <TEST_FlatlistGrid />
                 </FilterDrawer>
+              </View>
+            )}
+          </Stack.Screen>
+          <Stack.Screen
+            name="AdminViewLost"
+            options={{
+              headerTitle: () => (
+                <View style={styles.headerContainer}>
+                  <AdminSearchBar
+                    value={searchQuery}
+                    onChangeText={setSearchQuery}
+                    onSubmit={handleSearch}
+                    style={styles.searchBar}
+                  />
+                  <TouchableOpacity 
+                    onPress={() => drawerRef.current?.openDrawer()}
+                    style={styles.filterButton}
+                  >
+                    <Image 
+                      source={require('./src/assets/icons/Admin-Filter.png')} 
+                      style={styles.filterIcon} 
+                    />
+                  </TouchableOpacity>
+                </View>
+              ),
+              headerTintColor: UserPalette.secondary_blue,
+              headerStyle: {
+                backgroundColor: UserPalette.blue,
+              },
+            }}
+          >
+            {() => (
+              <View style={{ flex: 1 }}>
+                <AdminFilterDrawer ref={drawerRef} onApply={applyFilters} onReset={resetFilters}>
+                  <AdminViewLost />
+                </AdminFilterDrawer>
               </View>
             )}
           </Stack.Screen>

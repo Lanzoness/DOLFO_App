@@ -3,13 +3,13 @@ import { Text, StyleSheet, FlatList, Image, Dimensions, TouchableOpacity } from 
 import UserPalette from '../constants/UserPalette';
 import FontSize from '../constants/FontSize';
 import { readLostItems } from '../test/readLostItemsjson';
-import FilterDrawer, { FilterDrawerRef } from '../components/FilterDrawer';
+import AdminFilterDrawer from '../components/AdminFilterDrawer';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 // Define the type for navigation parameters
 type RootStackParamList = {
-  UserItemInformation: {
+  AdminItemInformation: {
     item: {
       Image: string;
       ['Item Name']: string;
@@ -23,16 +23,20 @@ type RootStackParamList = {
   };
 };
 
-type NavigationProp = StackNavigationProp<RootStackParamList, 'UserItemInformation'>;
+type NavigationProp = StackNavigationProp<RootStackParamList, 'AdminItemInformation'>;
 
-// declaration of  useState and useRef for each variable
-const FlatListGrid = () => {
+// Update the FilterDrawerRef interface to match AdminFilterDrawer
+interface FilterDrawerRef {
+  openDrawer: () => void;
+  closeDrawer: () => void;
+}
+
+const AdminViewLost = () => {
   const navigation = useNavigation<NavigationProp>();
   const [data, setData] = useState([]);
   const filterDrawerRef = useRef<FilterDrawerRef>(null);
 
-
-  // To fetch the data from the JSON file
+  // Fetch data from Firebase
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -46,8 +50,6 @@ const FlatListGrid = () => {
     fetchData();
   }, []);
 
-
-  // Updated renderItem function to include TouchableOpacity
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={[
@@ -84,67 +86,32 @@ const FlatListGrid = () => {
     </TouchableOpacity>
   );
 
-  // Add this new function to handle item press
   const handleItemPress = (item: any) => {
     console.log('Item pressed:', item);
-    navigation.navigate('UserItemInformation', { item });
+    navigation.navigate('AdminItemInformation', { item });
   };
 
-
-  // Reset and done button of the filter drawer
-  const handleApplyFilters = (filters: {
-    startDate: Date | null;
-    endDate: Date | null;
-    dateSortOrder: string;
-    selectedCategory: string;
-  }) => {
-    console.log('Applied Filters:', {
-      startDate: filters.startDate?.toISOString(),
-      endDate: filters.endDate?.toISOString(),
-      dateSortOrder: filters.dateSortOrder,
-      selectedCategory: filters.selectedCategory,
-    });
-
-    let filteredData = [...data];
-
-    // Filter by date range
-    if (filters.startDate || filters.endDate) {
-      filteredData = filteredData.filter(item => {
-        const itemDate = new Date(item['Date Submitted']);
-        if (filters.startDate && itemDate < filters.startDate) return false;
-        if (filters.endDate && itemDate > filters.endDate) return false;
-        return true;
-      });
-    }
-
-    // Filter by category
-    if (filters.selectedCategory) {
-      filteredData = filteredData.filter(item => 
-        item.Category === filters.selectedCategory
-      );
-    }
-
-    // Sort by date only
-    if (filters.dateSortOrder) {
-      filteredData.sort((a, b) => {
-        const dateA = new Date(a['Date Submitted']);
-        const dateB = new Date(b['Date Submitted']);
-        return filters.dateSortOrder === 'asc' 
-          ? dateA.getTime() - dateB.getTime()
-          : dateB.getTime() - dateA.getTime();
-      });
-    }
-
-    setData(filteredData);
+  // Update the handleApplyFilters and handleResetFilters to match AdminFilterDrawer props
+  const handleApplyFilters = () => {
+    // Your filter logic here
+    console.log('Applying filters');
   };
 
   const handleResetFilters = () => {
-    // Handle filter reset
+    const fetchData = async () => {
+      try {
+        const result = await readLostItems();
+        setData(result);
+      } catch (error) {
+        console.error('Error fetching data: ', error);
+      }
+    };
+
+    fetchData();
   };
 
-
   return (
-    <FilterDrawer
+    <AdminFilterDrawer
       ref={filterDrawerRef}
       onApply={handleApplyFilters}
       onReset={handleResetFilters}
@@ -156,19 +123,18 @@ const FlatListGrid = () => {
         numColumns={2}
         contentContainerStyle={styles.flatListContainer}
         columnWrapperStyle={{
-            justifyContent: 'space-between',
-            paddingHorizontal: 4,
+          justifyContent: 'space-between',
+          paddingHorizontal: 4,
         }}
       />
-    </FilterDrawer>
+    </AdminFilterDrawer>
   );
 };
-
 
 const styles = StyleSheet.create({
   flatListContainer: {
     paddingVertical: 8,
-    backgroundColor: UserPalette.green,
+    backgroundColor: UserPalette.blue,
   },
   itemContainer: {
     margin: 4,
@@ -194,8 +160,6 @@ const styles = StyleSheet.create({
     fontSize: FontSize.body_small,
     color: UserPalette.black_font,
     width: '100%',
-    // numberOfLines: 2,
-    // ellipsizeMode: 'tail',
   },
   itemCategory: {
     marginTop: 4,
@@ -230,18 +194,15 @@ const styles = StyleSheet.create({
       width: 0,
       height: 2,
     },
-    // shadowOpacity: 0.25,
-    // shadowRadius: 4.84,
-    // elevation: 5,
     borderWidth: 1,
     borderColor: 'transparent',
     transform: [{ scale: 1 }],
   },
   touchablePressed: {
     backgroundColor: UserPalette.light_blue,
-    borderColor: UserPalette.green,
+    borderColor: UserPalette.blue,
     transform: [{ scale: 0.95 }],
   },
 });
 
-export default FlatListGrid;
+export default AdminViewLost;

@@ -8,8 +8,11 @@ const UserPalette = {
   text_field_bg: 'rgba(10, 48, 105, 0.5)',
   active_button: 'rgba(10, 48, 105, 0.4)',
   grey_font: 'rgba(128, 128, 128, 0.7)',
+  light_gray: 'rgba(128, 128, 128, 0.1)',
+  light_blue: 'rgba(10, 48, 105, 0.05)',
   red_button: '#97233F',
   field_border: '#004526',
+  textbox_border_color: '#ccc',
 
   blue: '#1D68B3',
   secondary_blue: '#003569',

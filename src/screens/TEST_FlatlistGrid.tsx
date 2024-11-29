@@ -7,6 +7,7 @@ import FilterDrawer, { FilterDrawerRef } from '../components/FilterDrawer';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { algoFilter } from '../test/algoFilter';
+import { processDate } from '../test/processDate.js';
 
 // Define the type for navigation parameters
 type RootStackParamList = {
@@ -103,7 +104,7 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
         numberOfLines={1}
         ellipsizeMode="tail"
       >
-        Date: {item['Date Submitted']}
+        Date: {processDate(item['Date Submitted'], false)}
       </Text>
     </TouchableOpacity>
   );

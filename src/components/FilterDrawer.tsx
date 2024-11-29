@@ -73,6 +73,15 @@ const FilterDrawer: React.ForwardRefRenderFunction<FilterDrawerRef, FilterDrawer
 
   // Updated handleApplyFilters function - removed drawer close
   const handleApplyFilters = () => {
+    console.log('Done button pressed. Applying filters with the following values:', {
+      startDate,
+      endDate,
+      dateSortOrder,
+      selectedCategory,
+    });
+
+    console.log('About to call onApply...');
+    
     // Call the parent onApply callback with current filter values
     onApply({
       startDate,
@@ -80,6 +89,8 @@ const FilterDrawer: React.ForwardRefRenderFunction<FilterDrawerRef, FilterDrawer
       dateSortOrder,
       selectedCategory,
     });
+
+    console.log('onApply has been called');
   };
 
   const renderNavigationView = () => (
@@ -138,31 +149,31 @@ const FilterDrawer: React.ForwardRefRenderFunction<FilterDrawerRef, FilterDrawer
             />
             <Picker.Item
               label="Category 1"
-              value="category1"
+              value="1"
               style={styles.pickerItem}
               color={UserPalette.black_font}
             />
             <Picker.Item
               label="Category 2"
-              value="category2"
+              value="2"
               style={styles.pickerItem}
               color={UserPalette.black_font}
             />
             <Picker.Item
               label="Category 3"
-              value="category3"
+              value="3"
               style={styles.pickerItem}
               color={UserPalette.black_font}
             />
             <Picker.Item
               label="Category 4"
-              value="category4"
+              value="4"
               style={styles.pickerItem}
               color={UserPalette.black_font}
             />
             <Picker.Item
               label="Category 5"
-              value="category5"
+              value="5"
               style={styles.pickerItem}
               color={UserPalette.black_font}
             />

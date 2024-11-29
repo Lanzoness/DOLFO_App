@@ -9,16 +9,16 @@ import SubmitLost from './src/screens/SubmitLost';
 import ViewLost from './src/screens/ViewLost';
 import TestFirebase from './src/screens/TestFirebase';
 import SignupScreen from './src/screens/SignupScreen';
-import TEST_FlatlistGrid from './src/screens/TEST_FlatlistGrid'; // TEMP
+import TEST_FlatlistGrid from './src/screens/TEST_FlatlistGrid';
 import UserItemInformation from './src/screens/UserItemInformation';
 import UserPalette from './src/constants/UserPalette';
 import AdminHomeScreen from './src/screens/AdminHomeScreen';
 import EditLost from './src/screens/EditLost';
 import AdminSubmitLost from './src/screens/AdminSubmitLost';
 import SearchBar from './src/components/SearchBar'; // Addded  search bar compnenet
-import FilterDrawer, { FilterDrawerRef } from './src/components/FilterDrawer';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StyleSheet } from 'react-native';
+import { FilterDrawerRef } from './src/components/FilterDrawer';
 
 const Stack = createNativeStackNavigator();
 
@@ -31,15 +31,7 @@ interface Filters {
 function App(): React.JSX.Element {
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState<Filters>({});
-  const drawerRef = useRef<FilterDrawerRef>(null);
-
-  const applyFilters = (newFilters: Filters) => {
-    setFilters(newFilters);
-  };
-
-  const resetFilters = () => {
-    setFilters({});
-  };
+  const filterDrawerRef = useRef<FilterDrawerRef>(null);
 
   const handleSearch = () => {
     console.log('Searching for:', searchQuery);
@@ -111,37 +103,33 @@ function App(): React.JSX.Element {
             name="TEST_FlatlistGrid"
             options={{
               headerTitle: () => (
-              <View style={styles.headerContainer}>
-                <SearchBar
-                  value={searchQuery}
-                  onChangeText={setSearchQuery}
-                  onSubmit={handleSearch}
-                  style={styles.searchBar}
-                />
-                <TouchableOpacity 
-                  onPress={() => drawerRef.current?.openDrawer()}
-                  style={styles.filterButton}
-                >
-                  <Image 
-                    source={require('./src/assets/icons/filter_icon.png')} 
-                    style={styles.filterIcon} 
+                <View style={styles.headerContainer}>
+                  <SearchBar
+                    value={searchQuery}
+                    onChangeText={setSearchQuery}
+                    onSubmit={handleSearch}
+                    style={styles.searchBar}
                   />
-                </TouchableOpacity>
-              </View>
-            ),
+                  <TouchableOpacity
+                    onPress={() => {
+                      filterDrawerRef.current?.openDrawer();
+                    }}
+                    style={styles.filterButton}
+                  >
+                    <Image
+                      source={require('./src/assets/icons/filter_icon.png')}
+                      style={styles.filterIcon}
+                    />
+                  </TouchableOpacity>
+                </View>
+              ),
               headerTintColor: UserPalette.green,
               headerStyle: {
                 backgroundColor: UserPalette.default_background,
               },
             }}
           >
-            {() => (
-              <View style={{ flex: 1 }}>
-                <FilterDrawer ref={drawerRef} onApply={applyFilters} onReset={resetFilters}>
-                  <TEST_FlatlistGrid />
-                </FilterDrawer>
-              </View>
-            )}
+            {() => <TEST_FlatlistGrid ref={filterDrawerRef} />}
           </Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
@@ -167,12 +155,14 @@ const styles = StyleSheet.create({
     width: '70%',
   },
   filterButton: {
-    padding: 10,
+    padding: 8,
+    borderRadius: 5,
+    marginLeft: 10,
   },
   filterIcon: {
-    width: 27,
-    height: 27,
-    padding: 13,
+    width: 24,
+    height: 24,
+    tintColor: UserPalette.green,
   },
 });
 

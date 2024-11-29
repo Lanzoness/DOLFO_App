@@ -19,7 +19,7 @@ export async function readLostItems() {
         const items = JSON.parse(fileContents);
 
         // Output the contents to the terminal
-        console.log('Contents of lostItems.json:', items);
+        //console.log('Contents of lostItems.json:', items);
         return items;
     } catch (error) {
         console.error('Error reading lost items:', error);

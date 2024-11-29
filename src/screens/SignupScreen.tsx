@@ -5,6 +5,7 @@ import { addUser } from '../test/addUser.js';
 import { matchUser } from '../test/matchUser.js';
 import { addPasswordAdmin } from '../test/addPasswordAdmin.js';
 import { matchPasswordAdmin } from '../test/matchPasswordAdmin.js';
+import UserPalette from '../constants/UserPalette.js';
 
 
 const AuthPageColors = {
@@ -292,6 +293,7 @@ const styles = StyleSheet.create({
     height: 45,
     borderColor: 'white',
     backgroundColor: 'white',
+    color: 'black',
     marginBottom: 16,
     paddingHorizontal: 10,
     paddingLeft: 20,

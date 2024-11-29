@@ -4,9 +4,30 @@ import UserPalette from '../constants/UserPalette';
 import FontSize from '../constants/FontSize';
 import { readLostItems } from '../test/readLostItemsjson';
 import FilterDrawer, { FilterDrawerRef } from '../components/FilterDrawer';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+
+// Define the type for navigation parameters
+type RootStackParamList = {
+  UserItemInformation: {
+    item: {
+      Image: string;
+      ['Item Name']: string;
+      Category: string;
+      Description: string;
+      'Location Found': string;
+      'Date Submitted': string;
+      'Owner Name': string;
+      'Owner ID': string;
+    };
+  };
+};
+
+type NavigationProp = StackNavigationProp<RootStackParamList, 'UserItemInformation'>;
 
 // declaration of  useState and useRef for each variable
 const FlatListGrid = () => {
+  const navigation = useNavigation<NavigationProp>();
   const [data, setData] = useState([]);
   // const [alphabeticalOrder, setAlphabeticalOrder] = useState('descending');
   const filterDrawerRef = useRef<FilterDrawerRef>(null);
@@ -79,7 +100,7 @@ const FlatListGrid = () => {
   // Add this new function to handle item press
   const handleItemPress = (item: any) => {
     console.log('Item pressed:', item);
-    // Add your navigation or modal logic here
+    navigation.navigate('UserItemInformation', { item });
   };
 
 

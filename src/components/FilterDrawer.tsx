@@ -13,7 +13,6 @@ interface FilterDrawerProps {
     endDate: Date | null;
     dateSortOrder: string;
     selectedCategory: string;
-    categorySortOrder: string;
   }) => void;
   onReset: () => void;
   children: React.ReactNode;
@@ -35,7 +34,6 @@ const FilterDrawer: React.ForwardRefRenderFunction<FilterDrawerRef, FilterDrawer
   const [currentPicker, setCurrentPicker] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [dateSortOrder, setDateSortOrder] = useState('desc'); // 'asc' or 'desc'
-  const [categorySortOrder, setCategorySortOrder] = useState('desc');
 
   // Sets the props of the drawer component: closer/ opened drawer
   useImperativeHandle(ref, () => ({
@@ -47,8 +45,6 @@ const FilterDrawer: React.ForwardRefRenderFunction<FilterDrawerRef, FilterDrawer
   const toggleSortOrder = (type: 'date' | 'category') => {
     if (type === 'date') {
       setDateSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
-    } else {
-      setCategorySortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
     }
   };
 
@@ -70,7 +66,6 @@ const FilterDrawer: React.ForwardRefRenderFunction<FilterDrawerRef, FilterDrawer
     setEndDate(null);
     setSelectedCategory('');
     setDateSortOrder('desc');
-    setCategorySortOrder('desc');
     
     // Call the parent onReset callback
     onReset();
@@ -84,7 +79,6 @@ const FilterDrawer: React.ForwardRefRenderFunction<FilterDrawerRef, FilterDrawer
       endDate,
       dateSortOrder,
       selectedCategory,
-      categorySortOrder,
     });
   };
 
@@ -127,11 +121,6 @@ const FilterDrawer: React.ForwardRefRenderFunction<FilterDrawerRef, FilterDrawer
       <View style={styles.filterSection}>
         <View style={styles.filterHeaderRow}>
           <Text style={styles.filterLabel}>Category:</Text>
-          <TouchableOpacity onPress={() => toggleSortOrder('category')}>
-            <Text style={styles.sortButtonText}>
-              {categorySortOrder === 'desc' ? 'Descending ↓' : 'Ascending ↑'}
-            </Text>
-          </TouchableOpacity>
         </View>
         <View style={styles.pickerContainer}>
           <Picker

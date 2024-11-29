@@ -4,11 +4,32 @@ import UserPalette from '../constants/UserPalette';
 import FontSize from '../constants/FontSize';
 import { readLostItems } from '../test/readLostItemsjson';
 import FilterDrawer, { FilterDrawerRef } from '../components/FilterDrawer';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+
+// Define the type for navigation parameters
+type RootStackParamList = {
+  UserItemInformation: {
+    item: {
+      Image: string;
+      ['Item Name']: string;
+      Category: string;
+      Description: string;
+      'Location Found': string;
+      'Date Submitted': string;
+      'Owner Name': string;
+      'Owner ID': string;
+    };
+  };
+};
+
+type NavigationProp = StackNavigationProp<RootStackParamList, 'UserItemInformation'>;
 
 // declaration of  useState and useRef for each variable
 const FlatListGrid = () => {
+  const navigation = useNavigation<NavigationProp>();
   const [data, setData] = useState([]);
-  const [alphabeticalOrder, setAlphabeticalOrder] = useState('descending');
+  // const [alphabeticalOrder, setAlphabeticalOrder] = useState('descending');
   const filterDrawerRef = useRef<FilterDrawerRef>(null);
 
 
@@ -28,16 +49,16 @@ const FlatListGrid = () => {
 
 
   // To sort the items alphabetically
-  const toggleAlphabetical = () => {
-    setAlphabeticalOrder((prev) => (prev === 'descending' ? 'ascending' : 'descending'));
-    setData((prevData) =>
-      [...prevData].sort((a, b) =>
-        alphabeticalOrder === 'ascending'
-          ? a['Item Name'].localeCompare(b['Item Name'])
-          : b['Item Name'].localeCompare(a['Item Name'])
-      )
-    );
-  };
+  // const toggleAlphabetical = () => {
+  //   setAlphabeticalOrder((prev) => (prev === 'descending' ? 'ascending' : 'descending'));
+  //   setData((prevData) =>
+  //     [...prevData].sort((a, b) =>
+  //       alphabeticalOrder === 'ascending'
+  //         ? a['Item Name'].localeCompare(b['Item Name'])
+  //         : b['Item Name'].localeCompare(a['Item Name'])
+  //     )
+  //   );
+  // };
 
   // Updated renderItem function to include TouchableOpacity
   const renderItem = ({ item }) => (
@@ -79,14 +100,55 @@ const FlatListGrid = () => {
   // Add this new function to handle item press
   const handleItemPress = (item: any) => {
     console.log('Item pressed:', item);
-    // Add your navigation or modal logic here
+    navigation.navigate('UserItemInformation', { item });
   };
 
 
   // Reset and done button of the filter drawer
-  const handleApplyFilters = (filters: any) => {
-    // Handle filter application
-    console.log(filters);
+  const handleApplyFilters = (filters: {
+    startDate: Date | null;
+    endDate: Date | null;
+    dateSortOrder: string;
+    selectedCategory: string;
+  }) => {
+    console.log('Applied Filters:', {
+      startDate: filters.startDate?.toISOString(),
+      endDate: filters.endDate?.toISOString(),
+      dateSortOrder: filters.dateSortOrder,
+      selectedCategory: filters.selectedCategory,
+    });
+
+    let filteredData = [...data];
+
+    // Filter by date range
+    if (filters.startDate || filters.endDate) {
+      filteredData = filteredData.filter(item => {
+        const itemDate = new Date(item['Date Submitted']);
+        if (filters.startDate && itemDate < filters.startDate) return false;
+        if (filters.endDate && itemDate > filters.endDate) return false;
+        return true;
+      });
+    }
+
+    // Filter by category
+    if (filters.selectedCategory) {
+      filteredData = filteredData.filter(item => 
+        item.Category === filters.selectedCategory
+      );
+    }
+
+    // Sort by date only
+    if (filters.dateSortOrder) {
+      filteredData.sort((a, b) => {
+        const dateA = new Date(a['Date Submitted']);
+        const dateB = new Date(b['Date Submitted']);
+        return filters.dateSortOrder === 'asc' 
+          ? dateA.getTime() - dateB.getTime()
+          : dateB.getTime() - dateA.getTime();
+      });
+    }
+
+    setData(filteredData);
   };
 
   const handleResetFilters = () => {
@@ -118,9 +180,7 @@ const FlatListGrid = () => {
 
 const styles = StyleSheet.create({
   flatListContainer: {
-    // paddingHorizontal: 0,
     paddingVertical: 8,
-    // alignItems: 'center',
     backgroundColor: UserPalette.green,
   },
   itemContainer: {
@@ -147,8 +207,8 @@ const styles = StyleSheet.create({
     fontSize: FontSize.body_small,
     color: UserPalette.black_font,
     width: '100%',
-    numberOfLines: 2,
-    ellipsizeMode: 'tail',
+    // numberOfLines: 2,
+    // ellipsizeMode: 'tail',
   },
   itemCategory: {
     marginTop: 4,

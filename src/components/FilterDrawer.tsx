@@ -73,6 +73,13 @@ const FilterDrawer: React.ForwardRefRenderFunction<FilterDrawerRef, FilterDrawer
 
   // Updated handleApplyFilters function - removed drawer close
   const handleApplyFilters = () => {
+    console.log('Done button pressed. Applying filters with the following values:', {
+      startDate,
+      endDate,
+      dateSortOrder,
+      selectedCategory,
+    });
+
     // Call the parent onApply callback with current filter values
     onApply({
       startDate,

@@ -41,20 +41,38 @@ const FlatListGrid = () => {
 
   // Updated renderItem function to include TouchableOpacity
   const renderItem = ({ item }) => (
-    <TouchableOpacity 
+    <TouchableOpacity
       style={[
         styles.itemContainer,
-        styles.touchableContainer
+        styles.touchableContainer,
       ]}
       onPress={() => handleItemPress(item)}
-      activeOpacity={0.7}
+      activeOpacity={0.9}
       delayPressIn={50}
       pressRetentionOffset={{ top: 10, left: 10, bottom: 10, right: 10 }}
     >
       <Image source={{ uri: item.Image }} style={styles.itemImage} />
-      <Text style={styles.itemName}>{item['Item Name']}</Text>
-      <Text style={styles.itemCategory}>Category: {item.Category}</Text>
-      <Text style={styles.itemDate}>Date: {item['Date Submitted']}</Text>
+      <Text 
+        style={styles.itemName}
+        numberOfLines={2}
+        ellipsizeMode="tail"
+      >
+        {item['Item Name']}
+      </Text>
+      <Text
+        style={styles.itemCategory}
+        numberOfLines={1}
+        ellipsizeMode="tail"
+      >
+        Category: {item.Category}
+      </Text>
+      <Text
+        style={styles.itemDate}
+        numberOfLines={1}
+        ellipsizeMode="tail"
+      >
+        Date: {item['Date Submitted']}
+      </Text>
     </TouchableOpacity>
   );
 
@@ -88,6 +106,10 @@ const FlatListGrid = () => {
         keyExtractor={(item) => item.id.toString()}
         numColumns={2}
         contentContainerStyle={styles.flatListContainer}
+        columnWrapperStyle={{
+          justifyContent: 'space-between',
+          paddingHorizontal: 4,
+        }}
       />
     </FilterDrawer>
   );
@@ -96,23 +118,27 @@ const FlatListGrid = () => {
 
 const styles = StyleSheet.create({
   flatListContainer: {
-    paddingHorizontal: 10,
-    paddingVertical: 10,
+    // paddingHorizontal: 0,
+    paddingVertical: 8,
+    // alignItems: 'center',
     backgroundColor: UserPalette.green,
   },
   itemContainer: {
-    flex: 1,
-    margin: 10,
-    maxWidth: Dimensions.get('window').width / 2 - 15,
+    margin: 4,
+    width: Dimensions.get('window').width / 2 - 12,
+    maxWidth: Dimensions.get('window').width / 2 - 12,
     backgroundColor: UserPalette.default_background,
     borderRadius: 7,
-    padding: 7,
+    padding: 8,
     alignItems: 'center',
+    height: 'auto',
+    aspectRatio: 0.72,
   },
   itemImage: {
     width: '100%',
-    height: Dimensions.get('window').width / 2 - 40,
+    aspectRatio: 1,
     resizeMode: 'cover',
+    borderRadius: 5,
   },
   itemName: {
     marginTop: 10,
@@ -120,15 +146,22 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: FontSize.body_small,
     color: UserPalette.black_font,
+    width: '100%',
+    numberOfLines: 2,
+    ellipsizeMode: 'tail',
   },
   itemCategory: {
-    marginTop: 3,
+    marginTop: 4,
     color: UserPalette.black_font,
     fontSize: FontSize.body_smallest,
+    width: '100%',
+    textAlign: 'center',
   },
   itemDate: {
     color: UserPalette.black_font,
     fontSize: FontSize.body_smallest,
+    width: '100%',
+    textAlign: 'center',
   },
   drawerContent: {
     flex: 1,

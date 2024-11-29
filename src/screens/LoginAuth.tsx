@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, ScrollView, SafeAreaView, Modal, Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { matchUser } from '../test/matchUser.js';
 import { NavigationProp } from '@react-navigation/native';
 
@@ -183,7 +182,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     marginBottom: -50,
-    // backgroundColor: 'grey',
   },
   logo: {
     width: 93,
@@ -206,7 +204,7 @@ const styles = StyleSheet.create({
     paddingLeft: 40,
     paddingRight: 40,
     paddingBottom: '100%',
-    paddingTop: 20,
+    paddingTop: 50,
     minHeight: '70%',
   },
   loginAuthLabels: {

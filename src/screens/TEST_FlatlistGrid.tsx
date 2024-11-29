@@ -34,6 +34,7 @@ interface Item {
 const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
   const navigation = useNavigation<NavigationProp>();
   const [data, setData] = useState<Item[]>([]);
+  const [originalData, setOriginalData] = useState<Item[]>([]);
   // const [alphabeticalOrder, setAlphabeticalOrder] = useState('descending');
   const filterDrawerRef = useRef<FilterDrawerRef>(null);
 
@@ -48,6 +49,7 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
       try {
         const result = await readLostItems();
         setData(result);
+        setOriginalData(result); // Store original data
       } catch (error) {
         console.error('Error fetching data: ', error);
       }
@@ -138,7 +140,7 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
   };
 
   const handleResetFilters = () => {
-    // Handle filter reset
+    setData(originalData);
   };
 
 

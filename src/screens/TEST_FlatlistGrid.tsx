@@ -128,25 +128,8 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
         selectedCategory: filters.selectedCategory,
       });
 
-      // Add your filtering logic here
-      let filteredData = [...data];
-
-      if (filters.startDate || filters.endDate) {
-        console.log('Applying date filter...');
-        filteredData = filterByDateRange(filteredData, filters.startDate, filters.endDate);
-      }
-
-      if (filters.selectedCategory) {
-        console.log('Applying category filter...');
-        filteredData = filterByCategory(filteredData, filters.selectedCategory);
-      }
-
-      if (filters.dateSortOrder) {
-        console.log('Applying date sort...');
-        filteredData = sortByDate(filteredData, filters.dateSortOrder);
-      }
-
-      console.log('Setting filtered data...');
+      // Use filterCache instead of direct filtering
+      const filteredData = filterCache.filterItems(data, filters);
       setData(filteredData);
 
     } catch (error) {

@@ -10,25 +10,29 @@ import { StackNavigationProp } from '@react-navigation/stack';
 // Define the type for navigation parameters
 type RootStackParamList = {
   UserItemInformation: {
-    item: {
-      Image: string;
-      ['Item Name']: string;
-      Category: string;
-      Description: string;
-      'Location Found': string;
-      'Date Submitted': string;
-      'Owner Name': string;
-      'Owner ID': string;
-    };
+    item: Item;
   };
 };
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'UserItemInformation'>;
 
+// Define the type for the items
+interface Item {
+  Image: string;
+  ['Item Name']: string;
+  Category: string;
+  Description: string;
+  'Location Found': string;
+  'Date Submitted': string;
+  'Owner Name': string;
+  'Owner ID': string;
+  id: string;
+}
+
 // declaration of  useState and useRef for each variable
 const FlatListGrid = () => {
   const navigation = useNavigation<NavigationProp>();
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<Item[]>([]);
   // const [alphabeticalOrder, setAlphabeticalOrder] = useState('descending');
   const filterDrawerRef = useRef<FilterDrawerRef>(null);
 
@@ -61,7 +65,7 @@ const FlatListGrid = () => {
   // };
 
   // Updated renderItem function to include TouchableOpacity
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item }: { item: Item }) => (
     <TouchableOpacity
       style={[
         styles.itemContainer,
@@ -122,6 +126,7 @@ const FlatListGrid = () => {
 
     // Filter by date range
     if (filters.startDate || filters.endDate) {
+      console.log('Filtering by date range...');
       filteredData = filteredData.filter(item => {
         const itemDate = new Date(item['Date Submitted']);
         if (filters.startDate && itemDate < filters.startDate) return false;
@@ -132,7 +137,8 @@ const FlatListGrid = () => {
 
     // Filter by category
     if (filters.selectedCategory) {
-      filteredData = filteredData.filter(item => 
+      console.log(`Filtering by category ${filters.selectedCategory}`);
+      filteredData = filteredData.filter((item: Item) => 
         item.Category === filters.selectedCategory
       );
     }
@@ -165,7 +171,7 @@ const FlatListGrid = () => {
       <FlatList
         data={data}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.id}
         numColumns={2}
         contentContainerStyle={styles.flatListContainer}
         columnWrapperStyle={{

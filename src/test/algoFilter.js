@@ -1,4 +1,4 @@
-export const filterCache = {
+export const algoFilter = {
   cache: new Map(),
   MAX_CACHE_SIZE: 20,
 
@@ -55,4 +55,4 @@ export const filterCache = {
   }
 };
 
-export default filterCache;
+export default algoFilter;

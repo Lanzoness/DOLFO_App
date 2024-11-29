@@ -6,7 +6,7 @@ import { readLostItems } from '../test/readLostItems';
 import FilterDrawer, { FilterDrawerRef } from '../components/FilterDrawer';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { filterCache } from '../test/filterCache';
+import { algoFilter } from '../test/algoFilter';
 
 // Define the type for navigation parameters
 type RootStackParamList = {
@@ -129,7 +129,7 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
       });
 
       // Use filterCache instead of direct filtering
-      const filteredData = filterCache.filterItems(data, filters);
+      const filteredData = algoFilter.filterItems(data, filters);
       setData(filteredData);
 
     } catch (error) {

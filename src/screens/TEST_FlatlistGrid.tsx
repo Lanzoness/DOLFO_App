@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Text, StyleSheet, FlatList, Image, Dimensions, TouchableOpacity } from 'react-native';
 import UserPalette from '../constants/UserPalette';
 import FontSize from '../constants/FontSize';
-import { readLostItems } from '../test/readLostItemsjson';
+import { readLostItems } from '../test/readLostItems';
 import FilterDrawer, { FilterDrawerRef } from '../components/FilterDrawer';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';

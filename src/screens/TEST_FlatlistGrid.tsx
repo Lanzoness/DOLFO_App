@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { forwardRef, useImperativeHandle, useRef, useState, useEffect } from 'react';
 import { Text, StyleSheet, FlatList, Image, Dimensions, TouchableOpacity } from 'react-native';
 import UserPalette from '../constants/UserPalette';
 import FontSize from '../constants/FontSize';
@@ -31,12 +31,16 @@ interface Item {
 }
 
 // declaration of  useState and useRef for each variable
-const FlatListGrid = () => {
+const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
   const navigation = useNavigation<NavigationProp>();
   const [data, setData] = useState<Item[]>([]);
   // const [alphabeticalOrder, setAlphabeticalOrder] = useState('descending');
   const filterDrawerRef = useRef<FilterDrawerRef>(null);
 
+  useImperativeHandle(ref, () => ({
+    openDrawer: () => filterDrawerRef.current?.openDrawer(),
+    closeDrawer: () => filterDrawerRef.current?.closeDrawer(),
+  }));
 
   // To fetch the data from the JSON file
   useEffect(() => {
@@ -116,6 +120,38 @@ const FlatListGrid = () => {
     dateSortOrder: string;
     selectedCategory: string;
   }) => {
+    try {
+      console.log('Parent component received filters:', {
+        startDate: filters.startDate?.toISOString(),
+        endDate: filters.endDate?.toISOString(),
+        dateSortOrder: filters.dateSortOrder,
+        selectedCategory: filters.selectedCategory,
+      });
+
+      // Add your filtering logic here
+      let filteredData = [...data];
+
+      if (filters.startDate || filters.endDate) {
+        console.log('Applying date filter...');
+        filteredData = filterByDateRange(filteredData, filters.startDate, filters.endDate);
+      }
+
+      if (filters.selectedCategory) {
+        console.log('Applying category filter...');
+        filteredData = filterByCategory(filteredData, filters.selectedCategory);
+      }
+
+      if (filters.dateSortOrder) {
+        console.log('Applying date sort...');
+        filteredData = sortByDate(filteredData, filters.dateSortOrder);
+      }
+
+      console.log('Setting filtered data...');
+      setData(filteredData);
+
+    } catch (error) {
+      console.error('Error in parent handleApplyFilters:', error);
+    }
   };
 
   const handleResetFilters = () => {
@@ -142,7 +178,7 @@ const FlatListGrid = () => {
       />
     </FilterDrawer>
   );
-};
+});
 
 
 const styles = StyleSheet.create({
@@ -224,4 +260,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FlatListGrid;
+export default TEST_FlatlistGrid;

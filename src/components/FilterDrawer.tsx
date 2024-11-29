@@ -80,6 +80,8 @@ const FilterDrawer: React.ForwardRefRenderFunction<FilterDrawerRef, FilterDrawer
       selectedCategory,
     });
 
+    console.log('About to call onApply...');
+    
     // Call the parent onApply callback with current filter values
     onApply({
       startDate,
@@ -87,6 +89,8 @@ const FilterDrawer: React.ForwardRefRenderFunction<FilterDrawerRef, FilterDrawer
       dateSortOrder,
       selectedCategory,
     });
+
+    console.log('onApply has been called');
   };
 
   const renderNavigationView = () => (

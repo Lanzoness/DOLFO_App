@@ -6,7 +6,7 @@ import { readLostItems } from '../test/readLostItems';
 import FilterDrawer, { FilterDrawerRef } from '../components/FilterDrawer';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { filterByDateRange, filterByCategory, sortByDate } from '../test/filterUtils';
+import { filterCache } from '../test/filterCache';
 
 // Define the type for navigation parameters
 type RootStackParamList = {

@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
     paddingBottom: 2,
     borderBottomWidth: 1,
     fontWeight: 'bold',
-    fontSize: FontSize.body_large,
+    fontSize: 20,
     color: 'rgba(0, 105, 62, 0.8)',
     borderBottomColor: 'rgba(0, 105, 62, 0.4)',
   },
@@ -251,6 +251,8 @@ const styles = StyleSheet.create({
   },
   filterLabel: {
     marginBottom: 3,
+    fontWeight: 'bold',
+    fontSize: FontSize.body_medium,
     flex: 1,
   },
   dateInputContainer: {
@@ -270,6 +272,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   sortButtonText: {
+    fontSize: FontSize.body_medium,
     color: UserPalette.secondary_blue,
   },
   pickerContainer: {
@@ -339,6 +342,42 @@ const styles = StyleSheet.create({
   },
   pickerPressedState: {
     backgroundColor: 'rgba(0, 122, 255, 0.2)', // Slightly darker when pressed
+  },
+  inputContainer: {
+    marginBottom: 15,
+  },
+  inputLabel: {
+    fontSize: FontSize.body_small,
+    color: UserPalette.black_font,
+    marginBottom: 5,
+  },
+  inputField: {
+    backgroundColor: UserPalette.light_blue,
+    borderWidth: 1,
+    borderColor: UserPalette.grey_font,
+    borderRadius: 8,
+    padding: 10,
+    fontSize: FontSize.body_small,
+    color: UserPalette.black_font,
+  },
+  rangeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  rangeInput: {
+    backgroundColor:  UserPalette.light_blue,
+    borderWidth: 1,
+    borderColor: UserPalette.grey_font,
+    borderRadius: 8,
+    padding: 10,
+    width: '45%',
+    fontSize: FontSize.body_small,
+  },
+  rangeSeparator: {
+    fontSize: FontSize.body_small,
+    color: UserPalette.black_font,
   },
 });
 

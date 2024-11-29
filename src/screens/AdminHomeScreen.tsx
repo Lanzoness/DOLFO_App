@@ -3,7 +3,7 @@ import { View, StyleSheet, Animated, Dimensions, TouchableWithoutFeedback, Text,
 import Button from '../components/button';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { downloadLostItems } from '../test/downloadLostItems';
-import { readLostItems } from '../test/readLostItemsjson';
+import { readLostItems } from '../test/readLostItems';
 const { width } = Dimensions.get('window');
 
 type RootStackParamList = {

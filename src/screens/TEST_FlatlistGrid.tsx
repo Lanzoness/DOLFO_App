@@ -1,36 +1,46 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { forwardRef, useImperativeHandle, useRef, useState, useEffect } from 'react';
 import { Text, StyleSheet, FlatList, Image, Dimensions, TouchableOpacity } from 'react-native';
 import UserPalette from '../constants/UserPalette';
 import FontSize from '../constants/FontSize';
-import { readLostItems } from '../test/readLostItemsjson';
+import { readLostItems } from '../test/readLostItems';
 import FilterDrawer, { FilterDrawerRef } from '../components/FilterDrawer';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { filterByDateRange, filterByCategory, sortByDate } from '../test/filterUtils';
 
 // Define the type for navigation parameters
 type RootStackParamList = {
   UserItemInformation: {
-    item: {
-      Image: string;
-      ['Item Name']: string;
-      Category: string;
-      Description: string;
-      'Location Found': string;
-      'Date Submitted': string;
-      'Owner Name': string;
-      'Owner ID': string;
-    };
+    item: Item;
   };
 };
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'UserItemInformation'>;
 
+// Define the type for the items
+interface Item {
+  Image: string;
+  ['Item Name']: string;
+  Category: string;
+  Description: string;
+  'Location Found': string;
+  'Date Submitted': string;
+  'Owner Name': string;
+  'Owner ID': string;
+  id: string;
+}
+
 // declaration of  useState and useRef for each variable
-const FlatListGrid = () => {
+const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
   const navigation = useNavigation<NavigationProp>();
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<Item[]>([]);
+  // const [alphabeticalOrder, setAlphabeticalOrder] = useState('descending');
   const filterDrawerRef = useRef<FilterDrawerRef>(null);
 
+  useImperativeHandle(ref, () => ({
+    openDrawer: () => filterDrawerRef.current?.openDrawer(),
+    closeDrawer: () => filterDrawerRef.current?.closeDrawer(),
+  }));
 
   // To fetch the data from the JSON file
   useEffect(() => {
@@ -48,7 +58,7 @@ const FlatListGrid = () => {
 
 
   // Updated renderItem function to include TouchableOpacity
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item }: { item: Item }) => (
     <TouchableOpacity
       style={[
         styles.itemContainer,
@@ -98,44 +108,38 @@ const FlatListGrid = () => {
     dateSortOrder: string;
     selectedCategory: string;
   }) => {
-    console.log('Applied Filters:', {
-      startDate: filters.startDate?.toISOString(),
-      endDate: filters.endDate?.toISOString(),
-      dateSortOrder: filters.dateSortOrder,
-      selectedCategory: filters.selectedCategory,
-    });
-
-    let filteredData = [...data];
-
-    // Filter by date range
-    if (filters.startDate || filters.endDate) {
-      filteredData = filteredData.filter(item => {
-        const itemDate = new Date(item['Date Submitted']);
-        if (filters.startDate && itemDate < filters.startDate) return false;
-        if (filters.endDate && itemDate > filters.endDate) return false;
-        return true;
+    try {
+      console.log('Parent component received filters:', {
+        startDate: filters.startDate?.toISOString(),
+        endDate: filters.endDate?.toISOString(),
+        dateSortOrder: filters.dateSortOrder,
+        selectedCategory: filters.selectedCategory,
       });
-    }
 
-    // Filter by category
-    if (filters.selectedCategory) {
-      filteredData = filteredData.filter(item => 
-        item.Category === filters.selectedCategory
-      );
-    }
+      // Add your filtering logic here
+      let filteredData = [...data];
 
-    // Sort by date only
-    if (filters.dateSortOrder) {
-      filteredData.sort((a, b) => {
-        const dateA = new Date(a['Date Submitted']);
-        const dateB = new Date(b['Date Submitted']);
-        return filters.dateSortOrder === 'asc' 
-          ? dateA.getTime() - dateB.getTime()
-          : dateB.getTime() - dateA.getTime();
-      });
-    }
+      if (filters.startDate || filters.endDate) {
+        console.log('Applying date filter...');
+        filteredData = filterByDateRange(filteredData, filters.startDate, filters.endDate);
+      }
 
-    setData(filteredData);
+      if (filters.selectedCategory) {
+        console.log('Applying category filter...');
+        filteredData = filterByCategory(filteredData, filters.selectedCategory);
+      }
+
+      if (filters.dateSortOrder) {
+        console.log('Applying date sort...');
+        filteredData = sortByDate(filteredData, filters.dateSortOrder);
+      }
+
+      console.log('Setting filtered data...');
+      setData(filteredData);
+
+    } catch (error) {
+      console.error('Error in parent handleApplyFilters:', error);
+    }
   };
 
   const handleResetFilters = () => {
@@ -152,7 +156,7 @@ const FlatListGrid = () => {
       <FlatList
         data={data}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.id}
         numColumns={2}
         contentContainerStyle={styles.flatListContainer}
         columnWrapperStyle={{
@@ -162,7 +166,7 @@ const FlatListGrid = () => {
       />
     </FilterDrawer>
   );
-};
+});
 
 
 const styles = StyleSheet.create({
@@ -244,4 +248,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FlatListGrid;
+export default TEST_FlatlistGrid;

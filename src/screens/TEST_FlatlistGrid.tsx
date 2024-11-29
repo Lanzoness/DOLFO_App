@@ -6,6 +6,7 @@ import { readLostItems } from '../test/readLostItems';
 import FilterDrawer, { FilterDrawerRef } from '../components/FilterDrawer';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { filterByDateRange, filterByCategory, sortByDate } from '../test/filterUtils';
 
 // Define the type for navigation parameters
 type RootStackParamList = {
@@ -115,46 +116,6 @@ const FlatListGrid = () => {
     dateSortOrder: string;
     selectedCategory: string;
   }) => {
-    console.log('Applied Filters:', {
-      startDate: filters.startDate?.toISOString(),
-      endDate: filters.endDate?.toISOString(),
-      dateSortOrder: filters.dateSortOrder,
-      selectedCategory: filters.selectedCategory,
-    });
-
-    let filteredData = [...data];
-
-    // Filter by date range
-    if (filters.startDate || filters.endDate) {
-      console.log('Filtering by date range...');
-      filteredData = filteredData.filter(item => {
-        const itemDate = new Date(item['Date Submitted']);
-        if (filters.startDate && itemDate < filters.startDate) return false;
-        if (filters.endDate && itemDate > filters.endDate) return false;
-        return true;
-      });
-    }
-
-    // Filter by category
-    if (filters.selectedCategory) {
-      console.log(`Filtering by category ${filters.selectedCategory}`);
-      filteredData = filteredData.filter((item: Item) => 
-        item.Category === filters.selectedCategory
-      );
-    }
-
-    // Sort by date only
-    if (filters.dateSortOrder) {
-      filteredData.sort((a, b) => {
-        const dateA = new Date(a['Date Submitted']);
-        const dateB = new Date(b['Date Submitted']);
-        return filters.dateSortOrder === 'asc' 
-          ? dateA.getTime() - dateB.getTime()
-          : dateB.getTime() - dateA.getTime();
-      });
-    }
-
-    setData(filteredData);
   };
 
   const handleResetFilters = () => {

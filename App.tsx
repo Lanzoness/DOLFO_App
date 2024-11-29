@@ -10,6 +10,7 @@ import ViewLost from './src/screens/ViewLost';
 import TestFirebase from './src/screens/TestFirebase';
 import SignupScreen from './src/screens/SignupScreen';
 import TEST_FlatlistGrid from './src/screens/TEST_FlatlistGrid'; // TEMP
+import UserItemInformation from './src/screens/UserItemInformation';
 import UserPalette from './src/constants/UserPalette';
 import AdminHomeScreen from './src/screens/AdminHomeScreen';
 import EditLost from './src/screens/EditLost';
@@ -99,6 +100,11 @@ function App(): React.JSX.Element {
           <Stack.Screen 
             name="AdminSubmitLost" 
             component={AdminSubmitLost}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen 
+            name="UserItemInformation" 
+            component={UserItemInformation}
             options={{ headerShown: false }}
           />
           <Stack.Screen

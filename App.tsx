@@ -97,7 +97,10 @@ function App(): React.JSX.Element {
           <Stack.Screen 
             name="UserItemInformation" 
             component={UserItemInformation}
-            options={{ headerShown: false }}
+            options={{ 
+              headerTitle: '',
+              headerTintColor: UserPalette.green,
+             }}
           />
           <Stack.Screen
             name="TEST_FlatlistGrid"
@@ -126,36 +129,6 @@ function App(): React.JSX.Element {
               headerTintColor: UserPalette.green,
               headerStyle: {
                 backgroundColor: UserPalette.default_background,
-              },
-            }}
-          >
-            {() => <TEST_FlatlistGrid ref={filterDrawerRef} />}
-          </Stack.Screen>
-          <Stack.Screen
-            name="AdminViewLost"
-            options={{
-              headerTitle: () => (
-                <View style={styles.headerContainer}>
-                  <AdminSearchBar
-                    value={searchQuery}
-                    onChangeText={setSearchQuery}
-                    onSubmit={handleSearch}
-                    style={styles.searchBar}
-                  />
-                  <TouchableOpacity 
-                    onPress={() => drawerRef.current?.openDrawer()}
-                    style={styles.filterButton}
-                  >
-                    <Image 
-                      source={require('./src/assets/icons/Admin-Filter.png')} 
-                      style={styles.filterIcon} 
-                    />
-                  </TouchableOpacity>
-                </View>
-              ),
-              headerTintColor: UserPalette.secondary_blue,
-              headerStyle: {
-                backgroundColor: UserPalette.blue,
               },
             }}
           >

@@ -7,7 +7,7 @@ import AdminFilterDrawer, { AdminFilterDrawerRef } from '../components/AdminFilt
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
-// Define navigation types
+// Navigation types
 type RootStackParamList = {
   AdminItemInformation: {
     item: Item;
@@ -16,7 +16,6 @@ type RootStackParamList = {
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'AdminItemInformation'>;
 
-// Define Item interface
 interface Item {
   Image: string;
   ['Item Name']: string;

@@ -37,6 +37,7 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
   const navigation = useNavigation<NavigationProp>();
   const [data, setData] = useState<Item[]>([]);
   const [originalData, setOriginalData] = useState<Item[]>([]);
+  const [filteredData, setFilteredData] = useState<Item[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const filterDrawerRef = useRef<FilterDrawerRef>(null);
 
@@ -123,8 +124,16 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
       });
 
       // Use filterCache instead of direct filtering
-      const filteredData = algoFilter.filterItems(data, filters);
-      setData(filteredData);
+      const filtered = algoFilter.filterItems(originalData, filters);
+      setFilteredData(filtered);
+      
+      // If there's an active search, apply it to filtered data
+      if (searchQuery.trim()) {
+        const searchResults = algoSearchDP(filtered, searchQuery);
+        setData(searchResults);
+      } else {
+        setData(filtered);
+      }
 
     } catch (error) {
       console.error('Error in parent handleApplyFilters:', error);
@@ -132,7 +141,15 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
   };
 
   const handleResetFilters = () => {
-    setData(originalData);
+    setFilteredData([]);
+    
+    // After reset, if there's a search query, apply it to original data
+    if (searchQuery.trim()) {
+      const searchResults = algoSearchDP(originalData, searchQuery);
+      setData(searchResults);
+    } else {
+      setData(originalData);
+    }
   };
 
   const handleSearch = (query: string) => {
@@ -151,7 +168,7 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
     if (!query.trim()) {
       console.log('Empty query detected - Resetting to original data');
       console.log('Original data items:', originalData.map(item => item['Item Name']));
-      setData([...originalData]);
+      setData(filteredData.length > 0 ? filteredData : originalData);
       console.log('Data reset complete');
       console.log('=== Search Process Ended ===\n');
       return;
@@ -161,7 +178,8 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
       console.log('Starting search with query:', query);
       console.log('Searching through items:', originalData.map(item => item['Item Name']));
       
-      const searchResults = algoSearchDP(originalData, query);
+      const baseData = filteredData.length > 0 ? filteredData : originalData;
+      const searchResults = algoSearchDP(baseData, query);
       
       console.log('\nSearch Results:');
       console.log('- Found Items:', searchResults.length);
@@ -179,7 +197,7 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
     } catch (error) {
       console.error('\nSearch Error:', error);
       console.log('Resetting to original data due to error');
-      setData([...originalData]);
+      setData(filteredData.length > 0 ? filteredData : originalData);
     }
 
     console.log('=== Search Process Ended ===\n');

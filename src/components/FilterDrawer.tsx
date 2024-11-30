@@ -1,6 +1,6 @@
 // src/components/FilterDrawer.tsx
 import React, { useState, forwardRef, useImperativeHandle, useRef } from 'react';
-import { View, StyleSheet, Image, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
 import { DrawerLayout } from 'react-native-gesture-handler';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { Picker } from '@react-native-picker/picker';

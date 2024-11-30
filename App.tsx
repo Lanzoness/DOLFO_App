@@ -22,7 +22,6 @@ import { FilterDrawerRef } from './src/components/FilterDrawer';
 import AdminSearchBar from './src/components/AdminSearchBar';
 import { AdminFilterDrawerRef } from './src/components/AdminFilterDrawer';
 
-
 const Stack = createNativeStackNavigator();
 
 interface Filters {

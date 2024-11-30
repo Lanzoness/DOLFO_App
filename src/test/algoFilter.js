@@ -8,13 +8,13 @@ export const algoFilter = {
     }
 
     if (filters.startDate || filters.endDate) {
-      filteredData = this.filterByDateRange(filteredData, filters.startDate, filters.endDate);
+      filteredData = this.filterByDateRange(filteredData, filters.startDate, filters.endDate, filters.dateSortOrder);
     }
     
     return filteredData;
   },
 
-  filterByDateRange(data, startDate, endDate) {
+  filterByDateRange(data, startDate, endDate, dateSortOrder = 'desc') {
     if (data.length <= 1) {
       return data.filter(item => {
         const itemDate = new Date(item['Date Submitted']);
@@ -24,13 +24,13 @@ export const algoFilter = {
     }
 
     const mid = Math.floor(data.length / 2);
-    const left = this.filterByDateRange(data.slice(0, mid), startDate, endDate);
-    const right = this.filterByDateRange(data.slice(mid), startDate, endDate);
+    const left = this.filterByDateRange(data.slice(0, mid), startDate, endDate, dateSortOrder);
+    const right = this.filterByDateRange(data.slice(mid), startDate, endDate, dateSortOrder);
 
-    return this.merge(left, right);
+    return this.merge(left, right, dateSortOrder);
   },
 
-  merge(left, right) {
+  merge(left, right, dateSortOrder) {
     let result = [];
     let indexLeft = 0;
     let indexRight = 0;
@@ -39,7 +39,8 @@ export const algoFilter = {
       const dateLeft = new Date(left[indexLeft]['Date Submitted']);
       const dateRight = new Date(right[indexRight]['Date Submitted']);
 
-      if (dateLeft <= dateRight) {
+      if ((dateSortOrder === 'asc' && dateLeft <= dateRight) ||
+          (dateSortOrder === 'desc' && dateLeft > dateRight)) {
         result.push(left[indexLeft]);
         indexLeft++;
       } else {

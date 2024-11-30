@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import UserPalette from '../constants/UserPalette';
 import FontSize from '../constants/FontSize';
+import { processDate } from '../test/processDate.js';
 
 
 type RouteParams = {
@@ -64,7 +65,7 @@ const UserItemInformation = () => {
           <Text style={styles.value}>{item['Location Found']}</Text>
 
           <Text style={styles.label}>Date and Time Submitted:</Text>
-          <Text style={styles.value}>{item['Date Submitted']}</Text>
+          <Text style={styles.value}>{processDate(item['Date Submitted'], true)}</Text>
 
           <Text style={styles.label}>Owner Name:</Text>
           <Text style={styles.value}>{item['Owner Name'] || 'Unavailable'}</Text>

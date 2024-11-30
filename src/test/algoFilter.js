@@ -1,15 +1,6 @@
 export const algoFilter = {
-  cache: new Map(),
-  MAX_CACHE_SIZE: 20,
 
   filterItems(data, filters) {
-    const cacheKey = this.generateCacheKey(filters);
-    
-    if (this.cache.has(cacheKey)) {
-      console.log('Using cached filter results');
-      return this.cache.get(cacheKey);
-    }
-
     let filteredData = [...data];
     
     if (filters.startDate || filters.endDate) {
@@ -19,39 +10,50 @@ export const algoFilter = {
     if (filters.selectedCategory) {
       filteredData = this.filterByCategory(filteredData, filters.selectedCategory);
     }
-
-    this.addToCache(cacheKey, filteredData);
     
     return filteredData;
   },
 
-  generateCacheKey(filters) {
-    return JSON.stringify({
-      startDate: filters.startDate?.toISOString(),
-      endDate: filters.endDate?.toISOString(),
-      category: filters.selectedCategory
-    });
+  filterByDateRange(data, startDate, endDate) {
+    if (data.length <= 1) {
+      return data.filter(item => {
+        const itemDate = new Date(item['Date Submitted']);
+        return (!startDate || itemDate >= startDate) &&
+               (!endDate || itemDate <= endDate);
+      });
+    }
+
+    const mid = Math.floor(data.length / 2);
+    const left = this.filterByDateRange(data.slice(0, mid), startDate, endDate);
+    const right = this.filterByDateRange(data.slice(mid), startDate, endDate);
+
+    return this.merge(left, right);
   },
 
-  filterByDateRange(data, startDate, endDate) {
-    return data.filter(item => {
-      const itemDate = new Date(item['Date Submitted']);
-      if (startDate && itemDate < startDate) return false;
-      if (endDate && itemDate > endDate) return false;
-      return true;
-    });
+  merge(left, right) {
+    let result = [];
+    let indexLeft = 0;
+    let indexRight = 0;
+
+    while (indexLeft < left.length && indexRight < right.length) {
+      const dateLeft = new Date(left[indexLeft]['Date Submitted']);
+      const dateRight = new Date(right[indexRight]['Date Submitted']);
+
+      if (dateLeft <= dateRight) {
+        result.push(left[indexLeft]);
+        indexLeft++;
+      } else {
+        result.push(right[indexRight]);
+        indexRight++;
+      }
+    }
+
+    // Concatenate remaining elements
+    return result.concat(left.slice(indexLeft)).concat(right.slice(indexRight));
   },
 
   filterByCategory(data, category) {
     return data.filter(item => item.Category === category);
-  },
-
-  addToCache(key, value) {
-    if (this.cache.size >= this.MAX_CACHE_SIZE) {
-      const firstKey = this.cache.keys().next().value;
-      this.cache.delete(firstKey);
-    }
-    this.cache.set(key, value);
   }
 };
 

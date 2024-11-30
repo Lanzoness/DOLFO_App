@@ -7,6 +7,7 @@ import FontSize from '../constants/FontSize';
 import { addLostItem } from '../test/addLostItem.js';
 import { addImage } from '../test/addImage.js';
 import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
+import ImagePicker from 'react-native-image-crop-picker';
 
 // Define CameraType as a type instead of a constant
 type CameraType = 'back' | 'front';
@@ -76,40 +77,42 @@ const SubmitLostItem = () => {
    * 📸 Function to handle image upload
    */
   const handleTakePhoto = async () => {
-    const permission = await check(PERMISSIONS.ANDROID.CAMERA);
+    try {
+      const permission = await check(PERMISSIONS.ANDROID.CAMERA);
 
-    if (permission === RESULTS.GRANTED) {
-      launchCameraWithOptions();
-    } else {
-      const requestResult = await request(PERMISSIONS.ANDROID.CAMERA);
-      if (requestResult === RESULTS.GRANTED) {
+      if (permission === RESULTS.GRANTED) {
         launchCameraWithOptions();
       } else {
-        console.error('Camera permission denied');
+        const requestResult = await request(PERMISSIONS.ANDROID.CAMERA);
+        if (requestResult === RESULTS.GRANTED) {
+          launchCameraWithOptions();
+        } else {
+          console.error('Camera permission denied');
+        }
       }
+    } catch (error) {
+      console.error('Error checking camera permission:', error);
     }
   };
 
   const launchCameraWithOptions = () => {
-    const options: CameraOptions = {
-      mediaType: 'photo',
-      cameraType: 'back',
-      saveToPhotos: true,
-    };
-
-    launchCamera(options, (response) => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.errorMessage) {
-        console.error('ImagePicker Error: ', response.errorMessage);
-      } else if (response.assets && response.assets[0]) {
-        const { uri, width, height } = response.assets[0];
-        if (uri && width && height) {
-          setImageData({ uri, width, height }); // Save image data
-          setButtonText('Change Image'); // Change button text after image upload
-        }
-      }
-      setIsModalVisible(false); // Close modal after action
+    ImagePicker.openCamera({
+      width: 300,
+      height: 300,
+      cropping: true,
+      cropperCircleOverlay: false, // Set to true if you want a circular crop
+      freeStyleCropEnabled: false, // Disable free style cropping
+    }).then(image => {
+      setImageData({
+        uri: image.path,
+        width: image.width,
+        height: image.height,
+      });
+      setButtonText('Change Image');
+      setIsModalVisible(false);
+    }).catch(error => {
+      console.error('Error capturing image:', error);
+      setIsModalVisible(false);
     });
   };
 

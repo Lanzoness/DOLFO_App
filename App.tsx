@@ -20,7 +20,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StyleSheet } from 'react-native';
 import { FilterDrawerRef } from './src/components/FilterDrawer';
 import AdminSearchBar from './src/components/AdminSearchBar';
-import { AdminFilterDrawerRef } from './src/components/AdminFilterDrawer';
+import AdminFilterDrawer, { AdminFilterDrawerRef } from './src/components/AdminFilterDrawer';
 
 const Stack = createNativeStackNavigator();
 

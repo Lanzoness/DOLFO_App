@@ -3,12 +3,12 @@ export const algoFilter = {
   filterItems(data, filters) {
     let filteredData = [...data];
     
-    if (filters.startDate || filters.endDate) {
-      filteredData = this.filterByDateRange(filteredData, filters.startDate, filters.endDate);
-    }
-
     if (filters.selectedCategory) {
       filteredData = this.filterByCategory(filteredData, filters.selectedCategory);
+    }
+
+    if (filters.startDate || filters.endDate) {
+      filteredData = this.filterByDateRange(filteredData, filters.startDate, filters.endDate);
     }
     
     return filteredData;

@@ -59,8 +59,16 @@ const FilterDrawer: React.ForwardRefRenderFunction<FilterDrawerRef, FilterDrawer
   };
 
   const handleDateConfirm = (date: Date) => {
-    if (currentPicker === 'start') setStartDate(date);
-    if (currentPicker === 'end') setEndDate(date);
+    if (currentPicker === 'start') {
+      const startDate = new Date(date);
+      startDate.setHours(1, 0, 0, 0);  // 1:00 AM
+      setStartDate(startDate);
+    }
+    if (currentPicker === 'end') {
+      const endDate = new Date(date);
+      endDate.setHours(23, 59, 59, 999);  // 11:59 PM
+      setEndDate(endDate);
+    }
     setDatePickerVisibility(false);
   };
 

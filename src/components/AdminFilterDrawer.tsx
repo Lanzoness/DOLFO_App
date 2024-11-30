@@ -460,7 +460,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   checkboxChecked: {
-    backgroundColor: UserPalette.green,
+    backgroundColor: UserPalette.secondary_blue,
   },
   checkmark: {
     color: 'white',

@@ -6,7 +6,6 @@ import { readLostItems } from '../test/readLostItems';
 import AdminFilterDrawer, { AdminFilterDrawerRef } from '../components/AdminFilterDrawer';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { filterByDateRange, sortByDate } from '../test/filterUtils';
 
 // Define navigation types
 type RootStackParamList = {
@@ -54,42 +53,6 @@ const ViewLost = forwardRef<AdminFilterDrawerRef>((props, ref) => {
     fetchData();
   }, []);
 
-  const handleApplyFilters = (filters: {
-    startDate: Date | null;
-    endDate: Date | null;
-    dateSortOrder: string;
-    selectedStatus: string;
-  }) => {
-    try {
-      let filteredData = [...data];
-
-      if (filters.startDate || filters.endDate) {
-        filteredData = filterByDateRange(filteredData, filters.startDate, filters.endDate);
-      }
-
-      if (filters.selectedStatus) {
-        filteredData = filteredData.filter(item => item.status === filters.selectedStatus);
-      }
-
-      if (filters.dateSortOrder) {
-        filteredData = sortByDate(filteredData, filters.dateSortOrder);
-      }
-
-      setData(filteredData);
-    } catch (error) {
-      console.error('Error applying filters:', error);
-    }
-  };
-
-  const handleResetFilters = async () => {
-    try {
-      const result = await readLostItems();
-      setData(result);
-    } catch (error) {
-      console.error('Error resetting filters:', error);
-    }
-  };
-
   const handleItemPress = (item: Item) => {
     navigation.navigate('AdminItemInformation', { item });
   };
@@ -103,25 +66,13 @@ const ViewLost = forwardRef<AdminFilterDrawerRef>((props, ref) => {
       pressRetentionOffset={{ top: 10, left: 10, bottom: 10, right: 10 }}
     >
       <Image source={{ uri: item.Image }} style={styles.itemImage} />
-      <Text 
-        style={styles.itemName}
-        numberOfLines={2}
-        ellipsizeMode="tail"
-      >
+      <Text style={styles.itemName} numberOfLines={2} ellipsizeMode="tail">
         {item['Item Name']}
       </Text>
-      <Text
-        style={styles.itemCategory}
-        numberOfLines={1}
-        ellipsizeMode="tail"
-      >
+      <Text style={styles.itemCategory} numberOfLines={1} ellipsizeMode="tail">
         Category: {item.Category}
       </Text>
-      <Text
-        style={styles.itemDate}
-        numberOfLines={1}
-        ellipsizeMode="tail"
-      >
+      <Text style={styles.itemDate} numberOfLines={1} ellipsizeMode="tail">
         Date: {item['Date Submitted']}
       </Text>
     </TouchableOpacity>
@@ -130,8 +81,8 @@ const ViewLost = forwardRef<AdminFilterDrawerRef>((props, ref) => {
   return (
     <AdminFilterDrawer
       ref={filterDrawerRef}
-      onApply={handleApplyFilters}
-      onReset={handleResetFilters}
+      onApply={() => {}}
+      onReset={() => {}}
     >
       <View style={styles.contentContainer}>
         <FlatList

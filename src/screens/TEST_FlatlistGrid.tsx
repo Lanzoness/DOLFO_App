@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { algoFilter } from '../test/algoFilter';
 import { processDate } from '../test/processDate.js';
-
+import { algoSearchDP } from '../test/algoSearchDP';
 // Define the type for navigation parameters
 type RootStackParamList = {
   UserItemInformation: {
@@ -132,6 +132,13 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
     setData(originalData);
   };
 
+  const handleSearch = () => {
+    console.log('Searching for:', algoSearchDP);
+  };
+
+  const handleSearchAdmin = () => {
+    console.log('Searching for:', algoSearchDP);
+  };
 
   return (
     <FilterDrawer

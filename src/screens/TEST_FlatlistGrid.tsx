@@ -6,7 +6,8 @@ import { readLostItems } from '../test/readLostItems';
 import FilterDrawer, { FilterDrawerRef } from '../components/FilterDrawer';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { filterByDateRange, filterByCategory, sortByDate } from '../test/filterUtils';
+import { algoFilter } from '../test/algoFilter';
+import { processDate } from '../test/processDate.js';
 
 // Define the type for navigation parameters
 type RootStackParamList = {
@@ -34,6 +35,7 @@ interface Item {
 const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
   const navigation = useNavigation<NavigationProp>();
   const [data, setData] = useState<Item[]>([]);
+  const [originalData, setOriginalData] = useState<Item[]>([]);
   // const [alphabeticalOrder, setAlphabeticalOrder] = useState('descending');
   const filterDrawerRef = useRef<FilterDrawerRef>(null);
 
@@ -48,6 +50,7 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
       try {
         const result = await readLostItems();
         setData(result);
+        setOriginalData(result); // Store original data
       } catch (error) {
         console.error('Error fetching data: ', error);
       }
@@ -89,7 +92,7 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
         numberOfLines={1}
         ellipsizeMode="tail"
       >
-        Date: {item['Date Submitted']}
+        Date: {processDate(item['Date Submitted'], false)}
       </Text>
     </TouchableOpacity>
   );
@@ -116,25 +119,8 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
         selectedCategory: filters.selectedCategory,
       });
 
-      // Add your filtering logic here
-      let filteredData = [...data];
-
-      if (filters.startDate || filters.endDate) {
-        console.log('Applying date filter...');
-        filteredData = filterByDateRange(filteredData, filters.startDate, filters.endDate);
-      }
-
-      if (filters.selectedCategory) {
-        console.log('Applying category filter...');
-        filteredData = filterByCategory(filteredData, filters.selectedCategory);
-      }
-
-      if (filters.dateSortOrder) {
-        console.log('Applying date sort...');
-        filteredData = sortByDate(filteredData, filters.dateSortOrder);
-      }
-
-      console.log('Setting filtered data...');
+      // Use filterCache instead of direct filtering
+      const filteredData = algoFilter.filterItems(data, filters);
       setData(filteredData);
 
     } catch (error) {
@@ -143,7 +129,7 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
   };
 
   const handleResetFilters = () => {
-    // Handle filter reset
+    setData(originalData);
   };
 
 

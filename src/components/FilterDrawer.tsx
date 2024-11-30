@@ -1,6 +1,6 @@
 // src/components/FilterDrawer.tsx
 import React, { useState, forwardRef, useImperativeHandle, useRef } from 'react';
-import { View, StyleSheet, Image, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
 import { DrawerLayout } from 'react-native-gesture-handler';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { Picker } from '@react-native-picker/picker';
@@ -35,13 +35,11 @@ const FilterDrawer: React.ForwardRefRenderFunction<FilterDrawerRef, FilterDrawer
   const [selectedCategory, setSelectedCategory] = useState('');
   const [dateSortOrder, setDateSortOrder] = useState('desc'); // 'asc' or 'desc'
 
-  // Sets the props of the drawer component: closer/ opened drawer
   useImperativeHandle(ref, () => ({
     openDrawer: () => drawerRef.current?.openDrawer(),
     closeDrawer: () => drawerRef.current?.closeDrawer(),
   }));
 
-  // Enables toggling the ascending/ descending button
   const toggleSortOrder = (type: 'date' | 'category') => {
     if (type === 'date') {
       setDateSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
@@ -49,6 +47,7 @@ const FilterDrawer: React.ForwardRefRenderFunction<FilterDrawerRef, FilterDrawer
   };
 
   const openDatePicker = (pickerType: 'start' | 'end') => {
+    handleReset(); // Reset data when date picker is opened
     setCurrentPicker(pickerType);
     setDatePickerVisibility(true);
   };
@@ -59,19 +58,19 @@ const FilterDrawer: React.ForwardRefRenderFunction<FilterDrawerRef, FilterDrawer
     setDatePickerVisibility(false);
   };
 
-  // Updated handleReset function - removed drawer close
+  const handleCategoryChange = (itemValue: string) => {
+    handleReset(); // Reset data when category is changed
+    setSelectedCategory(itemValue);
+  };
+
   const handleReset = () => {
-    // Clear all states
     setStartDate(null);
     setEndDate(null);
     setSelectedCategory('');
     setDateSortOrder('desc');
-    
-    // Call the parent onReset callback
     onReset();
   };
 
-  // Updated handleApplyFilters function - removed drawer close
   const handleApplyFilters = () => {
     console.log('Done button pressed. Applying filters with the following values:', {
       startDate,
@@ -80,24 +79,18 @@ const FilterDrawer: React.ForwardRefRenderFunction<FilterDrawerRef, FilterDrawer
       selectedCategory,
     });
 
-    console.log('About to call onApply...');
-    
-    // Call the parent onApply callback with current filter values
     onApply({
       startDate,
       endDate,
       dateSortOrder,
       selectedCategory,
     });
-
-    console.log('onApply has been called');
   };
 
   const renderNavigationView = () => (
     <View style={styles.drawer}>
       <Text style={styles.title}>Add Filter</Text>
 
-      {/* Date Range */}
       <View style={styles.filterSection}>
         <View style={styles.filterHeaderRow}>
           <Text style={styles.filterLabel}>Enter Date Range:</Text>
@@ -128,7 +121,6 @@ const FilterDrawer: React.ForwardRefRenderFunction<FilterDrawerRef, FilterDrawer
         </View>
       </View>
 
-      {/* Category start */}
       <View style={styles.filterSection}>
         <View style={styles.filterHeaderRow}>
           <Text style={styles.filterLabel}>Category:</Text>
@@ -137,7 +129,7 @@ const FilterDrawer: React.ForwardRefRenderFunction<FilterDrawerRef, FilterDrawer
           <Picker
             selectedValue={selectedCategory}
             style={styles.picker}
-            onValueChange={(itemValue) => setSelectedCategory(itemValue)}
+            onValueChange={handleCategoryChange}
             mode="dialog"
             dropdownIconColor={UserPalette.secondary_blue}
           >
@@ -181,7 +173,6 @@ const FilterDrawer: React.ForwardRefRenderFunction<FilterDrawerRef, FilterDrawer
         </View>
       </View>
 
-      {/* Updated Buttons */}
       <View style={styles.buttonRow}>
         <TouchableOpacity
           style={styles.resetButton}

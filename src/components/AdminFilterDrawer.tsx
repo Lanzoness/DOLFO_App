@@ -12,7 +12,7 @@ interface AdminFilterDrawerProps {
     endDate: Date | null;
     dateSortOrder: string;
     selectedStatus: string;
-    status: {
+    statuses: {
       lost: boolean;
       retrieved: boolean;
     };
@@ -220,6 +220,7 @@ const AdminFilterDrawer: React.ForwardRefRenderFunction<AdminFilterDrawerRef, Ad
       {/* Status Checkboxes */}
       <View style={styles.filterSection}>
         <Text style={styles.filterLabel}>Status</Text>
+        <Text style={styles.checkboxDescription}>Status:</Text>
         <View style={styles.checkboxContainer}>
           <CustomCheckbox
             label="Lost"
@@ -440,25 +441,26 @@ const styles = StyleSheet.create({
   },
   checkboxContainer: {
     marginTop: 10,
-    gap: 12,
+    gap: 17,
   },
   checkboxRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 10,
   },
   checkbox: {
     width: 20,
     height: 20,
     borderRadius: 4,
     borderWidth: 2,
+    marginLeft: 4,
     borderColor: UserPalette.secondary_blue,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'white',
   },
   checkboxChecked: {
-    backgroundColor: UserPalette.secondary_blue,
+    backgroundColor: UserPalette.green,
   },
   checkmark: {
     color: 'white',
@@ -468,6 +470,14 @@ const styles = StyleSheet.create({
   checkboxLabel: {
     fontSize: FontSize.body_medium,
     color: UserPalette.black_font,
+  },
+  checkboxDescription: {
+    fontSize: FontSize.body_medium,
+    color: UserPalette.black_font,
+    fontWeight: 'bold',
+    marginBottom: 3,
+    marginTop: 4,
+    paddingHorizontal: 4,
   },
 });
 

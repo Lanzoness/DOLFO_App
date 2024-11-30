@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { View, StyleSheet, Animated, Dimensions, TouchableWithoutFeedback, Text, TouchableOpacity } from 'react-native';
 import Button from '../components/button';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { downloadLostItems } from '../test/downloadLostItems';
+import { downloadAllItems } from '../test/downloadAllItems';
 import { readLostItems } from '../test/readLostItems';
 const { width } = Dimensions.get('window');
 
@@ -37,7 +37,7 @@ const AdminHomeScreen = () => {
 
   const handleUpdateLocalDatabase = async () => {
     try {
-      await downloadLostItems();
+      await downloadAllItems();
       await readLostItems();
     } catch (error) {
       console.error('Error updating local database:', error);

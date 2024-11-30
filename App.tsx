@@ -21,6 +21,7 @@ import { StyleSheet } from 'react-native';
 import { FilterDrawerRef } from './src/components/FilterDrawer';
 import AdminSearchBar from './src/components/AdminSearchBar';
 import { AdminFilterDrawerRef } from './src/components/AdminFilterDrawer';
+import AdminItemInformation from './src/screens/AdminItemInformation';
 
 const Stack = createNativeStackNavigator();
 
@@ -107,6 +108,11 @@ function App(): React.JSX.Element {
               headerTintColor: UserPalette.blue,
             }}
             children={(props) => <ViewLost {...props} ref={adminFilterDrawerRef} />}
+          />
+          <Stack.Screen
+            name="AdminItemInformation"
+            component={AdminItemInformation}
+            options={{ headerShown: false }}
           />
           <Stack.Screen
             name="TestFirebase"

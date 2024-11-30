@@ -6,7 +6,7 @@ export async function downloadAllItems() {
     console.log('Document Directory Path:', RNFS.DocumentDirectoryPath);
     try {
         const itemsRef = collection(db, 'Items');
-        const snapshot = await getDocs(q);
+        const snapshot = await getDocs(itemsRef);
 
         if (snapshot.empty) {
             console.log('No matching documents.');

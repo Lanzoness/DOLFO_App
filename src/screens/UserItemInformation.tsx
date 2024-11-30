@@ -14,6 +14,7 @@ type RouteParams = {
       'Date Submitted': string;
       'Owner Name': string;
       'Owner ID': string;
+      id: string;
     };
   };
 };

@@ -133,17 +133,19 @@ const ViewLost = forwardRef<AdminFilterDrawerRef>((props, ref) => {
       onApply={handleApplyFilters}
       onReset={handleResetFilters}
     >
-      <FlatList
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        numColumns={2}
-        contentContainerStyle={styles.flatListContainer}
-        columnWrapperStyle={{
-          justifyContent: 'space-between',
-          paddingHorizontal: 4,
-        }}
-      />
+      <View style={styles.contentContainer}>
+        <FlatList
+          data={data}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          numColumns={2}
+          contentContainerStyle={styles.flatListContainer}
+          columnWrapperStyle={{
+            justifyContent: 'space-between',
+            paddingHorizontal: 4,
+          }}
+        />
+      </View>
     </AdminFilterDrawer>
   );
 });
@@ -151,10 +153,17 @@ const ViewLost = forwardRef<AdminFilterDrawerRef>((props, ref) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: UserPalette.secondary_blue,
   },
   flatListContainer: {
     paddingVertical: 8,
+    flexGrow: 1,
+    minHeight: '100%',
+  },
+  contentContainer: {
+    flex: 1,
     backgroundColor: UserPalette.secondary_blue,
+    minHeight: Dimensions.get('window').height,
   },
   itemContainer: {
     margin: 4,

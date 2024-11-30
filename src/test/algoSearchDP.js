@@ -6,13 +6,13 @@ export function algoSearchDP(array, searchString) {
     const searchTerm = searchString.toLowerCase();
 
     for (let i = 0; i < array.length; i++) {
-        const itemName = array[i].toLowerCase();
+        const itemName = array[i]['Item Name'].toLowerCase();
         const distance = editDistance(searchTerm, itemName);
         
         // If the edit distance is within our threshold, consider it a match
         if (distance <= maxDistance) {
             results.push({
-                index: i,
+                item: array[i],
                 distance: distance
             });
         }
@@ -21,8 +21,11 @@ export function algoSearchDP(array, searchString) {
     // Sort results by edit distance (closest matches first)
     results.sort((a, b) => a.distance - b.distance);
     
-    // Return array of matching indices
-    return results.map(result => result.index);
+    // Debug log for results
+    console.log('Matching items:', results.map(result => result.item));
+
+    // Return array of matching items
+    return results.map(result => result.item);
 }
 
 function editDistance(str1, str2) {

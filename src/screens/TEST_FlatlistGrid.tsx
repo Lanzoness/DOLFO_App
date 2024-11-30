@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState, useEffect } from 'react';
-import { Text, StyleSheet, FlatList, Image, Dimensions, TouchableOpacity } from 'react-native';
+import { Text, StyleSheet, FlatList, Image, Dimensions, TouchableOpacity, View, TextInput, Modal } from 'react-native';
 import UserPalette from '../constants/UserPalette';
 import FontSize from '../constants/FontSize';
 import { readLostItems } from '../test/readLostItems';
@@ -9,6 +9,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { algoFilter } from '../test/algoFilter';
 import { processDate } from '../test/processDate.js';
 import { algoSearchDP } from '../test/algoSearchDP';
+import SearchBar from '../components/SearchBar';
 // Define the type for navigation parameters
 type RootStackParamList = {
   UserItemInformation: {
@@ -36,12 +37,14 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
   const navigation = useNavigation<NavigationProp>();
   const [data, setData] = useState<Item[]>([]);
   const [originalData, setOriginalData] = useState<Item[]>([]);
-  // const [alphabeticalOrder, setAlphabeticalOrder] = useState('descending');
+  const [searchQuery, setSearchQuery] = useState('');
   const filterDrawerRef = useRef<FilterDrawerRef>(null);
 
   useImperativeHandle(ref, () => ({
     openDrawer: () => filterDrawerRef.current?.openDrawer(),
     closeDrawer: () => filterDrawerRef.current?.closeDrawer(),
+    handleSearch: (query: string) => handleSearch(query),
+    getChildRef: () => filterDrawerRef.current
   }));
 
   // To fetch the data from the JSON file
@@ -132,12 +135,59 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
     setData(originalData);
   };
 
-  const handleSearch = () => {
-    console.log('Searching for:', algoSearchDP);
+  const handleSearch = (query: string) => {
+    console.log('\n=== Search Process Started ===');
+    console.log('Query:', query);
+    console.log('Original Data Length:', originalData?.length || 0);
+    console.log('Original Data Items:', originalData?.map(item => item['Item Name']));
+
+    if (!originalData || originalData.length === 0) {
+      console.log('No data available to search through');
+      return;
+    }
+
+    setSearchQuery(query);
+    
+    if (!query.trim()) {
+      console.log('Empty query detected - Resetting to original data');
+      console.log('Original data items:', originalData.map(item => item['Item Name']));
+      setData([...originalData]);
+      console.log('Data reset complete');
+      console.log('=== Search Process Ended ===\n');
+      return;
+    }
+
+    try {
+      console.log('Starting search with query:', query);
+      console.log('Searching through items:', originalData.map(item => item['Item Name']));
+      
+      const searchResults = algoSearchDP(originalData, query);
+      
+      console.log('\nSearch Results:');
+      console.log('- Found Items:', searchResults.length);
+      console.log('- Matched Items:', searchResults.map(item => ({
+        name: item['Item Name'],
+        category: item.Category,
+        location: item['Location Found']
+      })));
+      
+      setData(searchResults);
+      console.log('\nState Updates:');
+      console.log('- Previous data count:', data.length);
+      console.log('- New data count:', searchResults.length);
+      
+    } catch (error) {
+      console.error('\nSearch Error:', error);
+      console.log('Resetting to original data due to error');
+      setData([...originalData]);
+    }
+
+    console.log('=== Search Process Ended ===\n');
   };
 
-  const handleSearchAdmin = () => {
-    console.log('Searching for:', algoSearchDP);
+  const handleSearchSubmit = () => {
+    console.log('Search submitted with query:', searchQuery);
+    handleSearch(searchQuery);
   };
 
   return (
@@ -146,6 +196,15 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
       onApply={handleApplyFilters}
       onReset={handleResetFilters}
     >
+      <SearchBar 
+        value={searchQuery}
+        onChangeText={(text) => {
+          setSearchQuery(text);
+          handleSearch(text); // Call handleSearch directly when text changes
+        }}
+        onSubmit={handleSearchSubmit}
+        style={{ marginBottom: 10 }}
+      />
       <FlatList
         data={data}
         renderItem={renderItem}
@@ -156,6 +215,7 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
             justifyContent: 'space-between',
             paddingHorizontal: 4,
         }}
+        extraData={searchQuery}
       />
     </FilterDrawer>
   );

@@ -21,6 +21,8 @@ interface FilterDrawerProps {
 export interface FilterDrawerRef {
   openDrawer: () => void;
   closeDrawer: () => void;
+  getChildRef: () => any;
+  handleSearch: (query: string) => void;
 }
 
 const FilterDrawer: React.ForwardRefRenderFunction<FilterDrawerRef, FilterDrawerProps> = (
@@ -38,6 +40,10 @@ const FilterDrawer: React.ForwardRefRenderFunction<FilterDrawerRef, FilterDrawer
   useImperativeHandle(ref, () => ({
     openDrawer: () => drawerRef.current?.openDrawer(),
     closeDrawer: () => drawerRef.current?.closeDrawer(),
+    getChildRef: () => drawerRef.current,
+    handleSearch: (query: string) => {
+      // Implement search functionality
+    },
   }));
 
   const toggleSortOrder = (type: 'date' | 'category') => {

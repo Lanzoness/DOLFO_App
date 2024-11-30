@@ -1,15 +1,17 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
+import UserPalette from '../constants/UserPalette';
+import FontSize from '../constants/FontSize';
 
-// Define the type for route parameters
+
 type RouteParams = {
   params: {
     item: {
       Image: string;
       ['Item Name']: string;
       Category: string;
-      Description: string;
+      Description: string | string[];
       'Location Found': string;
       'Date Submitted': string;
       'Owner Name': string;
@@ -23,35 +25,131 @@ const UserItemInformation = () => {
   const route = useRoute<RouteProp<{ UserItemInformation: RouteParams }, 'UserItemInformation'>>();
   const { item } = route.params;
 
+  const renderDescriptions = () => {
+    if (Array.isArray(item.Description)) {
+      return item.Description.map((desc: string, index: number) => (
+        <Text
+          key={index}
+          style={[
+            styles.value,
+            index > 0 && styles.additionalValue
+          ]}
+        >
+          {desc}
+        </Text>
+      ));
+    }
+    return <Text style={styles.value}>{item.Description}</Text>;
+  };
+
   return (
-    <View style={styles.container}>
-      <Image source={{ uri: item.Image }} style={styles.image} />
-      <Text style={styles.text}>Item Name: {item['Item Name']}</Text>
-      <Text style={styles.text}>Category: {item.Category}</Text>
-      <Text style={styles.text}>Description: {item.Description}</Text>
-      <Text style={styles.text}>Location Found: {item['Location Found']}</Text>
-      <Text style={styles.text}>Date Submitted: {item['Date Submitted']}</Text>
-      <Text style={styles.text}>Owner Name: {item['Owner Name']}</Text>
-      <Text style={styles.text}>Owner ID: {item['Owner ID']}</Text>
-    </View>
+    <ScrollView style={styles.scrollView}>
+      <View style={styles.container}>
+        <View style={styles.imageContainer}>
+          <View style={styles.imageWrapper}>
+            <Image source={{ uri: item.Image }} style={styles.image} />
+          </View>
+        </View>
+        <View style={styles.infoContainer}>
+          <Text style={styles.label}>Item Name:</Text>
+          <Text style={styles.value}>{item['Item Name']}</Text>
+
+          <Text style={styles.label}>Description:</Text>
+          {renderDescriptions()}
+
+          <Text style={styles.label}>Category:</Text>
+          <Text style={styles.value}>{item.Category}</Text>
+
+          <Text style={styles.label}>Location Found:</Text>
+          <Text style={styles.value}>{item['Location Found']}</Text>
+
+          <Text style={styles.label}>Date and Time Submitted:</Text>
+          <Text style={styles.value}>{item['Date Submitted']}</Text>
+
+          <Text style={styles.label}>Owner Name:</Text>
+          <Text style={styles.value}>{item['Owner Name'] || 'Unavailable'}</Text>
+
+          <Text style={styles.label}>Owner ID:</Text>
+          <Text style={styles.value}>{item['Owner ID'] || 'Unavailable'}</Text>
+        </View>
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+    backgroundColor: UserPalette.green,
+  },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
+  },
+  imageContainer: {
+    backgroundColor: UserPalette.secondary_green,
+    width: '100%',
+    paddingVertical: 20,
+    borderBottomWidth: 2,
+    borderBottomColor: UserPalette.white_font,
+  },
+  imageWrapper: {
+    backgroundColor: 'white',
+    padding: 10,
+    borderRadius: 20,
+    overflow: 'hidden',
+    alignSelf: 'center',
   },
   image: {
-    width: 200,
-    height: 200,
-    marginBottom: 16,
+    width: 300,
+    height: 300,
+    borderRadius: 18,
+    resizeMode: 'cover',
   },
-  text: {
-    fontSize: 18,
-    marginBottom: 8,
+  infoContainer: {
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 20,
+    marginBottom: 15, 
+  },
+  label: {
+    fontWeight: '800',
+    marginTop: 15,
+    paddingTop: 10,
+    borderTopRightRadius: 15,
+    borderTopLeftRadius: 15,
+    paddingLeft: 10,
+    paddingBottom: 7,
+    borderBottomWidth: 1,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderTopWidth: 1,
+    borderLeftColor: 'white',
+    borderRightColor: 'white',
+    borderTopColor: 'white',
+    backgroundColor: 'rgba(0, 71, 171, 0.1)',
+    color: UserPalette.white_font,
+    fontSize: FontSize.body_medium,
+  },
+  value: {
+    fontSize: FontSize.body_medium,
+    color: UserPalette.white_font,
+    fontWeight: '600',
+    marginBottom: 10,
+    paddingLeft: 20,
+    borderBottomWidth: 1,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderLeftColor: 'white',
+    borderRightColor: 'white',
+    paddingBottom: 5,
+    paddingTop: 10,
+    flexWrap: 'wrap',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderBottomColor: 'white',
+  },
+  additionalValue: {
+    marginTop: -10,
+    paddingTop: 10,
   },
 });
 

@@ -1,56 +1,47 @@
-import React, { forwardRef, useImperativeHandle, useRef, useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Text, StyleSheet, FlatList, Image, Dimensions, TouchableOpacity } from 'react-native';
 import UserPalette from '../constants/UserPalette';
 import FontSize from '../constants/FontSize';
-import { readLostItems } from '../test/readLostItems';
-import FilterDrawer, { FilterDrawerRef } from '../components/FilterDrawer';
+import { readLostItems } from '../test/readLostItemsjson';
+import AdminFilterDrawer from '../components/AdminFilterDrawer';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { algoFilter } from '../test/algoFilter';
-import { processDate } from '../test/processDate.js';
 
 // Define the type for navigation parameters
 type RootStackParamList = {
-  UserItemInformation: {
-    item: Item;
+  AdminItemInformation: {
+    item: {
+      Image: string;
+      ['Item Name']: string;
+      Category: string;
+      Description: string;
+      'Location Found': string;
+      'Date Submitted': string;
+      'Owner Name': string;
+      'Owner ID': string;
+    };
   };
 };
 
-type NavigationProp = StackNavigationProp<RootStackParamList, 'UserItemInformation'>;
+type NavigationProp = StackNavigationProp<RootStackParamList, 'AdminItemInformation'>;
 
-// Define the type for the items
-interface Item {
-  Image: string;
-  ['Item Name']: string;
-  Category: string;
-  Description: string;
-  'Location Found': string;
-  'Date Submitted': string;
-  'Owner Name': string;
-  'Owner ID': string;
-  id: string;
+// Update the FilterDrawerRef interface to match AdminFilterDrawer
+interface FilterDrawerRef {
+  openDrawer: () => void;
+  closeDrawer: () => void;
 }
 
-// declaration of  useState and useRef for each variable
-const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
+const AdminViewLost = () => {
   const navigation = useNavigation<NavigationProp>();
-  const [data, setData] = useState<Item[]>([]);
-  const [originalData, setOriginalData] = useState<Item[]>([]);
-  // const [alphabeticalOrder, setAlphabeticalOrder] = useState('descending');
+  const [data, setData] = useState([]);
   const filterDrawerRef = useRef<FilterDrawerRef>(null);
 
-  useImperativeHandle(ref, () => ({
-    openDrawer: () => filterDrawerRef.current?.openDrawer(),
-    closeDrawer: () => filterDrawerRef.current?.closeDrawer(),
-  }));
-
-  // To fetch the data from the JSON file
+  // Fetch data from Firebase
   useEffect(() => {
     const fetchData = async () => {
       try {
         const result = await readLostItems();
         setData(result);
-        setOriginalData(result); // Store original data
       } catch (error) {
         console.error('Error fetching data: ', error);
       }
@@ -59,9 +50,7 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
     fetchData();
   }, []);
 
-
-  // Updated renderItem function to include TouchableOpacity
-  const renderItem = ({ item }: { item: Item }) => (
+  const renderItem = ({ item }) => (
     <TouchableOpacity
       style={[
         styles.itemContainer,
@@ -92,49 +81,37 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
         numberOfLines={1}
         ellipsizeMode="tail"
       >
-        Date: {processDate(item['Date Submitted'], false)}
+        Date: {item['Date Submitted']}
       </Text>
     </TouchableOpacity>
   );
 
-  // Add this new function to handle item press
   const handleItemPress = (item: any) => {
     console.log('Item pressed:', item);
-    navigation.navigate('UserItemInformation', { item });
+    navigation.navigate('AdminItemInformation', { item });
   };
 
-
-  // Reset and done button of the filter drawer
-  const handleApplyFilters = (filters: {
-    startDate: Date | null;
-    endDate: Date | null;
-    dateSortOrder: string;
-    selectedCategory: string;
-  }) => {
-    try {
-      console.log('Parent component received filters:', {
-        startDate: filters.startDate?.toISOString(),
-        endDate: filters.endDate?.toISOString(),
-        dateSortOrder: filters.dateSortOrder,
-        selectedCategory: filters.selectedCategory,
-      });
-
-      // Use filterCache instead of direct filtering
-      const filteredData = algoFilter.filterItems(data, filters);
-      setData(filteredData);
-
-    } catch (error) {
-      console.error('Error in parent handleApplyFilters:', error);
-    }
+  // Update the handleApplyFilters and handleResetFilters to match AdminFilterDrawer props
+  const handleApplyFilters = () => {
+    // Your filter logic here
+    console.log('Applying filters');
   };
 
   const handleResetFilters = () => {
-    setData(originalData);
+    const fetchData = async () => {
+      try {
+        const result = await readLostItems();
+        setData(result);
+      } catch (error) {
+        console.error('Error fetching data: ', error);
+      }
+    };
+
+    fetchData();
   };
 
-
   return (
-    <FilterDrawer
+    <AdminFilterDrawer
       ref={filterDrawerRef}
       onApply={handleApplyFilters}
       onReset={handleResetFilters}
@@ -142,23 +119,22 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
       <FlatList
         data={data}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         numColumns={2}
         contentContainerStyle={styles.flatListContainer}
         columnWrapperStyle={{
-            justifyContent: 'space-between',
-            paddingHorizontal: 4,
+          justifyContent: 'space-between',
+          paddingHorizontal: 4,
         }}
       />
-    </FilterDrawer>
+    </AdminFilterDrawer>
   );
-});
-
+};
 
 const styles = StyleSheet.create({
   flatListContainer: {
     paddingVertical: 8,
-    backgroundColor: UserPalette.green,
+    backgroundColor: UserPalette.blue,
   },
   itemContainer: {
     margin: 4,
@@ -184,8 +160,6 @@ const styles = StyleSheet.create({
     fontSize: FontSize.body_small,
     color: UserPalette.black_font,
     width: '100%',
-    // numberOfLines: 2,
-    // ellipsizeMode: 'tail',
   },
   itemCategory: {
     marginTop: 4,
@@ -220,18 +194,15 @@ const styles = StyleSheet.create({
       width: 0,
       height: 2,
     },
-    // shadowOpacity: 0.25,
-    // shadowRadius: 4.84,
-    // elevation: 5,
     borderWidth: 1,
     borderColor: 'transparent',
     transform: [{ scale: 1 }],
   },
   touchablePressed: {
     backgroundColor: UserPalette.light_blue,
-    borderColor: UserPalette.green,
+    borderColor: UserPalette.blue,
     transform: [{ scale: 0.95 }],
   },
 });
 
-export default TEST_FlatlistGrid;
+export default AdminViewLost;

@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderColor: UserPalette.grey_font,
-    backgroundColor: UserPalette.light_blue,
+    backgroundColor: UserPalette.blue,
     borderWidth: 1.5,
     borderRadius: 8,
     paddingHorizontal: 10,
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     color: UserPalette.red_button,
   },
   okButton: {
-    backgroundColor: UserPalette.secondary_blue,
+    backgroundColor: UserPalette.green,
     paddingVertical: 8,
     paddingHorizontal: 20,
     borderRadius: 5,

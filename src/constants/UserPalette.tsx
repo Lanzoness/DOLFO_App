@@ -1,5 +1,6 @@
 // File path: ./src/constants/UserPalette.tsx
 const UserPalette = {
+  // user-side
   default_background: '#FFFFFF',
   green: '#00722A',
   secondary_green: '#00693E',
@@ -13,7 +14,11 @@ const UserPalette = {
   red_button: '#97233F',
   field_border: '#004526',
   textbox_border_color: '#cccad',
+  white_text_field_bg: '#ccc',
+  blue_text_field_bg: 'rgba(0, 71, 171, 0.1)',
+  lighter_white_text_field_bg: 'rgba(255, 255, 255, 0.05)',
 
+  // admin-side
   blue: '#1D68B3',
   secondary_blue: '#003569',
   admin_field_border: '#002545',

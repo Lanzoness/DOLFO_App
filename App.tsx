@@ -139,7 +139,10 @@ function App(): React.JSX.Element {
           <Stack.Screen 
             name="UserItemInformation" 
             component={UserItemInformation}
-            options={{ headerShown: false }}
+            options={{ 
+              headerTitle: '',
+              headerTintColor: UserPalette.green,
+             }}
           />
           <Stack.Screen
             name="TEST_FlatlistGrid"

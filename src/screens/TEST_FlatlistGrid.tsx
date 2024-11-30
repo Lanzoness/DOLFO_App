@@ -196,15 +196,6 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
       onApply={handleApplyFilters}
       onReset={handleResetFilters}
     >
-      <SearchBar 
-        value={searchQuery}
-        onChangeText={(text) => {
-          setSearchQuery(text);
-          handleSearch(text); // Call handleSearch directly when text changes
-        }}
-        onSubmit={handleSearchSubmit}
-        style={{ marginBottom: 10 }}
-      />
       <FlatList
         data={data}
         renderItem={renderItem}
@@ -212,8 +203,8 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
         numColumns={2}
         contentContainerStyle={styles.flatListContainer}
         columnWrapperStyle={{
-            justifyContent: 'space-between',
-            paddingHorizontal: 4,
+          justifyContent: 'space-between',
+          paddingHorizontal: 4,
         }}
         extraData={searchQuery}
       />

@@ -90,10 +90,7 @@ const ViewLost = forwardRef<AdminFilterDrawerRef>((props, ref) => {
           keyExtractor={(item) => item.id}
           numColumns={2}
           contentContainerStyle={styles.flatListContainer}
-          columnWrapperStyle={{
-            justifyContent: 'space-between',
-            paddingHorizontal: 4,
-          }}
+          columnWrapperStyle={styles.columnWrapper}
         />
       </View>
     </AdminFilterDrawer>
@@ -107,13 +104,10 @@ const styles = StyleSheet.create({
   },
   flatListContainer: {
     paddingVertical: 8,
-    flexGrow: 1,
-    minHeight: '100%',
   },
   contentContainer: {
     flex: 1,
     backgroundColor: UserPalette.secondary_blue,
-    minHeight: Dimensions.get('window').height,
   },
   itemContainer: {
     margin: 4,
@@ -162,6 +156,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'transparent',
     transform: [{ scale: 1 }],
+  },
+  columnWrapper: {
+    justifyContent: 'space-between',
+    paddingHorizontal: 4,
   },
 });
 

@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     color: UserPalette.red_button,
   },
   okButton: {
-    backgroundColor: UserPalette.blue,
+    backgroundColor: UserPalette.secondary_blue,
     paddingVertical: 8,
     paddingHorizontal: 20,
     borderRadius: 5,

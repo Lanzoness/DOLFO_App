@@ -34,6 +34,7 @@ interface Item {
   'Date Submitted': string;
   'Owner Name': string;
   'Owner ID': string;
+  'Is Retrieved': number;
   id: string;
 }
 const AdminViewLost = forwardRef<AdminFilterDrawerRef>((props, ref) => {
@@ -143,17 +144,11 @@ const AdminViewLost = forwardRef<AdminFilterDrawerRef>((props, ref) => {
     dateSortOrder: string;
     selectedStatus: string;
     selectedCategory: string;
-    statuses: {
-      lost: boolean;
-      retrieved: boolean;
-    };
+    statuses: number;
   }) => {
     try {
       console.log('Applying filters:', filters);
-      const filtered = algoFilter.filterItems(originalData, {
-        ...filters,
-        category: filters.selectedCategory
-      });
+      const filtered = algoFilter.filterItems(originalData, filters);
       setFilteredData(filtered);
       
       if (searchQuery.trim()) {

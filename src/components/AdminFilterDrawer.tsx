@@ -14,10 +14,7 @@ interface AdminFilterDrawerProps {
     dateSortOrder: string;
     selectedStatus: string;
     selectedCategory: string;
-    statuses: {
-      lost: boolean;
-      retrieved: boolean;
-    };
+    statuses: number;
   }) => void;
   onReset: () => void;
   onSearch: (query: string) => void;
@@ -114,10 +111,7 @@ const AdminFilterDrawer: React.ForwardRefRenderFunction<AdminFilterDrawerRef, Ad
         dateSortOrder,
         selectedStatus,
         selectedCategory,
-        statuses: {
-          lost: selectedStatus === 'lost',
-          retrieved: selectedStatus === 'retrieved'
-        }
+        statuses: !selectedStatus ? -1 : parseInt(selectedStatus)
       });
     } catch (error) {
       console.error('Error in handleApplyFilters:', error);
@@ -240,13 +234,13 @@ const AdminFilterDrawer: React.ForwardRefRenderFunction<AdminFilterDrawerRef, Ad
         <View style={styles.checkboxContainer}>
           <CustomCheckbox
             label="Lost"
-            checked={selectedStatus === 'lost'}
-            onPress={() => setSelectedStatus(prev => prev === 'lost' ? '' : 'lost')}
+            checked={selectedStatus === '0'}
+            onPress={() => setSelectedStatus(prev => prev === '0' ? '' : '0')}
           />
           <CustomCheckbox
             label="Retrieved"
-            checked={selectedStatus === 'retrieved'}
-            onPress={() => setSelectedStatus(prev => prev === 'retrieved' ? '' : 'retrieved')}
+            checked={selectedStatus === '1'}
+            onPress={() => setSelectedStatus(prev => prev === '1' ? '' : '1')}
           />
         </View>
       </View>

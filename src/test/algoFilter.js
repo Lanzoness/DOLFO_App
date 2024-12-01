@@ -3,6 +3,10 @@ export const algoFilter = {
   filterItems(data, filters) {
     let filteredData = [...data];
     
+    if (filters.statuses !== -1) {
+      filteredData = this.filterByStatus(filteredData, filters.statuses);
+    }
+
     if (filters.selectedCategory) {
       filteredData = this.filterByCategory(filteredData, filters.selectedCategory);
     }
@@ -66,6 +70,34 @@ export const algoFilter = {
 
   filterByCategory(data, category) {
     return data.filter(item => item.Category === category);
+  },
+
+  filterByStatus(data, status) {
+    console.log('Filtering by status:', status);
+    console.log('Data before filter:', data.map(item => ({
+      name: item['Item Name'],
+      isRetrieved: item['Is Retrieved']
+    })));
+    
+    const filtered = data.filter(item => {
+      // Ensure both values are numbers for comparison
+      const itemStatus = parseInt(item['Is Retrieved']);
+      const filterStatus = parseInt(status);
+      
+      console.log(`Comparing item "${item['Item Name']}":`, 
+        `itemStatus (${typeof itemStatus}): ${itemStatus}`, 
+        `filterStatus (${typeof filterStatus}): ${filterStatus}`
+      );
+      
+      return itemStatus === filterStatus;
+    });
+
+    console.log('Data after filter:', filtered.map(item => ({
+      name: item['Item Name'],
+      isRetrieved: item['Is Retrieved']
+    })));
+    
+    return filtered;
   }
 };
 

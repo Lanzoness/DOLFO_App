@@ -181,7 +181,7 @@ const EditLost = () => {
                 <View style={styles.titleRow}>
                   <Text style={styles.fieldLabel}> Finder Name: </Text>
                   <TouchableOpacity style={styles.editButton} onPress={() => handleEditClick('Finder Name')}>
-                    <Image source={require('D:/DOLFO_App/src/assets/icons/EditIcon.png')} style={styles.icon} />
+                    <Image source={require('../assets/icons/EditIcon.png')} style={styles.icon} />
                   </TouchableOpacity>
                 </View>
                 <View style={styles.lineContainer}>
@@ -194,7 +194,7 @@ const EditLost = () => {
                 <View style={styles.titleRow}>
                   <Text style={styles.fieldLabel}> Finder ID: </Text>
                   <TouchableOpacity style={styles.editButton} onPress={() => handleEditClick('Finder ID')}>
-                    <Image source={require('D:/DOLFO_App/src/assets/icons/EditIcon.png')} style={styles.icon} />
+                    <Image source={require('../assets/icons/EditIcon.png')} style={styles.icon} />
                   </TouchableOpacity>
                 </View>
                 <View style={styles.lineContainer}>
@@ -207,7 +207,7 @@ const EditLost = () => {
                 <View style={styles.titleRow}>
                   <Text style={styles.fieldLabel}> Item Name: </Text>
                   <TouchableOpacity style={styles.editButton} onPress={() => handleEditClick('Item Name')}>
-                    <Image source={require('D:/DOLFO_App/src/assets/icons/EditIcon.png')} style={styles.icon} />
+                    <Image source={require('../assets/icons/EditIcon.png')} style={styles.icon} />
                   </TouchableOpacity>
                 </View>
                 <View style={styles.lineContainer}>
@@ -220,7 +220,7 @@ const EditLost = () => {
                 <View style={styles.titleRow}>
                   <Text style={styles.fieldLabel}> Category: </Text>
                   <TouchableOpacity style={styles.editButton} onPress={() => handleEditClick('Category')}>
-                    <Image source={require('D:/DOLFO_App/src/assets/icons/EditIcon.png')} style={styles.icon} />
+                    <Image source={require('../assets/icons/EditIcon.png')} style={styles.icon} />
                   </TouchableOpacity>
                 </View>
                 <View style={styles.lineContainer}>
@@ -233,7 +233,7 @@ const EditLost = () => {
                 <View style={styles.titleRow}>
                   <Text style={styles.fieldLabel}>Location Found:</Text>
                   <TouchableOpacity style={styles.editButton} onPress={() => handleEditClick('Location Found')}>
-                    <Image source={require('D:/DOLFO_App/src/assets/icons/EditIcon.png')} style={styles.icon} />
+                    <Image source={require('../assets/icons/EditIcon.png')} style={styles.icon} />
                   </TouchableOpacity>
                 </View>
                 <View style={styles.lineContainer}>
@@ -248,7 +248,7 @@ const EditLost = () => {
                     <Text style={styles.fieldLabel}> Owner Name:</Text>
                   </Text>
                   <TouchableOpacity style={styles.editButton} onPress={() => handleEditClick('Owner Name')}>
-                    <Image source={require('D:/DOLFO_App/src/assets/icons/EditIcon.png')} style={styles.icon} />
+                    <Image source={require('../assets/icons/EditIcon.png')} style={styles.icon} />
                   </TouchableOpacity>
                 </View>
                 <View style={styles.lineContainer}>
@@ -263,7 +263,7 @@ const EditLost = () => {
                     <Text style={styles.fieldLabel}> Owner ID:</Text>
                   </Text>
                   <TouchableOpacity style={styles.editButton} onPress={() => handleEditClick('Owner ID')}>
-                    <Image source={require('D:/DOLFO_App/src/assets/icons/EditIcon.png')} style={styles.icon} />
+                    <Image source={require('../assets/icons/EditIcon.png')} style={styles.icon} />
                   </TouchableOpacity>
                 </View>
                 <View style={styles.lineContainer}>
@@ -287,7 +287,7 @@ const EditLost = () => {
                           style={styles.editButton}
                           onPress={() => handleEditClick('Item Description', index)}
                         >
-                          <Image source={require('D:/DOLFO_App/src/assets/icons/EditIcon.png')} style={styles.icon} />
+                          <Image source={require('../assets/icons/EditIcon.png')} style={styles.icon} />
                         </TouchableOpacity>
                       </View>
                       <View style={styles.line} />

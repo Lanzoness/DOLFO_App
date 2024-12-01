@@ -61,7 +61,20 @@ function App(): React.JSX.Element {
   };
 
   const handleSearchAdmin = () => {
-    console.log('Searching for:', searchQuery);
+    console.log('App.tsx - Search initiated with query:', searchQuery);
+    if (adminFilterDrawerRef.current) {
+      console.log('AdminFilterDrawerRef found, attempting search...');
+      // Call handleSearchAdmin directly on AdminViewLost
+      const adminViewLostRef = adminFilterDrawerRef.current;
+      if (adminViewLostRef.handleSearchAdmin) {
+        console.log('Calling handleSearchAdmin on AdminViewLost');
+        adminViewLostRef.handleSearchAdmin(searchQuery);
+      } else {
+        console.log('handleSearchAdmin not found on AdminViewLost');
+      }
+    } else {
+      console.log('AdminFilterDrawerRef not found');
+    }
   };
 
   const handleApplyFilters = () => {

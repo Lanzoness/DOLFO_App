@@ -7,6 +7,7 @@ import Button from '../components/button';
 import OverlayInput from '../components/EditItemOverlay';
 import { useRoute } from '@react-navigation/native';
 import { editItem } from '../test/editItem';
+import { deleteItem } from '../test/deleteItem';
 
 // Define a type for the image data
 type ImageData = {
@@ -150,9 +151,15 @@ const EditLost = () => {
     }
   };
 
-  const handleArchive = () => {
-    console.log('Archive button clicked');
-    // Future functionality for archiving an item
+  const handleArchive = async () => {
+    try {
+      console.log('Archive button clicked');
+      await deleteItem(item.id, item.Image);
+      Alert.alert('Success', 'Item archived successfully');
+    } catch (error) {
+      console.error('Error archiving item:', error);
+      Alert.alert('Error', 'Failed to archive item');
+    }
   };
 
   return (

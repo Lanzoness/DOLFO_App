@@ -44,11 +44,50 @@ function App(): React.JSX.Element {
   const adminFilterDrawerRef = useRef<AdminFilterDrawerRef>(null);
 
   const handleSearch = () => {
-    console.log('Searching for:', searchQuery);
+    console.log('App.tsx - Search initiated with query:', searchQuery);
+    if (filterDrawerRef.current) {
+      console.log('FilterDrawerRef found, attempting search...');
+      // Call handleSearch directly on TEST_FlatlistGrid
+      const testFlatlistGridRef = filterDrawerRef.current;
+      if (testFlatlistGridRef.handleSearch) {
+        console.log('Calling handleSearch on TEST_FlatlistGrid');
+        testFlatlistGridRef.handleSearch(searchQuery);
+      } else {
+        console.log('handleSearch not found on TEST_FlatlistGrid');
+      }
+    } else {
+      console.log('FilterDrawerRef not found');
+    }
   };
 
   const handleSearchAdmin = () => {
-    console.log('Searching for:', searchQuery);
+    console.log('App.tsx - Search initiated with query:', searchQuery);
+    if (adminFilterDrawerRef.current) {
+      console.log('AdminFilterDrawerRef found, attempting search...');
+      // Call handleSearchAdmin directly on AdminViewLost
+      const adminViewLostRef = adminFilterDrawerRef.current;
+      if (adminViewLostRef.handleSearchAdmin) {
+        console.log('Calling handleSearchAdmin on AdminViewLost');
+        adminViewLostRef.handleSearchAdmin(searchQuery);
+      } else {
+        console.log('handleSearchAdmin not found on AdminViewLost');
+      }
+    } else {
+      console.log('AdminFilterDrawerRef not found');
+    }
+  };
+
+  const handleApplyFilters = () => {
+    console.log('--- Applying Filters ---');
+    console.log('Current filters:', filters);
+    // Add logic to apply filters
+    console.log('Filters applied');
+  };
+
+  const handleResetFilters = () => {
+    console.log('--- Resetting Filters ---');
+    setFilters({});
+    console.log('Filters reset');
   };
 
   return (
@@ -157,6 +196,7 @@ function App(): React.JSX.Element {
                   />
                   <TouchableOpacity
                     onPress={() => {
+                      console.log('Opening filter drawer');
                       filterDrawerRef.current?.openDrawer();
                     }}
                     style={styles.filterButton}

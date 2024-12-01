@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { TextInput, StyleSheet, View, Image, ViewStyle, TouchableOpacity, Modal, Text } from 'react-native';
+import { View, TextInput, StyleSheet, TouchableOpacity, Modal, Text } from 'react-native';
 import UserPalette from '../constants/UserPalette';
+import FontSize from '../constants/FontSize';
 
 interface AdminSearchBarProps {
   value: string;
   onChangeText: (text: string) => void;
   onSubmit?: () => void;
-  style?: ViewStyle;
+  style?: object;
 }
 
 const AdminSearchBar: React.FC<AdminSearchBarProps> = ({ value, onChangeText, onSubmit, style }) => {
@@ -20,20 +21,31 @@ const AdminSearchBar: React.FC<AdminSearchBarProps> = ({ value, onChangeText, on
     onChangeText(text);
   };
 
+  const handleSubmit = () => {
+    if (onSubmit) {
+      onSubmit();
+    }
+  };
+
   return (
     <View style={[styles.container, style]}>
-      <TouchableOpacity onPress={onSubmit}>
-        <Image source={require('../assets/icons/SearchBar_Icon.png')} style={styles.icon} />
-      </TouchableOpacity>
-      <TextInput
-        style={styles.input}
-        placeholder="Search..."
-        value={value}
-        onChangeText={handleTextChange}
-        onSubmitEditing={onSubmit}
-        returnKeyType="search"
-        maxLength={30}
-      />
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Search lost items..."
+          placeholderTextColor={UserPalette.grey_font}
+          value={value}
+          onChangeText={handleTextChange}
+          onSubmitEditing={handleSubmit}
+          returnKeyType="search"
+          maxLength={20}
+        />
+        {value.length > 0 && (
+          <TouchableOpacity onPress={() => onChangeText('')} style={styles.clearButton}>
+            <Text style={styles.clearButtonText}>✕</Text>
+          </TouchableOpacity>
+        )}
+      </View>
 
       <Modal
         transparent={true}
@@ -60,26 +72,31 @@ const AdminSearchBar: React.FC<AdminSearchBarProps> = ({ value, onChangeText, on
 
 const styles = StyleSheet.create({
   container: {
+    padding: 8,
+    backgroundColor: UserPalette.white_font,
+  },
+  searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderColor: UserPalette.grey_font,
-    backgroundColor: UserPalette.blue,
-    borderWidth: 1.5,
+    backgroundColor: UserPalette.light_gray,
     borderRadius: 8,
-    paddingHorizontal: 10,
-    marginLeft: -70,
-    width: 300,
-    flex: 1,
-  },
-  icon: {
-    width: 16,
-    height: 15,
-    marginRight: 5,
+    paddingHorizontal: 8,
+    borderWidth: 1.5,
+    borderColor: UserPalette.grey_font,
   },
   input: {
     flex: 1,
+    fontSize: FontSize.body_medium,
     color: UserPalette.black_font,
+    paddingVertical: 8,
     height: 35,
+  },
+  clearButton: {
+    padding: 4,
+  },
+  clearButtonText: {
+    color: UserPalette.grey_font,
+    fontSize: 16,
   },
   modalOverlay: {
     flex: 1,
@@ -88,7 +105,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: 'white',
+    backgroundColor: UserPalette.white_font,
     padding: 20,
     borderRadius: 10,
     alignItems: 'center',

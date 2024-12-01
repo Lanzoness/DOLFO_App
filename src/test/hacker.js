@@ -42,7 +42,7 @@ function bruteForce(targetHash, maxLen) {
 }
 
 // Example usage
-const targetHash = algoHashing('sadtest')['Password Hash'];
-bruteForce(targetHash, 7);
+const targetHash = algoHashing('test')['Password Hash'];
+bruteForce(targetHash, 4);
 
 

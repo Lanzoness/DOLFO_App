@@ -1,8 +1,9 @@
 import React, { useState, forwardRef, useImperativeHandle, useRef } from 'react';
-import { View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, TextInput, TouchableOpacity, Animated } from 'react-native';
 import { DrawerLayout } from 'react-native-gesture-handler';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { Picker } from '@react-native-picker/picker';
+import { algoFilter } from '../test/algoFilter';
 import UserPalette from '../constants/UserPalette';
 import FontSize from '../constants/FontSize';
 
@@ -18,16 +19,22 @@ interface AdminFilterDrawerProps {
     };
   }) => void;
   onReset: () => void;
+  onSearch: (query: string) => void;
   children: React.ReactNode;
 }
 
 export interface AdminFilterDrawerRef {
   openDrawer: () => void;
   closeDrawer: () => void;
+  getChildRef: () => any;
+  handleSearch: (query: string) => void;
+  handleSearchAdmin: (query: string) => void;
+  drawerVisible: boolean;
+  drawerAnimation: Animated.Value;
 }
 
 const AdminFilterDrawer: React.ForwardRefRenderFunction<AdminFilterDrawerRef, AdminFilterDrawerProps> = (
-  { children, onApply, onReset },
+  { children, onApply, onReset, onSearch },
   ref
 ) => {
   const drawerRef = useRef<DrawerLayout>(null);
@@ -37,17 +44,27 @@ const AdminFilterDrawer: React.ForwardRefRenderFunction<AdminFilterDrawerRef, Ad
   const [currentPicker, setCurrentPicker] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
   const [dateSortOrder, setDateSortOrder] = useState('desc');
-  const [statuses, setStatuses] = useState<{
-    lost: boolean;
-    retrieved: boolean;
-  }>({
-    lost: false,
-    retrieved: false,
-  });
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const drawerAnimation = useRef(new Animated.Value(0)).current;
 
   useImperativeHandle(ref, () => ({
-    openDrawer: () => drawerRef.current?.openDrawer(),
-    closeDrawer: () => drawerRef.current?.closeDrawer(),
+    openDrawer: () => {
+      setDrawerVisible(true);
+      drawerRef.current?.openDrawer();
+    },
+    closeDrawer: () => {
+      setDrawerVisible(false);
+      drawerRef.current?.closeDrawer();
+    },
+    getChildRef: () => drawerRef.current,
+    handleSearch: (query: string) => {
+      onSearch(query);
+    },
+    handleSearchAdmin: (query: string) => {
+      onSearch(query);
+    },
+    drawerVisible,
+    drawerAnimation,
   }));
 
   // Enables toggling the ascending/ descending button
@@ -74,10 +91,6 @@ const AdminFilterDrawer: React.ForwardRefRenderFunction<AdminFilterDrawerRef, Ad
     setEndDate(null);
     setSelectedStatus('');
     setDateSortOrder('desc');
-    setStatuses({
-      lost: false,
-      retrieved: false
-    });
     
     // Call the parent onReset callback
     onReset();
@@ -85,24 +98,23 @@ const AdminFilterDrawer: React.ForwardRefRenderFunction<AdminFilterDrawerRef, Ad
 
   const handleApplyFilters = () => {
     try {
-      console.log('Parent component received filters:', {
+      console.log('Applying filters with values:', {
         startDate: startDate?.toISOString(),
         endDate: endDate?.toISOString(),
         dateSortOrder,
         selectedStatus,
-        statuses,
       });
 
-      // Call the parent onApply callback with current filter values
       onApply({
         startDate,
         endDate,
         dateSortOrder,
         selectedStatus,
-        statuses,
+        statuses: {
+          lost: selectedStatus === 'lost',
+          retrieved: selectedStatus === 'retrieved'
+        }
       });
-
-      console.log('onApply has been called');
     } catch (error) {
       console.error('Error in handleApplyFilters:', error);
     }
@@ -224,19 +236,13 @@ const AdminFilterDrawer: React.ForwardRefRenderFunction<AdminFilterDrawerRef, Ad
         <View style={styles.checkboxContainer}>
           <CustomCheckbox
             label="Lost"
-            checked={statuses.lost}
-            onPress={() => setStatuses(prev => ({
-              ...prev,
-              lost: !prev.lost
-            }))}
+            checked={selectedStatus === 'lost'}
+            onPress={() => setSelectedStatus(prev => prev === 'lost' ? '' : 'lost')}
           />
           <CustomCheckbox
             label="Retrieved"
-            checked={statuses.retrieved}
-            onPress={() => setStatuses(prev => ({
-              ...prev,
-              retrieved: !prev.retrieved
-            }))}
+            checked={selectedStatus === 'retrieved'}
+            onPress={() => setSelectedStatus(prev => prev === 'retrieved' ? '' : 'retrieved')}
           />
         </View>
       </View>

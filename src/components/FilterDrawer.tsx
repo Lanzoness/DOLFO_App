@@ -21,6 +21,8 @@ interface FilterDrawerProps {
 export interface FilterDrawerRef {
   openDrawer: () => void;
   closeDrawer: () => void;
+  getChildRef: () => any;
+  handleSearch: (query: string) => void;
 }
 
 const FilterDrawer: React.ForwardRefRenderFunction<FilterDrawerRef, FilterDrawerProps> = (
@@ -38,6 +40,10 @@ const FilterDrawer: React.ForwardRefRenderFunction<FilterDrawerRef, FilterDrawer
   useImperativeHandle(ref, () => ({
     openDrawer: () => drawerRef.current?.openDrawer(),
     closeDrawer: () => drawerRef.current?.closeDrawer(),
+    getChildRef: () => drawerRef.current,
+    handleSearch: (query: string) => {
+      // Implement search functionality
+    },
   }));
 
   const toggleSortOrder = (type: 'date' | 'category') => {
@@ -47,19 +53,25 @@ const FilterDrawer: React.ForwardRefRenderFunction<FilterDrawerRef, FilterDrawer
   };
 
   const openDatePicker = (pickerType: 'start' | 'end') => {
-    handleReset(); // Reset data when date picker is opened
     setCurrentPicker(pickerType);
     setDatePickerVisibility(true);
   };
 
   const handleDateConfirm = (date: Date) => {
-    if (currentPicker === 'start') setStartDate(date);
-    if (currentPicker === 'end') setEndDate(date);
+    if (currentPicker === 'start') {
+      const startDate = new Date(date);
+      startDate.setHours(1, 0, 0, 0);  // 1:00 AM
+      setStartDate(startDate);
+    }
+    if (currentPicker === 'end') {
+      const endDate = new Date(date);
+      endDate.setHours(23, 59, 59, 999);  // 11:59 PM
+      setEndDate(endDate);
+    }
     setDatePickerVisibility(false);
   };
 
   const handleCategoryChange = (itemValue: string) => {
-    handleReset(); // Reset data when category is changed
     setSelectedCategory(itemValue);
   };
 

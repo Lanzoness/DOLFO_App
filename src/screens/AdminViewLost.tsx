@@ -2,24 +2,18 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Text, StyleSheet, FlatList, Image, Dimensions, TouchableOpacity } from 'react-native';
 import UserPalette from '../constants/UserPalette';
 import FontSize from '../constants/FontSize';
-import { readLostItems } from '../test/readLostItemsjson';
+import { readLostItems } from '../test/readLostItems.js';
 import AdminFilterDrawer from '../components/AdminFilterDrawer';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { AdminFilterDrawerRef } from '../components/AdminFilterDrawer';
+import { algoSearch } from '../test/algoSearch.js';
+import { algoFilter } from '../test/algoFilter';
 
 // Define the type for navigation parameters
 type RootStackParamList = {
   AdminItemInformation: {
-    item: {
-      Image: string;
-      ['Item Name']: string;
-      Category: string;
-      Description: string;
-      'Location Found': string;
-      'Date Submitted': string;
-      'Owner Name': string;
-      'Owner ID': string;
-    };
+    item: Item;
   };
 };
 
@@ -30,20 +24,34 @@ interface FilterDrawerRef {
   openDrawer: () => void;
   closeDrawer: () => void;
 }
-
+interface Item {
+  Image: string;
+  ['Item Name']: string;
+  Category: string;
+  Description: string;
+  'Location Found': string;
+  'Date Submitted': string;
+  'Owner Name': string;
+  'Owner ID': string;
+  id: string;
+}
 const AdminViewLost = () => {
   const navigation = useNavigation<NavigationProp>();
-  const [data, setData] = useState([]);
-  const filterDrawerRef = useRef<FilterDrawerRef>(null);
+  const [data, setData] = useState<Item[]>([]);
+  const [originalData, setOriginalData] = useState<Item[]>([]);
+  const [filteredData, setFilteredData] = useState<Item[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const filterDrawerRef = useRef<AdminFilterDrawerRef>(null);
 
-  // Fetch data from Firebase
+  // Initial data fetch
   useEffect(() => {
     const fetchData = async () => {
       try {
         const result = await readLostItems();
         setData(result);
+        setOriginalData(result);
       } catch (error) {
-        console.error('Error fetching data: ', error);
+        console.error('Error fetching data:', error);
       }
     };
 
@@ -91,23 +99,60 @@ const AdminViewLost = () => {
     navigation.navigate('AdminItemInformation', { item });
   };
 
-  // Update the handleApplyFilters and handleResetFilters to match AdminFilterDrawer props
-  const handleApplyFilters = () => {
-    // Your filter logic here
-    console.log('Applying filters');
+  const handleSearchAdmin = (query: string) => {
+    console.log('\n=== AdminViewLost Search Process Started ===');
+    console.log('Query received:', query);
+    setSearchQuery(query);
+    
+    if (!query.trim()) {
+      setData(filteredData.length > 0 ? filteredData : originalData);
+      return;
+    }
+
+    try {
+      const baseData = filteredData.length > 0 ? filteredData : originalData;
+      const searchResults = algoSearch(baseData, query);
+      console.log('Search results:', searchResults.map(item => item['Item Name']));
+      setData(searchResults);
+    } catch (error) {
+      console.error('Search error:', error);
+      setData(filteredData.length > 0 ? filteredData : originalData);
+    }
+  };
+
+  const handleApplyFilters = (filters: {
+    startDate: Date | null;
+    endDate: Date | null;
+    dateSortOrder: string;
+    selectedStatus: string;
+    statuses: {
+      lost: boolean;
+      retrieved: boolean;
+    };
+  }) => {
+    try {
+      const filtered = algoFilter.filterItems(originalData, filters);
+      setFilteredData(filtered);
+      
+      if (searchQuery.trim()) {
+        const searchResults = algoSearch(filtered, searchQuery);
+        setData(searchResults);
+      } else {
+        setData(filtered);
+      }
+    } catch (error) {
+      console.error('Error in handleApplyFilters:', error);
+    }
   };
 
   const handleResetFilters = () => {
-    const fetchData = async () => {
-      try {
-        const result = await readLostItems();
-        setData(result);
-      } catch (error) {
-        console.error('Error fetching data: ', error);
-      }
-    };
-
-    fetchData();
+    setFilteredData([]);
+    if (searchQuery.trim()) {
+      const searchResults = algoSearch(originalData, searchQuery);
+      setData(searchResults);
+    } else {
+      setData(originalData);
+    }
   };
 
   return (
@@ -115,6 +160,7 @@ const AdminViewLost = () => {
       ref={filterDrawerRef}
       onApply={handleApplyFilters}
       onReset={handleResetFilters}
+      onSearch={handleSearchAdmin}
     >
       <FlatList
         data={data}

@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useRef, useState, useEffect } from 'react';
-import { Text, StyleSheet, FlatList, Image, Dimensions, TouchableOpacity } from 'react-native';
+import { Text, StyleSheet, FlatList, Image, Dimensions, TouchableOpacity, View, TextInput, Modal } from 'react-native';
 import UserPalette from '../constants/UserPalette';
 import FontSize from '../constants/FontSize';
 import { readLostItems } from '../test/readLostItems';
@@ -8,7 +8,8 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { algoFilter } from '../test/algoFilter';
 import { processDate } from '../test/processDate.js';
-
+import { algoSearch } from '../test/algoSearch.js';
+import SearchBar from '../components/SearchBar';
 // Define the type for navigation parameters
 type RootStackParamList = {
   UserItemInformation: {
@@ -36,12 +37,15 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
   const navigation = useNavigation<NavigationProp>();
   const [data, setData] = useState<Item[]>([]);
   const [originalData, setOriginalData] = useState<Item[]>([]);
-  // const [alphabeticalOrder, setAlphabeticalOrder] = useState('descending');
+  const [filteredData, setFilteredData] = useState<Item[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const filterDrawerRef = useRef<FilterDrawerRef>(null);
 
   useImperativeHandle(ref, () => ({
     openDrawer: () => filterDrawerRef.current?.openDrawer(),
     closeDrawer: () => filterDrawerRef.current?.closeDrawer(),
+    handleSearch: (query: string) => handleSearch(query),
+    getChildRef: () => filterDrawerRef.current
   }));
 
   // To fetch the data from the JSON file
@@ -120,8 +124,16 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
       });
 
       // Use filterCache instead of direct filtering
-      const filteredData = algoFilter.filterItems(data, filters);
-      setData(filteredData);
+      const filtered = algoFilter.filterItems(originalData, filters);
+      setFilteredData(filtered);
+      
+      // If there's an active search, apply it to filtered data
+      if (searchQuery.trim()) {
+        const searchResults = algoSearch(filtered, searchQuery);
+        setData(searchResults);
+      } else {
+        setData(filtered);
+      }
 
     } catch (error) {
       console.error('Error in parent handleApplyFilters:', error);
@@ -129,9 +141,72 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
   };
 
   const handleResetFilters = () => {
-    setData(originalData);
+    setFilteredData([]);
+    
+    // After reset, if there's a search query, apply it to original data
+    if (searchQuery.trim()) {
+      const searchResults = algoSearch(originalData, searchQuery);
+      setData(searchResults);
+    } else {
+      setData(originalData);
+    }
   };
 
+  const handleSearch = (query: string) => {
+    console.log('\n=== Search Process Started ===');
+    console.log('Query:', query);
+    console.log('Original Data Length:', originalData?.length || 0);
+    console.log('Original Data Items:', originalData?.map(item => item['Item Name']));
+
+    if (!originalData || originalData.length === 0) {
+      console.log('No data available to search through');
+      return;
+    }
+
+    setSearchQuery(query);
+    
+    if (!query.trim()) {
+      console.log('Empty query detected - Resetting to original data');
+      console.log('Original data items:', originalData.map(item => item['Item Name']));
+      setData(filteredData.length > 0 ? filteredData : originalData);
+      console.log('Data reset complete');
+      console.log('=== Search Process Ended ===\n');
+      return;
+    }
+
+    try {
+      console.log('Starting search with query:', query);
+      console.log('Searching through items:', originalData.map(item => item['Item Name']));
+      
+      const baseData = filteredData.length > 0 ? filteredData : originalData;
+      const searchResults = algoSearch(baseData, query);
+      
+      console.log('\nSearch Results:');
+      console.log('- Found Items:', searchResults.length);
+      console.log('- Matched Items:', searchResults.map(item => ({
+        name: item['Item Name'],
+        category: item.Category,
+        location: item['Location Found']
+      })));
+      
+      setData(searchResults);
+      console.log('\nState Updates:');
+      console.log('- Previous data count:', data.length);
+      console.log('- New data count:', searchResults.length);
+      
+    } catch (error) {
+      console.error('\nSearch Error:', error);
+      console.log('Resetting to original data due to error');
+      setData(filteredData.length > 0 ? filteredData : originalData);
+    }
+
+    console.log('=== Search Process Ended ===\n');
+  };
+
+  const handleSearchSubmit = () => {
+    console.log('Search submitted with query:', searchQuery);
+    handleSearch(searchQuery);
+  };
 
   return (
     <FilterDrawer
@@ -146,9 +221,10 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
         numColumns={2}
         contentContainerStyle={styles.flatListContainer}
         columnWrapperStyle={{
-            justifyContent: 'space-between',
-            paddingHorizontal: 4,
+          justifyContent: 'space-between',
+          paddingHorizontal: 4,
         }}
+        extraData={searchQuery}
       />
     </FilterDrawer>
   );

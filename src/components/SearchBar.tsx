@@ -20,9 +20,15 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChangeText, onSubmit, st
     onChangeText(text);
   };
 
+  const handleSubmit = () => {
+    if (onSubmit) {
+      onSubmit();
+    }
+  };
+
   return (
     <View style={[styles.container, style]}>
-      <TouchableOpacity onPress={onSubmit}>
+      <TouchableOpacity onPress={handleSubmit}>
         <Image source={require('../assets/icons/SearchBar_Icon.png')} style={styles.icon} />
       </TouchableOpacity>
       <TextInput
@@ -30,7 +36,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChangeText, onSubmit, st
         placeholder="Search..."
         value={value}
         onChangeText={handleTextChange}
-        onSubmitEditing={onSubmit}
+        onSubmitEditing={handleSubmit}
         returnKeyType="search"
         maxLength={30}
       />

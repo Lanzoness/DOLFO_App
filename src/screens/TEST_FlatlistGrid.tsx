@@ -129,7 +129,7 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
       
       // If there's an active search, apply it to filtered data
       if (searchQuery.trim()) {
-        const searchResults = algoSearchDP(filtered, searchQuery);
+        const searchResults = algoSearch(filtered, searchQuery);
         setData(searchResults);
       } else {
         setData(filtered);
@@ -145,7 +145,7 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
     
     // After reset, if there's a search query, apply it to original data
     if (searchQuery.trim()) {
-      const searchResults = algoSearchDP(originalData, searchQuery);
+      const searchResults = algoSearch(originalData, searchQuery);
       setData(searchResults);
     } else {
       setData(originalData);
@@ -179,7 +179,7 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
       console.log('Searching through items:', originalData.map(item => item['Item Name']));
       
       const baseData = filteredData.length > 0 ? filteredData : originalData;
-      const searchResults = algoSearchDP(baseData, query);
+      const searchResults = algoSearch(baseData, query);
       
       console.log('\nSearch Results:');
       console.log('- Found Items:', searchResults.length);

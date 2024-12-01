@@ -15,14 +15,14 @@ export const algoFilter = {
   },
 
   filterByDateRange(data, startDate, endDate, dateSortOrder = 'desc') {
-    // Filter data based on date range
+    // First filter by date range
     const filteredData = data.filter(item => {
       const itemDate = new Date(item['Date Submitted']);
       return (!startDate || itemDate >= startDate) &&
              (!endDate || itemDate <= endDate);
     });
 
-    // Sort the filtered data using quicksort
+    // Then sort the filtered data
     return this.quickSort(filteredData, dateSortOrder);
   },
 
@@ -38,16 +38,30 @@ export const algoFilter = {
 
     for (let i = 0; i < data.length; i++) {
       if (i === pivotIndex) continue;
+      
       const currentDate = new Date(data[i]['Date Submitted']);
-      if ((dateSortOrder === 'asc' && currentDate <= pivot) ||
-          (dateSortOrder === 'desc' && currentDate > pivot)) {
-        left.push(data[i]);
-      } else {
-        right.push(data[i]);
+      
+      // Fix the comparison logic for proper sorting
+      if (dateSortOrder === 'asc') {
+        if (currentDate < pivot) {
+          left.push(data[i]);
+        } else {
+          right.push(data[i]);
+        }
+      } else { // 'desc'
+        if (currentDate > pivot) {
+          left.push(data[i]);
+        } else {
+          right.push(data[i]);
+        }
       }
     }
 
-    return [...this.quickSort(left, dateSortOrder), data[pivotIndex], ...this.quickSort(right, dateSortOrder)];
+    if (dateSortOrder === 'asc') {
+      return [...this.quickSort(left, dateSortOrder), data[pivotIndex], ...this.quickSort(right, dateSortOrder)];
+    } else {
+      return [...this.quickSort(left, dateSortOrder), data[pivotIndex], ...this.quickSort(right, dateSortOrder)];
+    }
   },
 
   filterByCategory(data, category) {

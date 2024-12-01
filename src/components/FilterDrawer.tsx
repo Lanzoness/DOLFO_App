@@ -53,7 +53,6 @@ const FilterDrawer: React.ForwardRefRenderFunction<FilterDrawerRef, FilterDrawer
   };
 
   const openDatePicker = (pickerType: 'start' | 'end') => {
-    handleReset(); // Reset data when date picker is opened
     setCurrentPicker(pickerType);
     setDatePickerVisibility(true);
   };
@@ -73,7 +72,6 @@ const FilterDrawer: React.ForwardRefRenderFunction<FilterDrawerRef, FilterDrawer
   };
 
   const handleCategoryChange = (itemValue: string) => {
-    handleReset(); // Reset data when category is changed
     setSelectedCategory(itemValue);
   };
 

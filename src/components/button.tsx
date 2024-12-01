@@ -3,12 +3,15 @@ import { TouchableOpacity, Text, StyleSheet, Image, View } from 'react-native';
 
 interface ButtonProps {
     label: string;
-    variant?: 'primary' | 'secondary' | 'tertiary' | 'quaternary' | 'quinary';
+    variant?: 'primary' | 'secondary' | 'tertiary' | 'quaternary' | 'quinary' | 'editButtons';
     onClick: () => void;
     children?: React.ReactNode;
     style?: any;
     color?: string;
-    isAdmin?: boolean; //change between UserProfile and UserAdminProfile pictures
+    isAdmin?: boolean;
+    editText?: string;
+    editBackgroundColor?: string;
+    editIcon?: any;
 }
 
 const Button: React.FC<ButtonProps> = ({ 
@@ -18,7 +21,10 @@ const Button: React.FC<ButtonProps> = ({
     children, 
     style,
     color = '#00722A',
-    isAdmin = false
+    isAdmin = false,
+    editText,
+    editBackgroundColor,
+    editIcon
 }) => {
     return (
         <TouchableOpacity 
@@ -27,13 +33,14 @@ const Button: React.FC<ButtonProps> = ({
                 styles.base, 
                 styles[variant], 
                 (variant === 'secondary' || variant === 'tertiary' || variant === 'quinary') ? { backgroundColor: color, borderColor: color } : {},
+                variant === 'editButtons' && editBackgroundColor ? { backgroundColor: editBackgroundColor } : {},
                 style
             ]}
         >
             {(variant === 'secondary' || variant === 'tertiary' || variant === 'quinary') ? (
                 <>
                     <Text style={[styles.baseText, styles[`${variant}Text`]]}>
-                        {variant === 'secondary' ? 'View Lost\nItems' : variant === 'tertiary' ? 'Submit Lost\nItem' : 'Edit Lost\nItems'}
+                        {variant === 'secondary' ? 'View Lost\nItems' : variant === 'tertiary' ? 'Submit Lost\nItem' : 'View & Edit\nLost Items'}
                     </Text>
                     <Image 
                         source={variant === 'secondary' 
@@ -52,6 +59,15 @@ const Button: React.FC<ButtonProps> = ({
                             : require('../assets/icons/UserProfile.png')}
                         style={styles.smallQuaternaryImage}
                     />
+                </View>
+            ) : variant === 'editButtons' ? (
+                <View style={styles.editButtonsContainer}>
+                    <View style={styles.editButtonsInnerContainer}>
+                        {editIcon && <Image source={editIcon} style={styles.editButtonIcon} resizeMode="contain" />}
+                        <Text style={styles.editButtonsText}>
+                            {editText || 'Default Edit Text'}
+                        </Text>
+                    </View>
                 </View>
             ) : (
                 <Text style={[styles.baseText, styles[`${variant}Text`]]}>
@@ -175,6 +191,45 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     editLostImage: {
+        resizeMode: 'contain',
+    },
+    editButtons: {
+        width: 136,
+        height: 100,
+        paddingHorizontal: 19,
+        paddingVertical: 16,
+        backgroundColor: '#1e753e',
+        borderRadius: 10,
+        borderWidth: 4,
+        borderColor: 'white',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 2.5,
+    },
+    editButtonsContainer: {
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 18,
+        height: 63.74,
+    },
+    editButtonsText: {
+        color: 'white',
+        fontSize: 12,
+        fontFamily: 'Ubuntu Sans',
+        fontWeight: '600',
+        letterSpacing: 0.8,
+        textAlign: 'center',
+        alignSelf: 'stretch',
+    },
+    editButtonsInnerContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    editButtonIcon: {
+        width: 40,
+        height: 40,
+        marginBottom: 10,
         resizeMode: 'contain',
     },
 });

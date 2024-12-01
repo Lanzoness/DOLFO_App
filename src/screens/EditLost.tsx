@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, Text, ScrollView, SafeAreaView, Image, TouchableOpacity } from 'react-native';
+import { View, TextInput, StyleSheet, Text, ScrollView, SafeAreaView, Image, TouchableOpacity, Alert } from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list';
 import UserPalette from '../constants/UserPalette';
 import FontSize from '../constants/FontSize';
 import Button from '../components/button';
 import OverlayInput from '../components/EditItemOverlay';
 import { useRoute } from '@react-navigation/native';
+import { editItem } from '../test/editItem';
 
 // Define a type for the image data
 type ImageData = {
@@ -30,6 +31,7 @@ const EditLost = () => {
   const [imageData, setImageData] = useState<ImageData | null>({ uri: item.Image, width: 0, height: 0 });
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [currentSection, setCurrentSection] = useState('');
+  const [isRetrieved, setIsRetrieved] = useState(item['Is Retrieved'] || 0);
 
   // Array of objects to store each category
   const categories = [
@@ -97,27 +99,55 @@ const EditLost = () => {
   };
 
   // Placeholder functions for future functionalities
-  const handleSaveEdit = () => {
-    console.log('Save Edit button clicked');
-    const editedData = {
-      finderName,
-      finderID,
-      itemName,
-      locationFound,
-      ownerName,
-      ownerID,
-      selectedCategory,
-      inputs,
-      imageData,
-    };
-    console.log('Edited Data:', editedData);
-    // You can return the data if needed
-    return editedData;
+  const handleSaveEdit = async () => {
+    try {
+      console.log('Save Edit button clicked');
+      const editedData = {
+        finderName,
+        finderID,
+        itemName,
+        locationFound,
+        ownerName,
+        ownerID,
+        selectedCategory,
+        inputs,
+        imageData,
+        isRetrieved
+      };
+      
+      console.log('Edited Data:', editedData);
+      await editItem(item.id, editedData);
+      Alert.alert('Success', 'Item updated successfully');
+    } catch (error) {
+      console.error('Error saving edit:', error);
+      Alert.alert('Error', 'Failed to update item');
+    }
   };
 
-  const handleClaim = () => {
-    console.log('Claim button clicked');
-    // Future functionality for claiming an item
+  const handleClaim = async () => {
+    try {
+      console.log('Claim button clicked');
+      const editedData = {
+        finderName,
+        finderID,
+        itemName,
+        locationFound,
+        ownerName,
+        ownerID,
+        selectedCategory,
+        inputs,
+        imageData,
+        isRetrieved: 1
+      };
+      
+      console.log('Edited Data:', editedData);
+      await editItem(item.id, editedData);
+      setIsRetrieved(1);
+      Alert.alert('Success', 'Item marked as claimed successfully');
+    } catch (error) {
+      console.error('Error marking as claimed:', error);
+      Alert.alert('Error', 'Failed to mark item as claimed');
+    }
   };
 
   const handleArchive = () => {

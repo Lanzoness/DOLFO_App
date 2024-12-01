@@ -1,58 +1,66 @@
 export function algoSearch(array, searchString) {
-    if (!array.length || !searchString) return [];
-
     const searchTerms = searchString.toLowerCase().split(' ');
-    const n = array.length;
-    const m = searchTerms.length;
 
-    // Initialize DP matrix to store match scores for each item and search term
-    const dp = Array(n).fill().map(() => Array(m).fill(-1));
+    // Base case for recursion
+    if (array.length <= 1) {
+        if (array.length === 0) return [];
+        return calculateScore(array[0], searchTerms, searchString) > 0 ? [array[0]] : [];
+    }
 
-    // Fill DP matrix with match scores
-    for (let i = 0; i < n; i++) {
-        const item = array[i];
-        if (!item || !item['Item Name']) continue;
+    // Divide
+    const mid = Math.floor(array.length / 2);
+    const leftHalf = array.slice(0, mid);
+    const rightHalf = array.slice(mid);
 
-        const itemName = item['Item Name'].toLowerCase();
-        const itemDescription = (typeof item.Description === 'string') ? item.Description.toLowerCase() : '';
+    // Conquer (recursive calls)
+    const leftResults = algoSearch(leftHalf, searchString);
+    const rightResults = algoSearch(rightHalf, searchString);
 
-        // Calculate and memoize scores for each search term
-        for (let j = 0; j < m; j++) {
-            const term = searchTerms[j];
-            let termScore = 0;
+    // Combine results
+    return mergeResults(leftResults, rightResults, searchTerms, searchString);
+}
 
-            // Exact match with full search string
-            if (itemName.includes(searchString.toLowerCase())) {
-                termScore += 100;
-            }
+// Helper function to calculate match score for a single item
+function calculateScore(item, searchTerms, originalQuery) {
+    if (!item || !item['Item Name']) return 0;
 
-            // Individual term matches
-            if (itemName.includes(term)) {
-                termScore += 50;
-            }
-            if (itemDescription && itemDescription.includes(term)) {
-                termScore += 25;
-            }
+    const itemName = item['Item Name'].toLowerCase();
+    const itemDescription = (typeof item.Description === 'string') ? item.Description.toLowerCase() : '';
+    let score = 0;
 
-            dp[i][j] = termScore;
+    // Exact match in name (highest priority)
+    if (itemName.includes(originalQuery.toLowerCase())) {
+        score += 100;
+    }
+
+    // Individual word matches
+    for (let term of searchTerms) {
+        if (itemName.includes(term)) {
+            score += 50;
+        }
+        if (itemDescription && itemDescription.includes(term)) {
+            score += 25;
         }
     }
 
-    // Calculate final scores using DP matrix
-    const results = array.map((item, i) => {
-        if (!item || !item['Item Name']) return { item, score: 0 };
+    return score;
+}
 
-        // Sum up scores from DP matrix for this item
-        const totalScore = dp[i].reduce((sum, score) => {
-            return sum + (score > 0 ? score : 0);
-        }, 0);
+// Helper function to merge and sort results
+function mergeResults(left, right, searchTerms, originalQuery) {
+    const merged = [...left, ...right];
+    
+    // Calculate scores for sorting
+    const scoredResults = merged.map(item => ({
+        item,
+        score: calculateScore(item, searchTerms, originalQuery)
+    }));
 
-        return { item, score: totalScore };
-    });
+    // Sort by score
+    scoredResults.sort((a, b) => b.score - a.score);
 
-    // Sort and filter results
-    return results
+    // Filter out zero scores and return items
+    return scoredResults
         .filter(result => result.score > 0)
-        .sort((a, b) => b.score - a.score)
         .map(result => result.item);
 }

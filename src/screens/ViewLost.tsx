@@ -7,7 +7,7 @@ import AdminFilterDrawer, { AdminFilterDrawerRef } from '../components/AdminFilt
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
-// Define navigation types
+// Navigation types
 type RootStackParamList = {
   AdminItemInformation: {
     item: Item;
@@ -16,7 +16,6 @@ type RootStackParamList = {
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'AdminItemInformation'>;
 
-// Define Item interface
 interface Item {
   Image: string;
   ['Item Name']: string;
@@ -91,10 +90,7 @@ const ViewLost = forwardRef<AdminFilterDrawerRef>((props, ref) => {
           keyExtractor={(item) => item.id}
           numColumns={2}
           contentContainerStyle={styles.flatListContainer}
-          columnWrapperStyle={{
-            justifyContent: 'space-between',
-            paddingHorizontal: 4,
-          }}
+          columnWrapperStyle={styles.columnWrapper}
         />
       </View>
     </AdminFilterDrawer>
@@ -108,13 +104,10 @@ const styles = StyleSheet.create({
   },
   flatListContainer: {
     paddingVertical: 8,
-    flexGrow: 1,
-    minHeight: '100%',
   },
   contentContainer: {
     flex: 1,
     backgroundColor: UserPalette.secondary_blue,
-    minHeight: Dimensions.get('window').height,
   },
   itemContainer: {
     margin: 4,
@@ -163,6 +156,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'transparent',
     transform: [{ scale: 1 }],
+  },
+  columnWrapper: {
+    justifyContent: 'space-between',
+    paddingHorizontal: 4,
   },
 });
 

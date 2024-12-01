@@ -9,6 +9,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { AdminFilterDrawerRef } from '../components/AdminFilterDrawer';
 import { algoSearch } from '../test/algoSearch.js';
 import { algoFilter } from '../test/algoFilter';
+import { processDate } from '../test/processDate';
 
 // Define the type for navigation parameters
 type RootStackParamList = {
@@ -126,7 +127,7 @@ const AdminViewLost = forwardRef<AdminFilterDrawerRef>((props, ref) => {
         numberOfLines={1}
         ellipsizeMode="tail"
       >
-        Date: {item['Date Submitted']}
+        Date: {processDate(item['Date Submitted'], false)}
       </Text>
     </TouchableOpacity>
   );
@@ -141,13 +142,18 @@ const AdminViewLost = forwardRef<AdminFilterDrawerRef>((props, ref) => {
     endDate: Date | null;
     dateSortOrder: string;
     selectedStatus: string;
+    selectedCategory: string;
     statuses: {
       lost: boolean;
       retrieved: boolean;
     };
   }) => {
     try {
-      const filtered = algoFilter.filterItems(originalData, filters);
+      console.log('Applying filters:', filters);
+      const filtered = algoFilter.filterItems(originalData, {
+        ...filters,
+        category: filters.selectedCategory
+      });
       setFilteredData(filtered);
       
       if (searchQuery.trim()) {

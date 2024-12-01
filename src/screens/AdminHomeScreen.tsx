@@ -56,8 +56,8 @@ const AdminHomeScreen = () => {
         />
       </View>
       <Button 
-        label="View Lost Items"
-        variant="secondary" 
+        label="View & Edit Lost Items"
+        variant="quinary" 
         onClick={() => {navigation.navigate('ViewLost')}} 
         style={styles.button}
         color="#1D68B3"
@@ -67,13 +67,6 @@ const AdminHomeScreen = () => {
         variant="tertiary" 
         onClick={() => {navigation.navigate('AdminSubmitLost')}} 
         style={styles.submitButton}
-        color="#1D68B3"
-      />
-      <Button 
-        label="Edit Lost Items"
-        variant="quinary" 
-        onClick={() => {navigation.navigate('EditLost')}}
-        style={styles.editButton}
         color="#1D68B3"
       />
 
@@ -140,9 +133,6 @@ const styles = StyleSheet.create({
   submitButton: {
     marginTop: 50,
   },
-  editButton: {
-    marginTop: 50,
-  },    
   overlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',

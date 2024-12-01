@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { TextInput, StyleSheet, View, Image, ViewStyle, TouchableOpacity, Modal, Text } from 'react-native';
 import UserPalette from '../constants/UserPalette';
+import { AdminFilterDrawerRef } from './AdminFilterDrawer';
 
 interface AdminSearchBarProps {
   value: string;
   onChangeText: (text: string) => void;
   onSubmit?: () => void;
   style?: ViewStyle;
+  filterRef?: React.RefObject<AdminFilterDrawerRef>;
 }
 
-const AdminSearchBar: React.FC<AdminSearchBarProps> = ({ value, onChangeText, onSubmit, style }) => {
+const AdminSearchBar: React.FC<AdminSearchBarProps> = ({ value, onChangeText, onSubmit, style, filterRef }) => {
   const [showWarning, setShowWarning] = useState(false);
 
   const handleTextChange = (text: string) => {
@@ -20,9 +22,18 @@ const AdminSearchBar: React.FC<AdminSearchBarProps> = ({ value, onChangeText, on
     onChangeText(text);
   };
 
+  const handleSubmit = () => {
+    if (filterRef?.current?.handleSearch) {
+      filterRef.current.handleSearch(value);
+    }
+    if (onSubmit) {
+      onSubmit();
+    }
+  };
+
   return (
     <View style={[styles.container, style]}>
-      <TouchableOpacity onPress={onSubmit}>
+      <TouchableOpacity onPress={handleSubmit}>
         <Image source={require('../assets/icons/SearchBar_Icon.png')} style={styles.icon} />
       </TouchableOpacity>
       <TextInput
@@ -30,7 +41,7 @@ const AdminSearchBar: React.FC<AdminSearchBarProps> = ({ value, onChangeText, on
         placeholder="Search..."
         value={value}
         onChangeText={handleTextChange}
-        onSubmitEditing={onSubmit}
+        onSubmitEditing={handleSubmit}
         returnKeyType="search"
         maxLength={30}
       />

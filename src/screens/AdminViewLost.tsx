@@ -6,6 +6,7 @@ import { readLostItems } from '../test/readLostItems.js';
 import AdminFilterDrawer from '../components/AdminFilterDrawer';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { AdminFilterDrawerRef } from '../components/AdminFilterDrawer';
 
 // Define the type for navigation parameters
 type RootStackParamList = {
@@ -34,7 +35,7 @@ interface FilterDrawerRef {
 const AdminViewLost = () => {
   const navigation = useNavigation<NavigationProp>();
   const [data, setData] = useState([]);
-  const filterDrawerRef = useRef<FilterDrawerRef>(null);
+  const filterDrawerRef = useRef<AdminFilterDrawerRef>(null);
 
   // Fetch data from Firebase
   useEffect(() => {

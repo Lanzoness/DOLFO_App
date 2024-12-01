@@ -1,5 +1,5 @@
 import React, { useState, forwardRef, useImperativeHandle, useRef } from 'react';
-import { View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, TextInput, TouchableOpacity, Animated } from 'react-native';
 import { DrawerLayout } from 'react-native-gesture-handler';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { Picker } from '@react-native-picker/picker';
@@ -24,6 +24,10 @@ interface AdminFilterDrawerProps {
 export interface AdminFilterDrawerRef {
   openDrawer: () => void;
   closeDrawer: () => void;
+  getChildRef: () => any;
+  handleSearch: (query: string) => void;
+  drawerVisible: boolean;
+  drawerAnimation: Animated.Value;
 }
 
 const AdminFilterDrawer: React.ForwardRefRenderFunction<AdminFilterDrawerRef, AdminFilterDrawerProps> = (
@@ -48,6 +52,12 @@ const AdminFilterDrawer: React.ForwardRefRenderFunction<AdminFilterDrawerRef, Ad
   useImperativeHandle(ref, () => ({
     openDrawer: () => drawerRef.current?.openDrawer(),
     closeDrawer: () => drawerRef.current?.closeDrawer(),
+    getChildRef: () => drawerRef.current,
+    handleSearch: (query: string) => {
+      // Implement search functionality
+    },
+    drawerVisible: isDatePickerVisible,
+    drawerAnimation: new Animated.Value(0),
   }));
 
   // Enables toggling the ascending/ descending button

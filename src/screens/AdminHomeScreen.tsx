@@ -4,10 +4,6 @@ import Button from '../components/button';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { downloadAllItems } from '../test/downloadAllItems';
 import { readLostItems } from '../test/readLostItems';
-import { algoSearch } from '../test/algoSearch';
-import { algoFilter } from '../test/algoFilter';
-import { AdminFilterDrawerRef } from '../components/AdminFilterDrawer';
-import { Item } from 'firebase/analytics';
 const { width } = Dimensions.get('window');
 
 type RootStackParamList = {
@@ -19,66 +15,32 @@ type RootStackParamList = {
 
 const AdminHomeScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [data, setData] = useState<Item[]>([]);
-  const [originalData, setOriginalData] = useState<Item[]>([]);
-  const [filteredData, setFilteredData] = useState<Item[]>([]);
-  const adminFilterDrawerRef = useRef<AdminFilterDrawerRef>(null);
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const drawerAnimation = useRef(new Animated.Value(width)).current;
 
-  // Initial data fetch
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await readLostItems();
-        setData(result);
-        setOriginalData(result);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    if (!query.trim()) {
-      setData(filteredData.length > 0 ? filteredData : originalData);
-      return;
-    }
-
-    try {
-      const baseData = filteredData.length > 0 ? filteredData : originalData;
-      const searchResults = algoSearch(baseData, query);
-      setData(searchResults);
-    } catch (error) {
-      console.error('Search Error:', error);
-      setData(filteredData.length > 0 ? filteredData : originalData);
-    }
+  const openDrawer = () => {
+    setDrawerVisible(true);
+    Animated.timing(drawerAnimation, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
   };
 
-  const handleApplyFilters = (filters: {
-    startDate: Date | null;
-    endDate: Date | null;
-    dateSortOrder: string;
-    selectedStatus: string;
-    statuses: {
-      lost: boolean;
-      retrieved: boolean;
-    };
-  }) => {
+  const closeDrawer = () => {
+    Animated.timing(drawerAnimation, {
+      toValue: width,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(() => setDrawerVisible(false));
+  };
+
+  const handleUpdateLocalDatabase = async () => {
     try {
-      const filtered = algoFilter.filterItems(originalData, filters);
-      setFilteredData(filtered);
-      
-      if (searchQuery.trim()) {
-        const searchResults = algoSearch(filtered, searchQuery);
-        setData(searchResults);
-      } else {
-        setData(filtered);
-      }
+      await downloadAllItems();
+      await readLostItems();
     } catch (error) {
-      console.error('Error in handleApplyFilters:', error);
+      console.error('Error updating local database:', error);
     }
   };
 
@@ -89,7 +51,7 @@ const AdminHomeScreen = () => {
           label=""
           variant="quaternary"
           isAdmin={true}
-          onClick={() => adminFilterDrawerRef.current?.openDrawer()}
+          onClick={openDrawer}
           style={styles.quaternaryButton}
         />
       </View>
@@ -114,22 +76,23 @@ const AdminHomeScreen = () => {
         style={styles.editButton}
         color="#1D68B3"
       />
-      {adminFilterDrawerRef.current?.drawerVisible && (
-        <TouchableWithoutFeedback onPress={adminFilterDrawerRef.current?.closeDrawer}>
+
+      {drawerVisible && (
+        <TouchableWithoutFeedback onPress={closeDrawer}>
           <View style={styles.overlay}>
-            <Animated.View style={[styles.drawer, { transform: [{ translateX: adminFilterDrawerRef.current?.drawerAnimation }] }]}>
+            <Animated.View style={[styles.drawer, { transform: [{ translateX: drawerAnimation }] }]}>
               <View style={styles.drawerContent}>
                 <TouchableOpacity onPress={() => { /* Handle My Account press */ }}>
                   <Text style={styles.firstDrawerText}>My Account</Text>
                 </TouchableOpacity>
                 <View style={styles.divider} />
                 
-                <TouchableOpacity onPress={() => {downloadAllItems()}}>
+                <TouchableOpacity onPress={() => { /* Handle My Submitted Items press */ }}>
                   <Text style={styles.drawerText}>My Submitted Items</Text>
                 </TouchableOpacity>
                 <View style={styles.divider} />
                 
-                <TouchableOpacity onPress={() => { /* Handle Update Local Database press */ }}>
+                <TouchableOpacity onPress={handleUpdateLocalDatabase}>
                   <Text style={styles.drawerText}>Update Local Database</Text>
                 </TouchableOpacity>
                 <View style={styles.divider} />

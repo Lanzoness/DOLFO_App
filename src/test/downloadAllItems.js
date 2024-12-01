@@ -32,6 +32,6 @@ export async function downloadAllItems() {
         await RNFS.writeFile(filePath, jsonContent, 'utf8');
         console.log(`File has been saved to ${filePath}`);
     } catch (error) {
-        console.error('Error downloading lost items:', error);
+        console.error('Error downloading items:', error);
     }
 }

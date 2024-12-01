@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Text, StyleSheet, FlatList, Image, Dimensions, TouchableOpacity } from 'react-native';
+import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
+import { Text, StyleSheet, FlatList, Image, Dimensions, TouchableOpacity, Animated } from 'react-native';
 import UserPalette from '../constants/UserPalette';
 import FontSize from '../constants/FontSize';
 import { readLostItems } from '../test/readLostItems.js';
@@ -35,7 +35,7 @@ interface Item {
   'Owner ID': string;
   id: string;
 }
-const AdminViewLost = () => {
+const AdminViewLost = forwardRef<AdminFilterDrawerRef>((props, ref) => {
   const navigation = useNavigation<NavigationProp>();
   const [data, setData] = useState<Item[]>([]);
   const [originalData, setOriginalData] = useState<Item[]>([]);
@@ -43,7 +43,16 @@ const AdminViewLost = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const filterDrawerRef = useRef<AdminFilterDrawerRef>(null);
 
-  // Initial data fetch
+  useImperativeHandle(ref, () => ({
+    openDrawer: () => filterDrawerRef.current?.openDrawer(),
+    closeDrawer: () => filterDrawerRef.current?.closeDrawer(),
+    handleSearch: (query: string) => handleSearchAdmin(query),
+    handleSearchAdmin: (query: string) => handleSearchAdmin(query),
+    getChildRef: () => filterDrawerRef.current,
+    drawerVisible: filterDrawerRef.current?.drawerVisible || false,
+    drawerAnimation: filterDrawerRef.current?.drawerAnimation || new Animated.Value(0)
+  }));
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -54,9 +63,37 @@ const AdminViewLost = () => {
         console.error('Error fetching data:', error);
       }
     };
-
     fetchData();
   }, []);
+
+  const handleSearchAdmin = (query: string) => {
+    console.log('\n=== AdminViewLost Search Process Started ===');
+    console.log('Query:', query);
+    console.log('Original Data Length:', originalData?.length || 0);
+    
+    if (!originalData || originalData.length === 0) {
+      console.log('No data available to search through');
+      return;
+    }
+
+    setSearchQuery(query);
+    
+    if (!query.trim()) {
+      console.log('Empty query detected - Resetting to original data');
+      setData(filteredData.length > 0 ? filteredData : originalData);
+      return;
+    }
+
+    try {
+      const baseData = filteredData.length > 0 ? filteredData : originalData;
+      const searchResults = algoSearch(baseData, query);
+      console.log('Search results:', searchResults.map(item => item['Item Name']));
+      setData(searchResults);
+    } catch (error) {
+      console.error('Search error:', error);
+      setData(filteredData.length > 0 ? filteredData : originalData);
+    }
+  };
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
@@ -97,27 +134,6 @@ const AdminViewLost = () => {
   const handleItemPress = (item: any) => {
     console.log('Item pressed:', item);
     navigation.navigate('AdminItemInformation', { item });
-  };
-
-  const handleSearchAdmin = (query: string) => {
-    console.log('\n=== AdminViewLost Search Process Started ===');
-    console.log('Query received:', query);
-    setSearchQuery(query);
-    
-    if (!query.trim()) {
-      setData(filteredData.length > 0 ? filteredData : originalData);
-      return;
-    }
-
-    try {
-      const baseData = filteredData.length > 0 ? filteredData : originalData;
-      const searchResults = algoSearch(baseData, query);
-      console.log('Search results:', searchResults.map(item => item['Item Name']));
-      setData(searchResults);
-    } catch (error) {
-      console.error('Search error:', error);
-      setData(filteredData.length > 0 ? filteredData : originalData);
-    }
   };
 
   const handleApplyFilters = (filters: {
@@ -175,7 +191,7 @@ const AdminViewLost = () => {
       />
     </AdminFilterDrawer>
   );
-};
+});
 
 const styles = StyleSheet.create({
   flatListContainer: {

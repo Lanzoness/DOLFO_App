@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderRadius: 8,
     paddingHorizontal: 10,
-    marginLeft: -70,
+    marginLeft: 0,
     width: 300,
     flex: 1,
   },

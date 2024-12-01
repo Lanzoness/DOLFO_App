@@ -15,42 +15,39 @@ export const algoFilter = {
   },
 
   filterByDateRange(data, startDate, endDate, dateSortOrder = 'desc') {
-    if (data.length <= 1) {
-      return data.filter(item => {
-        const itemDate = new Date(item['Date Submitted']);
-        return (!startDate || itemDate >= startDate) &&
-               (!endDate || itemDate <= endDate);
-      });
-    }
+    // Filter data based on date range
+    const filteredData = data.filter(item => {
+      const itemDate = new Date(item['Date Submitted']);
+      return (!startDate || itemDate >= startDate) &&
+             (!endDate || itemDate <= endDate);
+    });
 
-    const mid = Math.floor(data.length / 2);
-    const left = this.filterByDateRange(data.slice(0, mid), startDate, endDate, dateSortOrder);
-    const right = this.filterByDateRange(data.slice(mid), startDate, endDate, dateSortOrder);
-
-    return this.merge(left, right, dateSortOrder);
+    // Sort the filtered data using quicksort
+    return this.quickSort(filteredData, dateSortOrder);
   },
 
-  merge(left, right, dateSortOrder) {
-    let result = [];
-    let indexLeft = 0;
-    let indexRight = 0;
+  quickSort(data, dateSortOrder) {
+    if (data.length <= 1) {
+      return data;
+    }
 
-    while (indexLeft < left.length && indexRight < right.length) {
-      const dateLeft = new Date(left[indexLeft]['Date Submitted']);
-      const dateRight = new Date(right[indexRight]['Date Submitted']);
+    const pivotIndex = Math.floor(data.length / 2);
+    const pivot = new Date(data[pivotIndex]['Date Submitted']);
+    const left = [];
+    const right = [];
 
-      if ((dateSortOrder === 'asc' && dateLeft <= dateRight) ||
-          (dateSortOrder === 'desc' && dateLeft > dateRight)) {
-        result.push(left[indexLeft]);
-        indexLeft++;
+    for (let i = 0; i < data.length; i++) {
+      if (i === pivotIndex) continue;
+      const currentDate = new Date(data[i]['Date Submitted']);
+      if ((dateSortOrder === 'asc' && currentDate <= pivot) ||
+          (dateSortOrder === 'desc' && currentDate > pivot)) {
+        left.push(data[i]);
       } else {
-        result.push(right[indexRight]);
-        indexRight++;
+        right.push(data[i]);
       }
     }
 
-    // Concatenate remaining elements
-    return result.concat(left.slice(indexLeft)).concat(right.slice(indexRight));
+    return [...this.quickSort(left, dateSortOrder), data[pivotIndex], ...this.quickSort(right, dateSortOrder)];
   },
 
   filterByCategory(data, category) {

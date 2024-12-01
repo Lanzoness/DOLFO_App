@@ -29,6 +29,7 @@ interface Item {
   'Date Submitted': string;
   'Owner Name': string;
   'Owner ID': string;
+  'Is Retrieved': number;
   id: string;
 }
 
@@ -114,27 +115,19 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
     endDate: Date | null;
     dateSortOrder: string;
     selectedCategory: string;
+    selectedStatus: string;
   }) => {
     try {
-      console.log('Parent component received filters:', {
-        startDate: filters.startDate?.toISOString(),
-        endDate: filters.endDate?.toISOString(),
-        dateSortOrder: filters.dateSortOrder,
-        selectedCategory: filters.selectedCategory,
-      });
-
-      // Use filterCache instead of direct filtering
+      console.log('Parent component received filters:', filters);
       const filtered = algoFilter.filterItems(originalData, filters);
       setFilteredData(filtered);
       
-      // If there's an active search, apply it to filtered data
       if (searchQuery.trim()) {
         const searchResults = algoSearch(filtered, searchQuery);
         setData(searchResults);
       } else {
         setData(filtered);
       }
-
     } catch (error) {
       console.error('Error in parent handleApplyFilters:', error);
     }

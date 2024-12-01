@@ -3,14 +3,19 @@ export const algoFilter = {
   filterItems(data, filters) {
     let filteredData = [...data];
     
-    if (filters.statuses !== -1) {
-      filteredData = this.filterByStatus(filteredData, filters.statuses);
-    }
-
+    // Filter by category first
     if (filters.selectedCategory) {
+      console.log('Filtering by category:', filters.selectedCategory);
       filteredData = this.filterByCategory(filteredData, filters.selectedCategory);
     }
 
+    // Then filter by status if it exists
+    if (filters.selectedStatus) {
+      console.log('Filtering by status:', filters.selectedStatus);
+      filteredData = this.filterByStatus(filteredData, Number(filters.selectedStatus));
+    }
+
+    // Finally filter by date range
     if (filters.startDate || filters.endDate) {
       filteredData = this.filterByDateRange(filteredData, filters.startDate, filters.endDate, filters.dateSortOrder);
     }
@@ -73,6 +78,11 @@ export const algoFilter = {
   },
 
   filterByStatus(data, status) {
+    // If status is undefined or NaN, return the original data
+    if (status === undefined || isNaN(status)) {
+      return data;
+    }
+    
     console.log('Filtering by status:', status);
     console.log('Data before filter:', data.map(item => ({
       name: item['Item Name'],

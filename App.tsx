@@ -6,7 +6,6 @@ import LoadingScreen from './src/screens/LoadingScreen';
 import LoginAuth from './src/screens/LoginAuth';
 import UserHomeScreen from './src/screens/UserHomeScreen';
 import SubmitLost from './src/screens/SubmitLost';
-import ViewLost from './src/screens/ViewLost'; // Admin view lost screen
 import TestFirebase from './src/screens/TestFirebase';
 import SignupScreen from './src/screens/SignupScreen';
 import TEST_FlatlistGrid from './src/screens/TEST_FlatlistGrid'; // user view lost screen
@@ -21,6 +20,7 @@ import { StyleSheet } from 'react-native';
 import { FilterDrawerRef } from './src/components/FilterDrawer';
 import AdminSearchBar from './src/components/AdminSearchBar';
 import AdminFilterDrawer, { AdminFilterDrawerRef } from './src/components/AdminFilterDrawer';
+import AdminViewLost from './src/screens/AdminViewLost';
 
 const Stack = createNativeStackNavigator();
 
@@ -47,31 +47,21 @@ function App(): React.JSX.Element {
     console.log('App.tsx - Search initiated with query:', searchQuery);
     if (filterDrawerRef.current) {
       console.log('FilterDrawerRef found, attempting search...');
-      // Call handleSearch directly on TEST_FlatlistGrid
       const testFlatlistGridRef = filterDrawerRef.current;
-      if (testFlatlistGridRef.handleSearch) {
-        console.log('Calling handleSearch on TEST_FlatlistGrid');
-        testFlatlistGridRef.handleSearch(searchQuery);
-      } else {
-        console.log('handleSearch not found on TEST_FlatlistGrid');
-      }
+      console.log('Calling handleSearch on TEST_FlatlistGrid');
+      testFlatlistGridRef.handleSearch(searchQuery);
     } else {
       console.log('FilterDrawerRef not found');
     }
   };
 
   const handleSearchAdmin = () => {
-    console.log('App.tsx - Search initiated with query:', searchQuery);
+    console.log('App.tsx - Admin search initiated with query:', searchQuery);
     if (adminFilterDrawerRef.current) {
       console.log('AdminFilterDrawerRef found, attempting search...');
-      // Call handleSearchAdmin directly on AdminViewLost
       const adminViewLostRef = adminFilterDrawerRef.current;
-      if (adminViewLostRef.handleSearchAdmin) {
-        console.log('Calling handleSearchAdmin on AdminViewLost');
-        adminViewLostRef.handleSearchAdmin(searchQuery);
-      } else {
-        console.log('handleSearchAdmin not found on AdminViewLost');
-      }
+      console.log('Calling handleSearchAdmin on AdminViewLost');
+      adminViewLostRef.handleSearchAdmin(searchQuery);
     } else {
       console.log('AdminFilterDrawerRef not found');
     }
@@ -129,11 +119,7 @@ function App(): React.JSX.Element {
                     style={styles.searchBar}
                   />
                   <TouchableOpacity
-                    onPress={() => {
-                      if (adminFilterDrawerRef.current) {
-                        adminFilterDrawerRef.current.openDrawer();
-                      }
-                    }}
+                    onPress={() => adminFilterDrawerRef.current?.openDrawer()}
                     style={styles.filterButton}
                   >
                     <Image
@@ -144,9 +130,13 @@ function App(): React.JSX.Element {
                 </View>
               ),
               headerTintColor: UserPalette.blue,
+              headerStyle: {
+                backgroundColor: UserPalette.default_background,
+              },
             }}
-            children={(props) => <ViewLost {...props} ref={adminFilterDrawerRef} />}
-          />
+          >
+            {() => <AdminViewLost ref={adminFilterDrawerRef} />}
+          </Stack.Screen>
           <Stack.Screen
             name="TestFirebase"
             component={TestFirebase}
@@ -195,15 +185,12 @@ function App(): React.JSX.Element {
                     style={styles.searchBar}
                   />
                   <TouchableOpacity
-                    onPress={() => {
-                      console.log('Opening filter drawer');
-                      filterDrawerRef.current?.openDrawer();
-                    }}
+                    onPress={() => filterDrawerRef.current?.openDrawer()}
                     style={styles.filterButton}
                   >
                     <Image
                       source={require('./src/assets/icons/filter_icon.png')}
-                      style={styles.filterIcon}
+                      style={[styles.filterIcon, { tintColor: UserPalette.green }]}
                     />
                   </TouchableOpacity>
                 </View>
@@ -228,26 +215,22 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingLeft: '25%',
-    paddingRight: '5%',
     width: '100%',
+    paddingHorizontal: 16,
   },
   searchBar: {
     flex: 1,
     marginRight: 10,
-    width: '70%',
   },
   filterButton: {
     padding: 8,
     borderRadius: 5,
-    marginLeft: 10,
   },
   filterIcon: {
     width: 24,
     height: 24,
-    tintColor: UserPalette.green,
+    tintColor: UserPalette.blue,
   },
 });
 

@@ -13,6 +13,7 @@ interface AdminFilterDrawerProps {
     endDate: Date | null;
     dateSortOrder: string;
     selectedStatus: string;
+    selectedCategory: string;
     statuses: {
       lost: boolean;
       retrieved: boolean;
@@ -46,6 +47,7 @@ const AdminFilterDrawer: React.ForwardRefRenderFunction<AdminFilterDrawerRef, Ad
   const [dateSortOrder, setDateSortOrder] = useState('desc');
   const [drawerVisible, setDrawerVisible] = useState(false);
   const drawerAnimation = useRef(new Animated.Value(0)).current;
+  const [selectedCategory, setSelectedCategory] = useState('');
 
   useImperativeHandle(ref, () => ({
     openDrawer: () => {
@@ -90,6 +92,7 @@ const AdminFilterDrawer: React.ForwardRefRenderFunction<AdminFilterDrawerRef, Ad
     setStartDate(null);
     setEndDate(null);
     setSelectedStatus('');
+    setSelectedCategory('');
     setDateSortOrder('desc');
     
     // Call the parent onReset callback
@@ -110,6 +113,7 @@ const AdminFilterDrawer: React.ForwardRefRenderFunction<AdminFilterDrawerRef, Ad
         endDate,
         dateSortOrder,
         selectedStatus,
+        selectedCategory,
         statuses: {
           lost: selectedStatus === 'lost',
           retrieved: selectedStatus === 'retrieved'
@@ -179,18 +183,18 @@ const AdminFilterDrawer: React.ForwardRefRenderFunction<AdminFilterDrawerRef, Ad
       {/* Status/Category Picker */}
       <View style={styles.filterSection}>
         <View style={styles.filterHeaderRow}>
-          <Text style={styles.filterLabel}>Select a categoy:</Text>
+          <Text style={styles.filterLabel}>Select a category:</Text>
         </View>
         <View style={styles.pickerContainer}>
           <Picker
-            selectedValue={selectedStatus}
+            selectedValue={selectedCategory}
             style={styles.picker}
-            onValueChange={(itemValue) => setSelectedStatus(itemValue)}
+            onValueChange={(itemValue) => setSelectedCategory(itemValue)}
             mode="dialog"
             dropdownIconColor={UserPalette.secondary_blue}
           >
             <Picker.Item
-              label="Select a status"
+              label="Select a category"
               value=""
               style={styles.pickerPlaceholder}
               color={UserPalette.secondary_blue}

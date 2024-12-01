@@ -116,15 +116,30 @@ const SubmitLostItem = () => {
     });
   };
 
+  const [isInvalidInputModalVisible, setIsInvalidInputModalVisible] = useState(false);
+
+  // Function to validate inputs
+  const validateInputs = () => {
+    // Basic validation for required fields
+    if (!finderName || !finderID || !itemName || !locationFound || !selectedCategory) {
+      return false;
+    }
+
+    // Additional conditions can be added here
+    // Example: if (someOtherCondition) { return false; }
+
+    return true;
+  };
+
   /**
    * Function to handle form submission
    */
   const handleSubmit = async () => {
     console.log('Image Data:', imageData);
 
-    if (!imageData || !imageData.uri) {
-        console.error('No image data available');
-        return;
+    if (!validateInputs() || !imageData || !imageData.uri) {
+      setIsInvalidInputModalVisible(true);
+      return;
     }
 
     try {
@@ -319,6 +334,18 @@ const SubmitLostItem = () => {
                     </TouchableOpacity>
                     <TouchableOpacity onPress={handleEdit}>
                       <Text style={styles.modalCancel}>Edit</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </Modal>
+
+              {/* Invalid input modal */}
+              <Modal visible={isInvalidInputModalVisible} transparent>
+                <View style={styles.overlay}>
+                  <View style={styles.modalContent}>
+                    <Text style={styles.modalOption}>Please fill in all required fields.</Text>
+                    <TouchableOpacity onPress={() => setIsInvalidInputModalVisible(false)}>
+                      <Text style={styles.modalCancel}>Close</Text>
                     </TouchableOpacity>
                   </View>
                 </View>

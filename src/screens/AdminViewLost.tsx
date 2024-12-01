@@ -16,6 +16,9 @@ type RootStackParamList = {
   AdminItemInformation: {
     item: Item;
   };
+  EditLost: {
+    item: Item;
+  };
 };
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'AdminItemInformation'>;
@@ -133,9 +136,8 @@ const AdminViewLost = forwardRef<AdminFilterDrawerRef>((props, ref) => {
     </TouchableOpacity>
   );
 
-  const handleItemPress = (item: any) => {
-    console.log('Item pressed:', item);
-    navigation.navigate('AdminItemInformation', { item });
+  const handleItemPress = (item: Item) => {
+    navigation.navigate('EditLost', { item });
   };
 
   const handleApplyFilters = (filters: {

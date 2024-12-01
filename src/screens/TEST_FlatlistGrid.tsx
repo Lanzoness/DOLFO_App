@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { algoFilter } from '../test/algoFilter';
 import { processDate } from '../test/processDate.js';
-import { algoSearchDP } from '../test/algoSearchDP';
+import { algoSearch } from '../test/algoSearch.js';
 import SearchBar from '../components/SearchBar';
 // Define the type for navigation parameters
 type RootStackParamList = {

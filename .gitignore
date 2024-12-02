@@ -17,6 +17,11 @@
 .env.test.local
 .env.production.local
 
+# Keystore files
+*.keystore
+*.jks
+android/app/dolfo-key.keystore
+
 # Logs
 npm-debug.log*
 yarn-debug.log*

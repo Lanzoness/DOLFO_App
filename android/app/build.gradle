@@ -12,6 +12,17 @@ react {
 def enableProguardInReleaseBuilds = false
 def jscFlavor = 'org.webkit:android-jsc:+'
 
+// Load environment variables from .env file
+def loadEnvProperties() {
+    Properties properties = new Properties()
+    file("../../.env").withInputStream { stream ->
+        properties.load(stream)
+    }
+    return properties
+}
+
+def env = loadEnvProperties()
+
 android {
     ndkVersion rootProject.ext.ndkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -33,13 +44,19 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            storeFile file(MYAPP_RELEASE_STORE_FILE)
+            storePassword env['RELEASE_STORE_PASSWORD']
+            keyAlias MYAPP_RELEASE_KEY_ALIAS
+            keyPassword env['RELEASE_KEY_PASSWORD']
+        }
     }
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
         }
         release {
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }

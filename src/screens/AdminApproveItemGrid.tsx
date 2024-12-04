@@ -1,24 +1,33 @@
-import { StyleSheet, Text, View, FlatList, Image, Dimensions, TouchableOpacity } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
+import { Text, StyleSheet, FlatList, Image, Dimensions, TouchableOpacity, Animated } from 'react-native';
 import UserPalette from '../constants/UserPalette';
 import FontSize from '../constants/FontSize';
 import { readLostItems } from '../test/readLostItems.js';
+import AdminApproveItemDrawer from '../components/AdminApproveItemDrawer';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { AdminApproveItemDrawerRef } from '../components/AdminApproveItemDrawer';
+import { algoSearch } from '../test/algoSearch.js';
+import { algoFilter } from '../test/algoFilter';
 import { processDate } from '../test/processDate';
 
-// Define the type for navigation parameters
+// Chaneg to AdminApproveItemsPage
 type RootStackParamList = {
   AdminItemInformation: {
+    item: Item;
+  };
+  EditLost: {
     item: Item;
   };
 };
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'AdminItemInformation'>;
 
-// Add a reference to the filter drawer
-
-// interface file type for each item
+// Update the FilterDrawerRef interface to match AdminAcceptItemDrawer
+interface FilterDrawerRef {
+  openDrawer: () => void;
+  closeDrawer: () => void;
+}
 interface Item {
   Image: string;
   ['Item Name']: string;
@@ -31,18 +40,30 @@ interface Item {
   'Is Retrieved': number;
   id: string;
 }
-
-
-// Fetch data from Firebase
-const AdminApproveItemGrid = () => {
+const AdminApproveItemGrid = forwardRef<AdminApproveItemDrawerRef>((props, ref) => {
   const navigation = useNavigation<NavigationProp>();
   const [data, setData] = useState<Item[]>([]);
+  const [originalData, setOriginalData] = useState<Item[]>([]);
+  const [filteredData, setFilteredData] = useState<Item[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const filterDrawerRef = useRef<AdminApproveItemDrawerRef>(null);
+
+  useImperativeHandle(ref, () => ({
+    openDrawer: () => filterDrawerRef.current?.openDrawer(),
+    closeDrawer: () => filterDrawerRef.current?.closeDrawer(),
+    handleSearch: (query: string) => handleSearchAdmin(query),
+    handleSearchAdmin: (query: string) => handleSearchAdmin(query),
+    getChildRef: () => filterDrawerRef.current,
+    drawerVisible: filterDrawerRef.current?.drawerVisible || false,
+    drawerAnimation: filterDrawerRef.current?.drawerAnimation || new Animated.Value(0)
+  }));
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const result = await readLostItems();
         setData(result);
+        setOriginalData(result);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -50,7 +71,35 @@ const AdminApproveItemGrid = () => {
     fetchData();
   }, []);
 
-  // render each item to the flatlist grid
+  const handleSearchAdmin = (query: string) => {
+    console.log('\n=== AdminApproveItemGrid Search Process Started ===');
+    console.log('Query:', query);
+    console.log('Original Data Length:', originalData?.length || 0);
+    
+    if (!originalData || originalData.length === 0) {
+      console.log('No data available to search through');
+      return;
+    }
+
+    setSearchQuery(query);
+    
+    if (!query.trim()) {
+      console.log('Empty query detected - Resetting to original data');
+      setData(filteredData.length > 0 ? filteredData : originalData);
+      return;
+    }
+
+    try {
+      const baseData = filteredData.length > 0 ? filteredData : originalData;
+      const searchResults = algoSearch(baseData, query);
+      console.log('Search results:', searchResults.map(item => item['Item Name']));
+      setData(searchResults);
+    } catch (error) {
+      console.error('Search error:', error);
+      setData(filteredData.length > 0 ? filteredData : originalData);
+    }
+  };
+
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={[
@@ -88,25 +137,64 @@ const AdminApproveItemGrid = () => {
   );
 
   const handleItemPress = (item: Item) => {
-    navigation.navigate('AdminItemInformation', { item });
+    navigation.navigate('EditLost', { item });
+  };
+
+  const handleApplyFilters = (filters: {
+    startDate: Date | null;
+    endDate: Date | null;
+    dateSortOrder: string;
+    selectedStatus: string;
+    selectedCategory: string;
+    statuses: number;
+  }) => {
+    try {
+      console.log('Applying filters:', filters);
+      const filtered = algoFilter.filterItems(originalData, filters);
+      setFilteredData(filtered);
+      
+      if (searchQuery.trim()) {
+        const searchResults = algoSearch(filtered, searchQuery);
+        setData(searchResults);
+      } else {
+        setData(filtered);
+      }
+    } catch (error) {
+      console.error('Error in handleApplyFilters:', error);
+    }
+  };
+
+  const handleResetFilters = () => {
+    setFilteredData([]);
+    if (searchQuery.trim()) {
+      const searchResults = algoSearch(originalData, searchQuery);
+      setData(searchResults);
+    } else {
+      setData(originalData);
+    }
   };
 
   return (
-    <View style={styles.container}>
+    <AdminApproveItemDrawer
+      ref={filterDrawerRef}
+      onApply={handleApplyFilters}
+      onReset={handleResetFilters}
+      onSearch={handleSearchAdmin}
+    >
       <FlatList
         data={data}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         numColumns={2}
-        contentContainerStyle={styles.flatListContent}
+        contentContainerStyle={styles.flatListContainer}
+        columnWrapperStyle={{
+          justifyContent: 'space-between',
+          paddingHorizontal: 4,
+        }}
       />
-    </View>
+    </AdminApproveItemDrawer>
   );
-};
-
-
-const { width } = Dimensions.get('window');
-const itemWidth = (width - 48) / 2;
+});
 
 const styles = StyleSheet.create({
   flatListContainer: {

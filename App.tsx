@@ -21,6 +21,7 @@ import { FilterDrawerRef } from './src/components/FilterDrawer';
 import AdminSearchBar from './src/components/AdminSearchBar';
 import AdminFilterDrawer, { AdminFilterDrawerRef } from './src/components/AdminFilterDrawer';
 import AdminViewLost from './src/screens/AdminViewLost';
+import AdminApproveItemGrid from './src/screens/AdminApproveItemGrid';
 
 const Stack = createNativeStackNavigator();
 
@@ -97,6 +98,11 @@ function App(): React.JSX.Element {
           <Stack.Screen 
             name="UserHomeScreen" 
             component={UserHomeScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen 
+            name="AdminApproveItemGrid" 
+            component={AdminApproveItemGrid}
             options={{ headerShown: false }}
           />
           <Stack.Screen 

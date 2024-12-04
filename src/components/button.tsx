@@ -1,9 +1,10 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, Image, View } from 'react-native';
+import UserPalette from '../constants/UserPalette';
 
 interface ButtonProps {
     label: string;
-    variant?: 'primary' | 'secondary' | 'tertiary' | 'quaternary' | 'quinary' | 'editButtons';
+    variant?: 'primary' | 'secondary' | 'tertiary' | 'quaternary' | 'quinary' | 'editButtons' | 'approveButton';
     onClick: () => void;
     children?: React.ReactNode;
     style?: any;
@@ -12,19 +13,20 @@ interface ButtonProps {
     editText?: string;
     editBackgroundColor?: string;
     editIcon?: any;
+    icon?: any;
 }
 
 const Button: React.FC<ButtonProps> = ({ 
-    label, 
-    variant = 'primary', 
-    onClick, 
-    children, 
+    label,
+    variant = 'primary',
+    onClick,
+    children,
     style,
     color = '#00722A',
     isAdmin = false,
     editText,
     editBackgroundColor,
-    editIcon
+    editIcon,
 }) => {
     return (
         <TouchableOpacity 
@@ -69,6 +71,16 @@ const Button: React.FC<ButtonProps> = ({
                         </Text>
                     </View>
                 </View>
+            ) : variant === 'approveButton' ? (
+                <View style={styles.approveButtonContainer}>
+                    <Text style={[styles.baseText, styles.approveButtonText]}>
+                        {children || label}
+                    </Text>
+                    <Image 
+                        source={require('../assets/icons/ApproveItemIcon.png')}
+                        style={styles.approveButtonIcon}
+                    />
+                </View>
             ) : (
                 <Text style={[styles.baseText, styles[`${variant}Text`]]}>
                     {children || label}
@@ -102,7 +114,7 @@ const styles = StyleSheet.create({
         color: 'white',
     },
     secondary: {
-        backgroundColor: '#00722A',
+        backgroundColor: UserPalette.blue,
         borderWidth: 3,
         borderColor: '#00722A',
         paddingHorizontal: 40,
@@ -127,7 +139,7 @@ const styles = StyleSheet.create({
         height: 51,
     },
     tertiary: {
-        backgroundColor: '#00722A',
+        backgroundColor: UserPalette.blue,
         borderWidth: 3,
         borderColor: '#00722A',
         paddingHorizontal: 40,
@@ -199,7 +211,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 19,
         paddingVertical: 16,
         backgroundColor: '#1e753e',
-        borderRadius: 10,
+        borderRadius: 20,
         borderWidth: 4,
         borderColor: 'white',
         justifyContent: 'center',
@@ -231,6 +243,33 @@ const styles = StyleSheet.create({
         height: 40,
         marginBottom: 10,
         resizeMode: 'contain',
+    },
+    approveButtonContainer: {
+        backgroundColor: UserPalette.blue,
+        paddingHorizontal: 40,
+        paddingVertical: 20,
+        borderRadius: 20,
+        gap: 16,
+        width: 212,
+        height: 155,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    approveButtonIcon: {
+        width: 67,
+        height: 60,
+        marginBottom: 30,
+        resizeMode: 'contain',
+    },
+    approveButtonText: {
+        color: 'white',
+        fontSize: 20,
+        fontFamily: 'Ubuntu Sans',
+        fontWeight: '700',
+        letterSpacing: 0.8,
+        textAlign: 'center',
+        alignSelf: 'stretch',
+        marginTop: 30,
     },
 });
 

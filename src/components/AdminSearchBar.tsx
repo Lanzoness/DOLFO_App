@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 10,
     width: 300,
-    marginLeft: 30,
+    marginLeft: -20, //fixed search bar alignment
   },
   icon: {
     width: 16,

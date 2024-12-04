@@ -21,6 +21,8 @@ import { FilterDrawerRef } from './src/components/FilterDrawer';
 import AdminSearchBar from './src/components/AdminSearchBar';
 import AdminFilterDrawer, { AdminFilterDrawerRef } from './src/components/AdminFilterDrawer';
 import AdminViewLost from './src/screens/AdminViewLost';
+import AdminApproveItemGrid from './src/screens/AdminApproveItemGrid';
+import AdminApproveItemDrawer, {AdminApproveItemDrawerRef} from './src/components/AdminApproveItemDrawer';
 
 const Stack = createNativeStackNavigator();
 
@@ -42,6 +44,7 @@ function App(): React.JSX.Element {
   const [filters, setFilters] = useState<Filters>({});
   const filterDrawerRef = useRef<FilterDrawerRef>(null);
   const adminFilterDrawerRef = useRef<AdminFilterDrawerRef>(null);
+  const adminApproveDrawerRef = useRef<AdminApproveItemDrawerRef>(null);
 
   const handleSearch = () => {
     console.log('App.tsx - Search initiated with query:', searchQuery);
@@ -100,6 +103,36 @@ function App(): React.JSX.Element {
             options={{ headerShown: false }}
           />
           <Stack.Screen 
+            name="AdminApproveItemGrid" 
+            options={{
+              headerTitle: () => (
+                <View style={styles.headerContainer}>
+                  <AdminSearchBar
+                    value={searchQuery}
+                    onChangeText={setSearchQuery}
+                    onSubmit={() => adminApproveDrawerRef.current?.handleSearch(searchQuery)}
+                    style={styles.searchBar}
+                  />
+                  <TouchableOpacity
+                    onPress={() => adminApproveDrawerRef.current?.openDrawer()}
+                    style={styles.filterButton}
+                  >
+                    <Image
+                      source={require('./src/assets/icons/Admin-Filter.png')}
+                      style={[styles.filterIcon, { tintColor: UserPalette.blue }]}
+                    />
+                  </TouchableOpacity>
+                </View>
+              ),
+              headerTintColor: UserPalette.blue,
+              headerStyle: {
+                backgroundColor: UserPalette.default_background,
+              },
+            }}
+          >
+            {(props) => <AdminApproveItemGrid {...props} ref={adminApproveDrawerRef} />}
+          </Stack.Screen>
+          <Stack.Screen 
             name="SubmitLost" 
             component={SubmitLost}
             options={{ 
@@ -155,7 +188,10 @@ function App(): React.JSX.Element {
           <Stack.Screen 
             name="EditLost" 
             component={EditLost}
-            options={{ headerShown: false }}
+            options={{
+              headerTitle: '',
+              headerTintColor: UserPalette.blue,
+            }}
           />
           <Stack.Screen 
             name="AdminSubmitLost" 
@@ -178,7 +214,7 @@ function App(): React.JSX.Element {
             options={{
               headerTitle: () => (
                 <View style={styles.headerContainer}>
-                  <SearchBar
+                  <AdminSearchBar
                     value={searchQuery}
                     onChangeText={setSearchQuery}
                     onSubmit={handleSearch}
@@ -230,7 +266,6 @@ const styles = StyleSheet.create({
   filterIcon: {
     width: 24,
     height: 24,
-    tintColor: UserPalette.blue,
   },
 });
 

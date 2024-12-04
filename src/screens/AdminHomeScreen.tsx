@@ -11,6 +11,7 @@ type RootStackParamList = {
   AdminSubmitLost: undefined;
   EditLost: undefined;
   LoginAuth: undefined;
+  AdminApproveItemGrid: undefined;
 };
 
 const AdminHomeScreen = () => {
@@ -68,6 +69,14 @@ const AdminHomeScreen = () => {
         onClick={() => {navigation.navigate('AdminSubmitLost')}} 
         style={styles.submitButton}
         color="#1D68B3"
+      />
+      <Button 
+        label="Approve Item"
+        variant="approveButton"
+        onClick={() => {navigation.navigate('AdminApproveItemGrid')}} 
+        style={styles.approveButton}
+        color="#1D68B3"
+        icon={require('../assets/icons/ApproveItemIcon.png')}
       />
 
       {drawerVisible && (
@@ -136,6 +145,9 @@ const styles = StyleSheet.create({
   overlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  approveButton: {
+    marginTop: 100,
   },
   drawer: {
     position: 'absolute',

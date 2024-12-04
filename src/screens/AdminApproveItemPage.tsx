@@ -5,7 +5,7 @@ import FontSize from '../constants/FontSize';
 import Button from '../components/button';
 import OverlayInput from '../components/AdminRejectOverlay';
 import { useRoute } from '@react-navigation/native';
-import { editItem } from '../test/editItem';
+import { approveItem } from '../test/approveItem';
 import { deleteItem } from '../test/deleteItem';
 
 type ImageData = {
@@ -46,16 +46,26 @@ const AdminApproveItemPage = () => {
 
   const handleConfirm = (inputValue: string) => {
     // insert confirm reject functionality here
+    
     setOverlayVisible(false);
   };
 
   const handleApprove = async () => {
-    console.log("Approved")
-    // insert approve functionality here
+    try {
+      await approveItem(item.id);
+      console.log('Item approved successfully');
+    } catch (error) {
+      console.error('Error approving item:', error);
+    }
   };
 
   const handleDelete = async () => {
-    console.log("Deleted")
+    try {
+      await deleteItem(item.id, item.Image);
+      console.log('Item deleted successfully');
+    } catch (error) {
+      console.error('Error deleting item:', error);
+    }
     setOverlayVisible(true);
   };
 

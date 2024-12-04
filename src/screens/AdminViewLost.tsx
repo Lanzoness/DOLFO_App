@@ -62,8 +62,9 @@ const AdminViewLost = forwardRef<AdminFilterDrawerRef>((props, ref) => {
     const fetchData = async () => {
       try {
         const result = await readLostItems();
-        setData(result);
-        setOriginalData(result);
+        const filteredResult = result.filter(item => item['Is Retrieved'] !== -2);
+        setData(filteredResult);
+        setOriginalData(filteredResult);
       } catch (error) {
         console.error('Error fetching data:', error);
       }

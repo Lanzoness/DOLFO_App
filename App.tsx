@@ -21,6 +21,7 @@ import { FilterDrawerRef } from './src/components/FilterDrawer';
 import AdminSearchBar from './src/components/AdminSearchBar';
 import AdminFilterDrawer, { AdminFilterDrawerRef } from './src/components/AdminFilterDrawer';
 import AdminViewLost from './src/screens/AdminViewLost';
+import AdminApproveItemPage from './src/screens/AdminApproveItemPage';
 
 const Stack = createNativeStackNavigator();
 
@@ -155,12 +156,23 @@ function App(): React.JSX.Element {
           <Stack.Screen 
             name="EditLost" 
             component={EditLost}
-            options={{ headerShown: false }}
+            options={{ 
+              headerTitle: '',
+              headerTintColor: UserPalette.blue,
+             }}
           />
           <Stack.Screen 
             name="AdminSubmitLost" 
             component={AdminSubmitLost}
             options={{
+              headerTitle: '',
+              headerTintColor: UserPalette.blue,
+             }}
+          />
+          <Stack.Screen 
+            name="AdminApproveItemPage" 
+            component={AdminApproveItemPage}
+            options={{ 
               headerTitle: '',
               headerTintColor: UserPalette.blue,
              }}

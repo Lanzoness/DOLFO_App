@@ -11,17 +11,14 @@ import { algoSearch } from '../test/algoSearch.js';
 import { algoFilter } from '../test/algoFilter';
 import { processDate } from '../test/processDate';
 
-// Chaneg to AdminApproveItemsPage
+// Change to AdminApproveItemsPage
 type RootStackParamList = {
-  AdminItemInformation: {
-    item: Item;
-  };
-  EditLost: {
+  AdminApproveItemPage: {
     item: Item;
   };
 };
 
-type NavigationProp = StackNavigationProp<RootStackParamList, 'AdminItemInformation'>;
+type NavigationProp = StackNavigationProp<RootStackParamList, 'AdminApproveItemPage'>;
 
 // Update the FilterDrawerRef interface to match AdminAcceptItemDrawer
 interface FilterDrawerRef {
@@ -136,8 +133,9 @@ const AdminApproveItemGrid = forwardRef<AdminApproveItemDrawerRef>((props, ref) 
     </TouchableOpacity>
   );
 
+  // redirect to AdminApproveItemPage once a lost item is pressed
   const handleItemPress = (item: Item) => {
-    navigation.navigate('EditLost', { item });
+    navigation.navigate('AdminApproveItemPage', { item });
   };
 
   const handleApplyFilters = (filters: {

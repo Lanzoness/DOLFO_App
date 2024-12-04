@@ -160,7 +160,7 @@ const SubmitLostItem = () => {
             'Owner Name': ownerName,
             'Owner ID': ownerID,
             'Date Submitted': new Date().toISOString(),
-            'Is Retrieved': 0,
+            'Is Retrieved': -2,
             'Date Retrieved': null,
         };
 

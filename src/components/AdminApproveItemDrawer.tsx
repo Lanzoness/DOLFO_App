@@ -4,9 +4,10 @@ import { DrawerLayout } from 'react-native-gesture-handler';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { Picker } from '@react-native-picker/picker';
 import UserPalette from '../constants/UserPalette';
+import { algoSearch } from '../test/algoSearch.js';
 import FontSize from '../constants/FontSize';
 
-// Filter drawer for Admin Approve Items Flatlist Grid
+// Admin Approved Items Filter Drawer is similar with the AdminFilterDrawer
 // ⚠️ Did not remove checkbox functionality
 interface AdminApproveItemDrawerProps {
   onApply: (filters: {
@@ -105,7 +106,7 @@ const AdminApproveItemDrawer: React.ForwardRefRenderFunction<AdminApproveItemDra
         startDate: startDate?.toISOString(),
         endDate: endDate?.toISOString(),
         dateSortOrder,
-        selectedStatus,
+        // selectedStatus,
       });
 
       onApply({
@@ -415,4 +416,3 @@ const styles = StyleSheet.create({
 });
 
 export default forwardRef(AdminApproveItemDrawer);
-

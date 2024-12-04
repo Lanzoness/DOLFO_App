@@ -188,7 +188,10 @@ function App(): React.JSX.Element {
           <Stack.Screen 
             name="EditLost" 
             component={EditLost}
-            options={{ headerShown: false }}
+            options={{
+              headerTitle: '',
+              headerTintColor: UserPalette.blue,
+            }}
           />
           <Stack.Screen 
             name="AdminSubmitLost" 

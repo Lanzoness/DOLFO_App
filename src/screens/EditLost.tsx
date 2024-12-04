@@ -170,8 +170,6 @@ const EditLost = () => {
         onCancel={handleCancel}
         onConfirm={handleConfirm}
       />
-      <View style={styles.topBar}>
-      </View>
       <ScrollView contentInsetAdjustmentBehavior="automatic" style={styles.scrollView}>
         <View style={styles.container}>
           <View style={styles.topContainer}>
@@ -490,13 +488,6 @@ const styles = StyleSheet.create({
   },
   archiveButton: {
     // No additional styles needed if similar to editButton
-  },
-  topBar: {
-    width: '100%',
-    height: 80,
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   topBarText: {
     color: 'black',

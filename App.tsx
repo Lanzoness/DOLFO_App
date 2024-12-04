@@ -103,7 +103,10 @@ function App(): React.JSX.Element {
           <Stack.Screen 
             name="AdminApproveItemGrid" 
             component={AdminApproveItemGrid}
-            options={{ headerShown: false }}
+            options={{ 
+              headerTitle: '',
+              headerTintColor: UserPalette.blue,
+             }}
           />
           <Stack.Screen 
             name="SubmitLost" 

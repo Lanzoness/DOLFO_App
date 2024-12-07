@@ -9,7 +9,7 @@ react {
     autolinkLibrariesWithApp()
 }
 
-def enableProguardInReleaseBuilds = false
+def enableProguardInReleaseBuilds = true
 def jscFlavor = 'org.webkit:android-jsc:+'
 
 // Load environment variables from .env file
@@ -36,6 +36,7 @@ android {
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
+        resConfigs "en"
     }
     signingConfigs {
         debug {
@@ -57,8 +58,30 @@ android {
         }
         release {
             signingConfig signingConfigs.release
-            minifyEnabled enableProguardInReleaseBuilds
+            minifyEnabled true
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            shrinkResources true
+        }
+    }
+    splits {
+        abi {
+            enable false
+            reset()
+            universalApk true
+        }
+        density {
+            enable false
+        }
+    }
+    bundle {
+        density {
+            enableSplit = false
+        }
+        abi {
+            enableSplit = false
+        }
+        language {
+            enableSplit = false
         }
     }
 }

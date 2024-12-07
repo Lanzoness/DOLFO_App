@@ -20,7 +20,7 @@ type RootStackParamList = {
   e.g.
 
 
-  // 📂 FontSize.ts (seprate file)
+  // 📂 FontSize.tsx (seprate file)
   const FontSize = {
     body_small: 14,
     body_medium: 16,
@@ -56,6 +56,12 @@ function LoginAuth(): React.JSX.Element {
   const [password, setPassword] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const scaleValue = useRef(new Animated.Value(0)).current;
+  // user-side login success modal useState
+  const [userSuccessVisible, setUserSuccessVisible] = useState(false);
+  // admin-side login success modal useState 
+  const [adminSuccessVisible, setAdminSuccessVisible] = useState(false);
+  // login success modal scale value useRefs
+  const successScaleValue = useRef(new Animated.Value(0)).current;
 
   const handleLogin = async () => {
     const newUser = {
@@ -68,10 +74,21 @@ function LoginAuth(): React.JSX.Element {
 
     if (isAuthenticated) {
       if (isAdmin) {
-        navigation.navigate('AdminHomeScreen');
+        setAdminSuccessVisible(true); // admin-side login success modal 
       } else {
-        navigation.navigate('UserHomeScreen');
+        setUserSuccessVisible(true); // user-side login success modal
       }
+    
+      // 3 second delay before redirecting to the admin/ user homescreen
+      setTimeout(() => {
+        if (isAdmin) {
+         setAdminSuccessVisible(false);
+          navigation.navigate('AdminHomeScreen'); // redirect to admin home screen
+        } else {
+          setUserSuccessVisible(false);
+          navigation.navigate('UserHomeScreen'); // redirect to user home screen
+        }
+      }, 3000); // 3 second delay
     } else {
       setModalVisible(true);
     }
@@ -91,6 +108,18 @@ function LoginAuth(): React.JSX.Element {
       }).start();
     }
   }, [modalVisible, scaleValue]);
+
+  // login success modal scale values
+  useEffect(() => {
+    if (userSuccessVisible || adminSuccessVisible) {
+     Animated.spring(successScaleValue, {
+        toValue: 1,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      successScaleValue.setValue(0);
+    }
+  }, [userSuccessVisible, adminSuccessVisible, successScaleValue]); // login success modal scale value 
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
@@ -148,12 +177,39 @@ function LoginAuth(): React.JSX.Element {
         animationType="none"
         onRequestClose={() => setModalVisible(false)}
       >
+        {/* login error modal: Invalid inputs */}
         <View style={styles.modalOverlay}>
           <Animated.View style={[styles.modalContent, { transform: [{ scale: scaleValue }] }]}>
             <Text style={styles.modalText}>The entered credentials do not match an existing account.</Text>
             <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
               <Text style={styles.closeButtonText}>Close</Text>
             </TouchableOpacity>
+          </Animated.View>
+        </View>
+      </Modal>
+
+      {/* user-side login success modal */}
+      <Modal
+        transparent={true}
+        visible={userSuccessVisible}
+        animationType="none"
+      >
+        <View style={styles.successModalOverlay}>
+          <Animated.View style={[styles.userSuccessModalContent, { transform: [{ scale: successScaleValue }] }]}>
+            <Text style={styles.userSuccessModalText}>Log in as User Successful!</Text>
+          </Animated.View>
+        </View>
+      </Modal>
+
+      {/* admin-side login success modal */}
+      <Modal
+        transparent={true}
+        visible={adminSuccessVisible}
+        animationType="none"
+      >
+        <View style={styles.adminSuccessModalOverlay}>
+          <Animated.View style={[styles.adminSuccessModalContent, { transform: [{ scale: successScaleValue }] }]}>
+            <Text style={styles.adminSuccessModalText}>Log in as Admin Successful!</Text>
           </Animated.View>
         </View>
       </Modal>
@@ -191,7 +247,7 @@ const styles = StyleSheet.create({
   iconTitle: {
     color: AuthPageColors.primary,
     fontSize: FontSize.icon_header,
-    fontFamily: FontType.header_font, // Replace with paytone one
+    fontFamily: FontType.header_font,
     fontWeight: '800',
     marginTop: 15,
   },
@@ -278,6 +334,51 @@ const styles = StyleSheet.create({
   closeButtonText: {
     color: AuthPageColors.primary,
     fontSize: FontSize.body_medium,
+    textAlign: 'center',
+  },
+  // sucess modal placeholder
+  successModalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  // user-side success modal styles
+  userSuccessModalContent: {
+    width: '80%',
+    backgroundColor: '#00722A',
+    padding: 20,
+    borderRadius: 15,
+    alignItems: 'center',
+    borderColor: 'white',
+    borderWidth: 3,
+  },
+  userSuccessModalText: {
+    fontSize: FontSize.body_large,
+    fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
+  },
+  // admin-side success modal styles
+  adminSuccessModalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  adminSuccessModalContent: {
+    width: '80%',
+    backgroundColor: '#1D68B3',
+    padding: 20,
+    borderRadius: 15,
+    borderColor: 'white',
+    borderWidth: 3,
+    alignItems: 'center',
+  },
+  adminSuccessModalText: {
+    fontSize: FontSize.body_large,
+    fontWeight: 'bold',
+    color: 'white',
     textAlign: 'center',
   },
 });

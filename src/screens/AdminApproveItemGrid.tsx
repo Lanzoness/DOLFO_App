@@ -10,6 +10,7 @@ import { AdminApproveItemDrawerRef } from '../components/AdminApproveItemDrawer'
 import { algoSearch } from '../test/algoSearch.js';
 import { algoFilter } from '../test/algoFilter';
 import { processDate } from '../test/processDate';
+import { checkName } from '../test/checkName.js';
 
 // Change to AdminApproveItemsPage
 type RootStackParamList = {
@@ -125,25 +126,13 @@ const AdminApproveItemGrid = forwardRef<AdminApproveItemDrawerRef>((props, ref) 
         pressRetentionOffset={{ top: 10, left: 10, bottom: 10, right: 10 }}
       >
         <Image source={{ uri: item.Image }} style={styles.itemImage} />
-        <Text 
-          style={styles.itemName}
-          numberOfLines={2}
-          ellipsizeMode="tail"
-        >
-          {item['Item Name']}
+        <Text style={styles.itemName}>
+          {checkName(item['Item Name'])}
         </Text>
-        <Text
-          style={styles.itemCategory}
-          numberOfLines={1}
-          ellipsizeMode="tail"
-        >
+        <Text style={styles.itemCategory}>
           Category: {categoryValue}
         </Text>
-        <Text
-          style={styles.itemDate}
-          numberOfLines={1}
-          ellipsizeMode="tail"
-        >
+        <Text style={styles.itemDate}>
           Date: {processDate(item['Date Submitted'], false)}
         </Text>
       </TouchableOpacity>
@@ -215,17 +204,19 @@ const styles = StyleSheet.create({
   flatListContainer: {
     paddingVertical: 8,
     backgroundColor: UserPalette.blue,
+    minHeight: '100%',
+    flexGrow: 1,
   },
   itemContainer: {
     margin: 4,
     width: Dimensions.get('window').width / 2 - 12,
     maxWidth: Dimensions.get('window').width / 2 - 12,
     backgroundColor: UserPalette.default_background,
-    borderRadius: 7,
-    padding: 8,
+    borderRadius: 8,
+    padding: 4,
     alignItems: 'center',
     height: 'auto',
-    aspectRatio: 0.72,
+    aspectRatio: 0.68,
   },
   itemImage: {
     width: '100%',
@@ -240,6 +231,8 @@ const styles = StyleSheet.create({
     fontSize: FontSize.body_small,
     color: UserPalette.black_font,
     width: '100%',
+    maxHeight: 50,
+    padding: 5,
   },
   itemCategory: {
     marginTop: 4,
@@ -247,6 +240,7 @@ const styles = StyleSheet.create({
     fontSize: FontSize.body_smallest,
     width: '100%',
     textAlign: 'center',
+    padding: 2,
   },
   itemDate: {
     color: UserPalette.black_font,

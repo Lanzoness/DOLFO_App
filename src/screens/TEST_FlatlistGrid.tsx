@@ -9,7 +9,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { algoFilter } from '../test/algoFilter';
 import { processDate } from '../test/processDate.js';
 import { algoSearch } from '../test/algoSearch.js';
-import SearchBar from '../components/SearchBar';
+import { checkName } from '../test/checkName.js';
 // Define the type for navigation parameters
 type RootStackParamList = {
   UserItemInformation: {
@@ -91,25 +91,13 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
         pressRetentionOffset={{ top: 10, left: 10, bottom: 10, right: 10 }}
       >
         <Image source={{ uri: item.Image }} style={styles.itemImage} />
-        <Text 
-          style={styles.itemName}
-          numberOfLines={2}
-          ellipsizeMode="tail"
-        >
-          {item['Item Name']}
+        <Text style={styles.itemName}>
+          {checkName(item['Item Name'])}
         </Text>
-        <Text
-          style={styles.itemCategory}
-          numberOfLines={1}
-          ellipsizeMode="tail"
-        >
+        <Text style={styles.itemCategory}>
           Category: {categoryValue}
         </Text>
-        <Text
-          style={styles.itemDate}
-          numberOfLines={1}
-          ellipsizeMode="tail"
-        >
+        <Text style={styles.itemDate}>
           Date: {processDate(item['Date Submitted'], false)}
         </Text>
       </TouchableOpacity>
@@ -242,23 +230,25 @@ const styles = StyleSheet.create({
   flatListContainer: {
     paddingVertical: 8,
     backgroundColor: UserPalette.green,
+    minHeight: '100%',
+    flexGrow: 1,
   },
   itemContainer: {
     margin: 4,
     width: Dimensions.get('window').width / 2 - 12,
     maxWidth: Dimensions.get('window').width / 2 - 12,
     backgroundColor: UserPalette.default_background,
-    borderRadius: 7,
-    padding: 8,
+    borderRadius: 8,
+    padding: 4,
     alignItems: 'center',
     height: 'auto',
-    aspectRatio: 0.72,
+    aspectRatio: 0.68,
   },
   itemImage: {
     width: '100%',
     aspectRatio: 1,
     resizeMode: 'cover',
-    borderRadius: 5,
+    borderRadius: 6,
   },
   itemName: {
     marginTop: 10,
@@ -267,8 +257,8 @@ const styles = StyleSheet.create({
     fontSize: FontSize.body_small,
     color: UserPalette.black_font,
     width: '100%',
-    // numberOfLines: 2,
-    // ellipsizeMode: 'tail',
+    maxHeight: 50,
+    padding: 5,
   },
   itemCategory: {
     marginTop: 4,
@@ -276,6 +266,7 @@ const styles = StyleSheet.create({
     fontSize: FontSize.body_smallest,
     width: '100%',
     textAlign: 'center',
+    padding: 2,
   },
   itemDate: {
     color: UserPalette.black_font,
@@ -303,9 +294,6 @@ const styles = StyleSheet.create({
       width: 0,
       height: 2,
     },
-    // shadowOpacity: 0.25,
-    // shadowRadius: 4.84,
-    // elevation: 5,
     borderWidth: 1,
     borderColor: 'transparent',
     transform: [{ scale: 1 }],

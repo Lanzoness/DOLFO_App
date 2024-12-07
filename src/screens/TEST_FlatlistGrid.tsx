@@ -9,7 +9,6 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { algoFilter } from '../test/algoFilter';
 import { processDate } from '../test/processDate.js';
 import { algoSearch } from '../test/algoSearch.js';
-import SearchBar from '../components/SearchBar';
 import { checkName } from '../test/checkName.js';
 // Define the type for navigation parameters
 type RootStackParamList = {
@@ -231,6 +230,8 @@ const styles = StyleSheet.create({
   flatListContainer: {
     paddingVertical: 8,
     backgroundColor: UserPalette.green,
+    minHeight: '100%',
+    flexGrow: 1,
   },
   itemContainer: {
     margin: 4,

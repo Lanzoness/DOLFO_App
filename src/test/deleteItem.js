@@ -6,23 +6,28 @@ export const deleteItem = async (itemId, imageUrl) => {
   try {
     console.log('Starting item deletion process for ID:', itemId);
 
-    // Delete the document from Firestore
-    const itemRef = doc(db, 'Items', itemId);
-    await deleteDoc(itemRef);
-    console.log('Document deleted from Firestore');
-
-    // If there's an image URL, delete it from Storage
+    // If there's an image URL, delete it from Storage first
     if (imageUrl) {
       try {
-        // Get the storage reference from the image URL
-        const imageRef = ref(storage, imageUrl);
+        // Extract just the filename from the URL
+        const filename = imageUrl.split('/').pop().split('?')[0];
+        console.log('Attempting to delete file:', filename);
+
+        // Create reference and delete
+        const imageRef = ref(storage, filename);
         await deleteObject(imageRef);
         console.log('Image deleted from Storage');
       } catch (imageError) {
         console.error('Error deleting image:', imageError);
-        // Continue with the process even if image deletion fails
+        // Stop the process if image deletion fails
+        throw new Error('Image deletion failed, aborting item deletion.');
       }
     }
+
+    // Delete the document from Firestore
+    const itemRef = doc(db, 'Items', itemId);
+    await deleteDoc(itemRef);
+    console.log('Document deleted from Firestore');
 
     console.log('Item successfully deleted');
     return true;

@@ -44,7 +44,13 @@ const AdminApproveItemPage = () => {
     setOverlayVisible(false);
   };
 
-  const handleConfirm = (inputValue: string) => {
+  const handleConfirm = async (inputValue: string) => {
+    try {
+      await deleteItem(item.id, item.Image);
+      console.log('Item deleted successfully');
+    } catch (error) {
+      console.error('Error deleting item:', error);
+    }
     // insert confirm reject functionality here
     
     setOverlayVisible(false);
@@ -60,12 +66,6 @@ const AdminApproveItemPage = () => {
   };
 
   const handleDelete = async () => {
-    try {
-      await deleteItem(item.id, item.Image);
-      console.log('Item deleted successfully');
-    } catch (error) {
-      console.error('Error deleting item:', error);
-    }
     setOverlayVisible(true);
   };
 

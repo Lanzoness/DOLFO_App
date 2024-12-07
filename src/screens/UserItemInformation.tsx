@@ -22,9 +22,23 @@ type RouteParams = {
   };
 };
 
+const categories = [
+  { key: '1', value: 'Electronics' },
+  { key: '2', value: 'Clothing' },
+  { key: '3', value: 'Documents' },
+  { key: '4', value: 'Wallets' },
+  { key: '5', value: 'Bags' },
+  { key: '6', value: 'Others' },
+];
+
 const UserItemInformation = () => {
   const route = useRoute<RouteProp<{ UserItemInformation: RouteParams }, 'UserItemInformation'>>();
   const { item } = route.params;
+
+  const getCategoryValue = (categoryKey: string) => {
+    const categoryObj = categories.find(cat => cat.key === categoryKey);
+    return categoryObj ? categoryObj.value : categoryKey;
+  };
 
   const renderDescriptions = () => {
     if (Array.isArray(item.Description)) {
@@ -59,7 +73,7 @@ const UserItemInformation = () => {
           {renderDescriptions()}
 
           <Text style={styles.label}>Category:</Text>
-          <Text style={styles.value}>{item.Category}</Text>
+          <Text style={styles.value}>{getCategoryValue(item.Category)}</Text>
 
           <Text style={styles.label}>Location Found:</Text>
           <Text style={styles.value}>{item['Location Found']}</Text>

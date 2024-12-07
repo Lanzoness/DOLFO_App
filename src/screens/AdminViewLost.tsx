@@ -40,6 +40,14 @@ interface Item {
   'Is Retrieved': number;
   id: string;
 }
+const categories = [
+  { key: '1', value: 'Electronics' },
+  { key: '2', value: 'Clothing' },
+  { key: '3', value: 'Documents' },
+  { key: '4', value: 'Wallets' },
+  { key: '5', value: 'Bags' },
+  { key: '6', value: 'Others' },
+];
 const AdminViewLost = forwardRef<AdminFilterDrawerRef>((props, ref) => {
   const navigation = useNavigation<NavigationProp>();
   const [data, setData] = useState<Item[]>([]);
@@ -101,41 +109,46 @@ const AdminViewLost = forwardRef<AdminFilterDrawerRef>((props, ref) => {
     }
   };
 
-  const renderItem = ({ item }) => (
-    <TouchableOpacity
-      style={[
-        styles.itemContainer,
-        styles.touchableContainer,
-      ]}
-      onPress={() => handleItemPress(item)}
-      activeOpacity={0.9}
-      delayPressIn={50}
-      pressRetentionOffset={{ top: 10, left: 10, bottom: 10, right: 10 }}
-    >
-      <Image source={{ uri: item.Image }} style={styles.itemImage} />
-      <Text 
-        style={styles.itemName}
-        numberOfLines={2}
-        ellipsizeMode="tail"
+  const renderItem = ({ item }) => {
+    const categoryObj = categories.find(cat => cat.key === item.Category);
+    const categoryValue = categoryObj ? categoryObj.value : item.Category;
+
+    return (
+      <TouchableOpacity
+        style={[
+          styles.itemContainer,
+          styles.touchableContainer,
+        ]}
+        onPress={() => handleItemPress(item)}
+        activeOpacity={0.9}
+        delayPressIn={50}
+        pressRetentionOffset={{ top: 10, left: 10, bottom: 10, right: 10 }}
       >
-        {item['Item Name']}
-      </Text>
-      <Text
-        style={styles.itemCategory}
-        numberOfLines={1}
-        ellipsizeMode="tail"
-      >
-        Category: {item.Category}
-      </Text>
-      <Text
-        style={styles.itemDate}
-        numberOfLines={1}
-        ellipsizeMode="tail"
-      >
-        Date: {processDate(item['Date Submitted'], false)}
-      </Text>
-    </TouchableOpacity>
-  );
+        <Image source={{ uri: item.Image }} style={styles.itemImage} />
+        <Text 
+          style={styles.itemName}
+          numberOfLines={2}
+          ellipsizeMode="tail"
+        >
+          {item['Item Name']}
+        </Text>
+        <Text
+          style={styles.itemCategory}
+          numberOfLines={1}
+          ellipsizeMode="tail"
+        >
+          Category: {categoryValue}
+        </Text>
+        <Text
+          style={styles.itemDate}
+          numberOfLines={1}
+          ellipsizeMode="tail"
+        >
+          Date: {processDate(item['Date Submitted'], false)}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
 
   const handleItemPress = (item: Item) => {
     navigation.navigate('EditLost', { item });

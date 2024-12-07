@@ -259,7 +259,9 @@ const EditLost = () => {
                   </TouchableOpacity>
                 </View>
                 <View style={styles.lineContainer}>
-                  <Text style={styles.sampleInput}>{selectedCategory}</Text>
+                  <Text style={styles.sampleInput}>
+                    {categories.find(cat => cat.key === selectedCategory)?.value || selectedCategory}
+                  </Text>
                   <View style={styles.line} />
                 </View>
               </View>

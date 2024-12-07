@@ -48,6 +48,9 @@ const SignupScreen = () => {
   const [adminPassword, setAdminPassword] = useState('');
   const [isAdminInputValid, setAdminInputValid] = useState(true);
 
+  // UseState to handle the a modal (overlay) for inputs with empty fields  
+  const [isEmptyFieldsModalVisible, setEmptyFieldsModalVisible] = useState(false);
+
   const openModal = () => {
     setModalVisible(true);
   };
@@ -66,6 +69,13 @@ const SignupScreen = () => {
   };
 
   const handleSignUp = async() => {
+    // Any of the 3 fields left empty will trigger the overlay to ask a user to fill in all required fields to sign up
+    if (!name.trim() || !dlsud_ID.trim() || !password.trim()) {
+      setEmptyFieldsModalVisible(true);
+      console.log('The user has left one or more fields empty.');
+      return;
+    }
+
     const newUser = {
       Name: name,
       DLSUD_ID: dlsud_ID,
@@ -75,7 +85,9 @@ const SignupScreen = () => {
     
     const { isAuthenticated } = await matchUser(newUser);
 
+    // Check for existing regular user account
     if (!isAuthenticated) { 
+      // Check for existing admin account if admin password was provided
       if (isAdminInputValid && adminPassword) {
         newUser.isAdmin = 1;
       }
@@ -186,7 +198,7 @@ const SignupScreen = () => {
           </Animated.View>
         </View>
       </Modal>
-
+      {/* Error modal for to handle invalid inputs with existing account credentials */}
       <Modal
         transparent={true}
         visible={!isInputValid}
@@ -195,7 +207,7 @@ const SignupScreen = () => {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalText}>Invalid Input</Text>
+            <Text style={styles.modalText}>Entered account credentials already exists</Text>
             <TouchableOpacity style={styles.submitButton} onPress={() => setInputValid(true)}>
               <Text style={styles.buttonText}>Close</Text>
             </TouchableOpacity>
@@ -203,6 +215,7 @@ const SignupScreen = () => {
         </View>
       </Modal>
 
+      {/* Error modal for invalid admin password to handle existing account credentials */}
       <Modal
         transparent={true}
         visible={!isAdminInputValid}
@@ -211,7 +224,7 @@ const SignupScreen = () => {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalText}>Invalid Input</Text>
+            <Text style={styles.modalText}>Entered account credentials already exists</Text> 
             <TouchableOpacity style={styles.submitButton} onPress={() => setAdminInputValid(true)}>
               <Text style={styles.buttonText}>Close</Text>
             </TouchableOpacity>
@@ -234,6 +247,26 @@ const SignupScreen = () => {
           </View>
         </View>
       </Modal>
+      {/* Error modal for empty fields START */}
+      <Modal
+        transparent={true}
+        visible={isEmptyFieldsModalVisible}
+        animationType="fade"
+        onRequestClose={() => setEmptyFieldsModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>Please fill in all required fields to sign up</Text>
+            <TouchableOpacity 
+              style={styles.submitButton} 
+              onPress={() => setEmptyFieldsModalVisible(false)}
+            >
+              <Text style={styles.buttonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+      {/* Error modal for empty fields END */}
     </SafeAreaView>
   );
 };
@@ -338,6 +371,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: AuthPageColors.primary,
     marginBottom: 20,
+    textAlign: 'center',
+    padding: 10,
   },
   modalInput: {
     borderColor: AuthPageColors.primary,

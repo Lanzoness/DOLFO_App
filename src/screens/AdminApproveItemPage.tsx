@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, TextInput, StyleSheet, Text, ScrollView, SafeAreaView, Image, TouchableOpacity, Alert } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, TextInput, StyleSheet, Text, ScrollView, SafeAreaView, Image, TouchableOpacity, Alert, Animated } from 'react-native';
 import UserPalette from '../constants/UserPalette';
 import FontSize from '../constants/FontSize';
 import Button from '../components/button';
@@ -30,6 +30,24 @@ const AdminApproveItemPage = () => {
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [currentSection, setCurrentSection] = useState('');
   const [isRetrieved, setIsRetrieved] = useState(item['Is Retrieved'] || 0);
+  const [successOverlayVisible, setSuccessOverlayVisible] = useState(false);
+
+  const scaleAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (successOverlayVisible) {
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      Animated.timing(scaleAnim, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [successOverlayVisible]);
 
   const categories = [
     { key: '1', value: 'Electronics' },
@@ -60,6 +78,8 @@ const AdminApproveItemPage = () => {
     try {
       await approveItem(item.id);
       console.log('Item approved successfully');
+      setSuccessOverlayVisible(true);
+      console.log('Success overlay should be visible now');
     } catch (error) {
       console.error('Error approving item:', error);
     }
@@ -67,6 +87,14 @@ const AdminApproveItemPage = () => {
 
   const handleDelete = async () => {
     setOverlayVisible(true);
+  };
+
+  const handleSuccessOverlayClose = () => {
+    Animated.timing(scaleAnim, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: true,
+    }).start(() => setSuccessOverlayVisible(false));
   };
 
   return (
@@ -77,6 +105,18 @@ const AdminApproveItemPage = () => {
         onCancel={handleCancel}
         onConfirm={handleConfirm}
       />
+      {successOverlayVisible && (
+        <View style={styles.successOverlay}>
+          <Animated.View style={[styles.overlayContent, { transform: [{ scale: scaleAnim }] }]}>
+            <Text style={styles.successText}>Item approved successfully!</Text>
+            <Button
+              label="Close"
+              onClick={handleSuccessOverlayClose}
+              style={styles.closeButton}
+            />
+          </Animated.View>
+        </View>
+      )}
       <ScrollView contentInsetAdjustmentBehavior="automatic" style={styles.scrollView}>
         <View style={styles.container}>
           <View style={styles.topContainer}>
@@ -408,6 +448,31 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         width: '100%',
+      },
+      successOverlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        zIndex: 1000,
+      },
+      overlayContent: {
+        backgroundColor: 'white',
+        padding: 20,
+        borderRadius: 10,
+        alignItems: 'center',
+      },
+      successText: {
+        fontSize: FontSize.body_large,
+        color: 'black',
+        marginBottom: 20,
+      },
+      closeButton: {
+        backgroundColor: '#1e753e',
       },
 });
 

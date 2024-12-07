@@ -36,12 +36,12 @@ const EditLost = () => {
 
   // Array of objects to store each category
   const categories = [
-    { key: '1', value: 'category 1' },
-    { key: '2', value: 'category 2' },
-    { key: '3', value: 'category 3' },
-    { key: '4', value: 'category 4' },
-    { key: '5', value: 'category 5' },
-    { key: '6', value: 'category 6' },
+    { key: '1', value: 'Electronics' },
+    { key: '2', value: 'Clothing' },
+    { key: '3', value: 'Documents' },
+    { key: '4', value: 'Wallets' },
+    { key: '5', value: 'Bags' },
+    { key: '6', value: 'Others' },
   ];
 
   const handleEditClick = (sectionName: string, index?: number) => {
@@ -259,7 +259,9 @@ const EditLost = () => {
                   </TouchableOpacity>
                 </View>
                 <View style={styles.lineContainer}>
-                  <Text style={styles.sampleInput}>{selectedCategory}</Text>
+                  <Text style={styles.sampleInput}>
+                    {categories.find(cat => cat.key === selectedCategory)?.value || selectedCategory}
+                  </Text>
                   <View style={styles.line} />
                 </View>
               </View>

@@ -1,12 +1,17 @@
 import RNFS from 'react-native-fs';
 import { db } from '../services/firebaseConfig';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, where, orderBy } from 'firebase/firestore';
 
 export async function downloadLostItems() {
     console.log('Document Directory Path:', RNFS.DocumentDirectoryPath);
     try {
         const itemsRef = collection(db, 'Items');
-        const q = query(itemsRef, where('Is Retrieved', '==', 0));
+        // Create a query with where clause and orderBy
+        const q = query(
+            itemsRef, 
+            where('Is Retrieved', '==', 0),
+            orderBy('Date Submitted', 'desc')
+        );
         const snapshot = await getDocs(q);
 
         if (snapshot.empty) {

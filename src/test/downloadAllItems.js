@@ -1,12 +1,13 @@
 import RNFS from 'react-native-fs';
 import { db } from '../services/firebaseConfig';
-import { collection, getDocs} from 'firebase/firestore';
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 
 export async function downloadAllItems() {
     console.log('Document Directory Path:', RNFS.DocumentDirectoryPath);
     try {
         const itemsRef = collection(db, 'Items');
-        const snapshot = await getDocs(itemsRef);
+        const q = query(itemsRef, orderBy('Date Submitted', 'desc'));
+        const snapshot = await getDocs(q);
 
         if (snapshot.empty) {
             console.log('No matching documents.');

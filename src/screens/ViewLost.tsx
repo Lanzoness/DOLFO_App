@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, FlatList, Image, Dimensions, TouchableOpacity }
 import UserPalette from '../constants/UserPalette';
 import FontSize from '../constants/FontSize';
 import { readLostItems } from '../test/readLostItems';
-import AdminFilterDrawer, { AdminFilterDrawerRef } from '../components/AdminFilterDrawer';
+import FilterDrawer, { FilterDrawerRef } from '../components/FilterDrawer';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
@@ -28,14 +28,27 @@ interface Item {
   id: string;
 }
 
-const ViewLost = forwardRef<AdminFilterDrawerRef>((props, ref) => {
+const categories = [
+  { key: '1', value: 'Electronics' },
+  { key: '2', value: 'Clothing' },
+  { key: '3', value: 'Documents' },
+  { key: '4', value: 'Wallets' },
+  { key: '5', value: 'Bags' },
+  { key: '6', value: 'Others' },
+];
+
+const ViewLost = forwardRef<FilterDrawerRef>((props, ref) => {
   const navigation = useNavigation<NavigationProp>();
   const [data, setData] = useState<Item[]>([]);
-  const filterDrawerRef = useRef<AdminFilterDrawerRef>(null);
+  const filterDrawerRef = useRef<FilterDrawerRef>(null);
 
   useImperativeHandle(ref, () => ({
     openDrawer: () => filterDrawerRef.current?.openDrawer(),
     closeDrawer: () => filterDrawerRef.current?.closeDrawer(),
+    getChildRef: () => filterDrawerRef.current,
+    handleSearch: (query: string) => {
+      // Implement search functionality if needed
+    }
   }));
 
   // Fetch data from Firebase
@@ -56,29 +69,40 @@ const ViewLost = forwardRef<AdminFilterDrawerRef>((props, ref) => {
     navigation.navigate('AdminItemInformation', { item });
   };
 
-  const renderItem = ({ item }: { item: Item }) => (
-    <TouchableOpacity
-      style={[styles.itemContainer, styles.touchableContainer]}
-      onPress={() => handleItemPress(item)}
-      activeOpacity={0.9}
-      delayPressIn={50}
-      pressRetentionOffset={{ top: 10, left: 10, bottom: 10, right: 10 }}
-    >
-      <Image source={{ uri: item.Image }} style={styles.itemImage} />
-      <Text style={styles.itemName} numberOfLines={2} ellipsizeMode="tail">
-        {item['Item Name']}
-      </Text>
-      <Text style={styles.itemCategory} numberOfLines={1} ellipsizeMode="tail">
-        Category: {item.Category}
-      </Text>
-      <Text style={styles.itemDate} numberOfLines={1} ellipsizeMode="tail">
-        Date: {item['Date Submitted']}
-      </Text>
-    </TouchableOpacity>
-  );
+  const renderItem = ({ item }: { item: Item }) => {
+    console.log('Raw Category from item:', item.Category);
+    const categoryObj = categories.find(cat => cat.key === item.Category);
+    console.log('Found categoryObj:', categoryObj);
+    const categoryValue = categoryObj ? categoryObj.value : item.Category;
+    console.log('Final categoryValue:', categoryValue);
+
+    return (
+      <TouchableOpacity
+        style={[styles.itemContainer, styles.touchableContainer]}
+        onPress={() => {
+          console.log('Item pressed with category:', item.Category);
+          handleItemPress(item);
+        }}
+        activeOpacity={0.9}
+        delayPressIn={50}
+        pressRetentionOffset={{ top: 10, left: 10, bottom: 10, right: 10 }}
+      >
+        <Image source={{ uri: item.Image }} style={styles.itemImage} />
+        <Text style={styles.itemName} numberOfLines={2} ellipsizeMode="tail">
+          {item['Item Name']}
+        </Text>
+        <Text style={styles.itemCategory} numberOfLines={1} ellipsizeMode="tail">
+          Category: {categoryValue}
+        </Text>
+        <Text style={styles.itemDate} numberOfLines={1} ellipsizeMode="tail">
+          Date: {item['Date Submitted']}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
 
   return (
-    <AdminFilterDrawer
+    <FilterDrawer
       ref={filterDrawerRef}
       onApply={() => {}}
       onReset={() => {}}
@@ -93,7 +117,7 @@ const ViewLost = forwardRef<AdminFilterDrawerRef>((props, ref) => {
           columnWrapperStyle={styles.columnWrapper}
         />
       </View>
-    </AdminFilterDrawer>
+    </FilterDrawer>
   );
 });
 

@@ -41,6 +41,14 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
   const [filteredData, setFilteredData] = useState<Item[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const filterDrawerRef = useRef<FilterDrawerRef>(null);
+  const categories = [
+    { key: '1', value: 'Electronics' },
+    { key: '2', value: 'Clothing' },
+    { key: '3', value: 'Documents' },
+    { key: '4', value: 'Wallets' },
+    { key: '5', value: 'Bags' },
+    { key: '6', value: 'Others' },
+  ];
 
   useImperativeHandle(ref, () => ({
     openDrawer: () => filterDrawerRef.current?.openDrawer(),
@@ -66,41 +74,47 @@ const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
 
 
   // Updated renderItem function to include TouchableOpacity
-  const renderItem = ({ item }: { item: Item }) => (
-    <TouchableOpacity
-      style={[
-        styles.itemContainer,
-        styles.touchableContainer,
-      ]}
-      onPress={() => handleItemPress(item)}
-      activeOpacity={0.9}
-      delayPressIn={50}
-      pressRetentionOffset={{ top: 10, left: 10, bottom: 10, right: 10 }}
-    >
-      <Image source={{ uri: item.Image }} style={styles.itemImage} />
-      <Text 
-        style={styles.itemName}
-        numberOfLines={2}
-        ellipsizeMode="tail"
+  const renderItem = ({ item }: { item: Item }) => {
+    // Find the category object that matches the item's category key
+    const categoryObj = categories.find(cat => cat.key === item.Category);
+    const categoryValue = categoryObj ? categoryObj.value : item.Category;
+
+    return (
+      <TouchableOpacity
+        style={[
+          styles.itemContainer,
+          styles.touchableContainer,
+        ]}
+        onPress={() => handleItemPress(item)}
+        activeOpacity={0.9}
+        delayPressIn={50}
+        pressRetentionOffset={{ top: 10, left: 10, bottom: 10, right: 10 }}
       >
-        {item['Item Name']}
-      </Text>
-      <Text
-        style={styles.itemCategory}
-        numberOfLines={1}
-        ellipsizeMode="tail"
-      >
-        Category: {item.Category}
-      </Text>
-      <Text
-        style={styles.itemDate}
-        numberOfLines={1}
-        ellipsizeMode="tail"
-      >
-        Date: {processDate(item['Date Submitted'], false)}
-      </Text>
-    </TouchableOpacity>
-  );
+        <Image source={{ uri: item.Image }} style={styles.itemImage} />
+        <Text 
+          style={styles.itemName}
+          numberOfLines={2}
+          ellipsizeMode="tail"
+        >
+          {item['Item Name']}
+        </Text>
+        <Text
+          style={styles.itemCategory}
+          numberOfLines={1}
+          ellipsizeMode="tail"
+        >
+          Category: {categoryValue}
+        </Text>
+        <Text
+          style={styles.itemDate}
+          numberOfLines={1}
+          ellipsizeMode="tail"
+        >
+          Date: {processDate(item['Date Submitted'], false)}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
 
   // Add this new function to handle item press
   const handleItemPress = (item: any) => {

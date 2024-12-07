@@ -71,7 +71,7 @@ const AdminHomeScreen = () => {
         color="#1D68B3"
       />
       <Button 
-        label="Approve Item"
+        label="Approve Items"
         variant="approveButton"
         onClick={() => {navigation.navigate('AdminApproveItemGrid')}} 
         style={styles.approveButton}

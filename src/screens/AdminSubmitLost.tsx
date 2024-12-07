@@ -45,12 +45,12 @@ const AdminSubmitLost = () => {
 
   // Array of objects to store each category
   const categories = [
-    { key: '1', value: 'category 1' },
-    { key: '2', value: 'category 2' },
-    { key: '3', value: 'category 3' },
-    { key: '4', value: 'category 4' },
-    { key: '5', value: 'category 5' },
-    { key: '6', value: 'category 6' },
+    { key: '1', value: 'Electronics' },
+    { key: '2', value: 'Clothing' },
+    { key: '3', value: 'Documents' },
+    { key: '4', value: 'Wallets' },
+    { key: '5', value: 'Bags' },
+    { key: '6', value: 'Others' },
   ];
 
   // Function to add an item description input field

@@ -122,7 +122,14 @@ const AdminApproveItemDrawer: React.ForwardRefRenderFunction<AdminApproveItemDra
     }
   };
 
-  // Removed rendred checkbox under categories
+  const categories = [
+    { key: '1', value: 'Electronics' },
+    { key: '2', value: 'Clothing' },
+    { key: '3', value: 'Documents' },
+    { key: '4', value: 'Wallets' },
+    { key: '5', value: 'Bags' },
+    { key: '6', value: 'Others' },
+  ];
 
   const renderNavigationView = () => (
     <View style={styles.drawer}>
@@ -178,36 +185,15 @@ const AdminApproveItemDrawer: React.ForwardRefRenderFunction<AdminApproveItemDra
               style={styles.pickerPlaceholder}
               color={UserPalette.secondary_blue}
             />
-            <Picker.Item
-              label="Category 1"
-              value="1"
-              style={styles.pickerItem}
-              color={UserPalette.black_font}
-            />
-            <Picker.Item
-              label="Category 2"
-              value="2"
-              style={styles.pickerItem}
-              color={UserPalette.black_font}
-            />
-            <Picker.Item
-              label="Category 3"
-              value="3"
-              style={styles.pickerItem}
-              color={UserPalette.black_font}
-            />
-            <Picker.Item
-              label="Category 4"
-              value="4"
-              style={styles.pickerItem}
-              color={UserPalette.black_font}
-            />
-            <Picker.Item
-              label="Category 5"
-              value="5"
-              style={styles.pickerItem}
-              color={UserPalette.black_font}
-            />
+            {categories.map((category) => (
+              <Picker.Item
+                key={category.key}
+                label={category.value}
+                value={category.key}
+                style={styles.pickerItem}
+                color={UserPalette.black_font}
+              />
+            ))}
           </Picker>
         </View>
       </View>

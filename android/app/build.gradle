@@ -74,6 +74,17 @@ android {
             include "mdpi", "hdpi", "xhdpi", "xxhdpi", "xxxhdpi"
         }
     }
+    bundle {
+        language {
+            enableSplit = true
+        }
+        density {
+            enableSplit = true
+        }
+        abi {
+            enableSplit = true
+        }
+    }
 }
 dependencies {
     implementation("com.facebook.react:react-android")

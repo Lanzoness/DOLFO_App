@@ -70,8 +70,8 @@ android {
         }
         density {
             enable true
-            exclude "ldpi", "mdpi"
-            compatibleScreens 'normal', 'large', 'xlarge'
+            reset()
+            include "mdpi", "hdpi", "xhdpi", "xxhdpi", "xxxhdpi"
         }
     }
 }

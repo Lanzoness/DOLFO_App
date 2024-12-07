@@ -68,6 +68,11 @@ android {
             include "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
             universalApk false
         }
+        density {
+            enable true
+            exclude "ldpi", "mdpi"
+            compatibleScreens 'normal', 'large', 'xlarge'
+        }
     }
 }
 dependencies {

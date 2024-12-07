@@ -1,6 +1,6 @@
-import { db, storage } from '../services/firebaseConfig';
+import { db } from '../services/firebaseConfig';
 import { doc, deleteDoc } from 'firebase/firestore';
-import { ref, deleteObject } from 'firebase/storage';
+import storage from '@react-native-firebase/storage';
 
 export const deleteItem = async (itemId, imageUrl) => {
   try {
@@ -9,13 +9,22 @@ export const deleteItem = async (itemId, imageUrl) => {
     // If there's an image URL, delete it from Storage first
     if (imageUrl) {
       try {
-        // Extract just the filename from the URL
-        const filename = imageUrl.split('/').pop().split('?')[0];
+        // Extract filename from the URL
+        let filename;
+        if (imageUrl.startsWith('gs://')) {
+          // Handle gs:// URL
+          filename = imageUrl.split('/').pop();
+        } else {
+          // Handle https:// URL
+          filename = imageUrl.split('/o/')[1].split('?')[0];
+          filename = decodeURIComponent(filename);
+        }
+        
         console.log('Attempting to delete file:', filename);
 
-        // Create reference and delete
-        const imageRef = ref(storage, filename);
-        await deleteObject(imageRef);
+        // Create reference using React Native Firebase
+        const reference = storage().ref(filename);
+        await reference.delete();
         console.log('Image deleted from Storage');
       } catch (imageError) {
         console.error('Error deleting image:', imageError);

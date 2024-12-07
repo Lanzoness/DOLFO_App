@@ -117,6 +117,7 @@ const AdminSubmitLost = () => {
   };
 
   const [isInvalidInputModalVisible, setIsInvalidInputModalVisible] = useState(false);
+  const [isSuccessModalVisible, setIsSuccessModalVisible] = useState(false); // New state for success modal
 
   // Function to validate inputs
   const validateInputs = () => {
@@ -165,6 +166,7 @@ const AdminSubmitLost = () => {
         };
 
         await addLostItem(newItem);
+        setIsSuccessModalVisible(true); // Show success modal
     } catch (error) {
         console.error('Error submitting item:', error);
     }
@@ -345,6 +347,18 @@ const AdminSubmitLost = () => {
                   <View style={styles.modalContent}>
                     <Text style={styles.modalOption}>Please fill in all required fields.</Text>
                     <TouchableOpacity onPress={() => setIsInvalidInputModalVisible(false)}>
+                      <Text style={styles.modalCancel}>Close</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </Modal>
+
+              {/* Success modal */}
+              <Modal visible={isSuccessModalVisible} transparent>
+                <View style={styles.overlay}>
+                  <View style={styles.modalContent}>
+                    <Text style={styles.modalOption}>Item submitted successfully!</Text>
+                    <TouchableOpacity onPress={() => setIsSuccessModalVisible(false)}>
                       <Text style={styles.modalCancel}>Close</Text>
                     </TouchableOpacity>
                   </View>

@@ -194,32 +194,38 @@ const AdminFilterDrawer: React.ForwardRefRenderFunction<AdminFilterDrawerRef, Ad
               color={UserPalette.secondary_blue}
             />
             <Picker.Item
-              label="Category 1"
+              label="Electronics"
               value="1"
               style={styles.pickerItem}
               color={UserPalette.black_font}
             />
             <Picker.Item
-              label="Category 2"
+              label="Clothing"
               value="2"
               style={styles.pickerItem}
               color={UserPalette.black_font}
             />
             <Picker.Item
-              label="Category 3"
+              label="Documents"
               value="3"
               style={styles.pickerItem}
               color={UserPalette.black_font}
             />
             <Picker.Item
-              label="Category 4"
+              label="Wallets"
               value="4"
               style={styles.pickerItem}
               color={UserPalette.black_font}
             />
             <Picker.Item
-              label="Category 5"
+              label="Bags"
               value="5"
+              style={styles.pickerItem}
+              color={UserPalette.black_font}
+            />
+            <Picker.Item
+              label="Others"
+              value="6"
               style={styles.pickerItem}
               color={UserPalette.black_font}
             />

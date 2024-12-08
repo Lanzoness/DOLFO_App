@@ -58,8 +58,11 @@ const UserHomeScreen = () => {
       </View>
       <Button 
         label="View Lost Items"
-        variant="secondary" 
-        onClick={() => {navigation.navigate('TEST_FlatlistGrid')}} 
+        variant="secondary"
+        onClick={async () => {
+          await handleUpdateLocalDatabase();
+          navigation.navigate('ViewLost');
+        }} 
         style={styles.button}
       />
       <Button 

@@ -59,7 +59,10 @@ const AdminHomeScreen = () => {
       <Button 
         label="View & Edit Lost Items"
         variant="quinary" 
-        onClick={() => {navigation.navigate('ViewLost')}} 
+        onClick={async () => {
+          await handleUpdateLocalDatabase();
+          navigation.navigate('ViewLost');
+        }} 
         style={styles.button}
         color="#1D68B3"
       />
@@ -73,7 +76,10 @@ const AdminHomeScreen = () => {
       <Button 
         label="Approve Items"
         variant="approveButton"
-        onClick={() => {navigation.navigate('AdminApproveItemGrid')}} 
+        onClick={async () => {
+          await handleUpdateLocalDatabase();
+          navigation.navigate('AdminApproveItemGrid');
+        }} 
         style={styles.approveButton}
         color="#1D68B3"
         icon={require('../assets/icons/ApproveItemIcon.png')}

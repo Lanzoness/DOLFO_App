@@ -124,14 +124,14 @@ const ViewLost = forwardRef<FilterDrawerRef>((props, ref) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: UserPalette.secondary_blue,
+    backgroundColor: UserPalette.green,
   },
   flatListContainer: {
     paddingVertical: 8,
   },
   contentContainer: {
     flex: 1,
-    backgroundColor: UserPalette.secondary_blue,
+    backgroundColor: UserPalette.green,
   },
   itemContainer: {
     margin: 4,

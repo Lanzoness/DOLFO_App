@@ -1,3 +1,4 @@
+// Admin-side view lost items
 import React, { forwardRef, useImperativeHandle, useRef, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, Dimensions, TouchableOpacity } from 'react-native';
 import UserPalette from '../constants/UserPalette';

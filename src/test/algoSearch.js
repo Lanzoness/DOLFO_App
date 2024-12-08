@@ -25,7 +25,15 @@ function calculateScore(item, searchTerms, originalQuery) {
     if (!item || !item['Item Name']) return 0;
 
     const itemName = item['Item Name'].toLowerCase();
-    const itemDescription = (typeof item.Description === 'string') ? item.Description.toLowerCase() : '';
+    
+    // Handle Description whether it's a string, array, or undefined
+    let itemDescription = '';
+    if (Array.isArray(item['Description'])) {
+        itemDescription = item['Description'].join(' ').toLowerCase();
+    } else if (typeof item['Description'] === 'string') {
+        itemDescription = item['Description'].toLowerCase();
+    }
+    
     let score = 0;
 
     // Exact match in name (highest priority)
@@ -33,12 +41,17 @@ function calculateScore(item, searchTerms, originalQuery) {
         score += 100;
     }
 
+    // Exact match in description (high priority)
+    if (itemDescription.includes(originalQuery.toLowerCase())) {
+        score += 75;
+    }
+
     // Individual word matches
     for (let term of searchTerms) {
         if (itemName.includes(term)) {
             score += 50;
         }
-        if (itemDescription && itemDescription.includes(term)) {
+        if (itemDescription.includes(term)) {
             score += 25;
         }
     }

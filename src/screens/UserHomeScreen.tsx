@@ -1,3 +1,4 @@
+//  User-side home screen
 import React, { useState, useRef } from 'react';
 import { View, StyleSheet, Animated, Dimensions, TouchableWithoutFeedback, Text, TouchableOpacity } from 'react-native';
 import Button from '../components/button';
@@ -61,7 +62,7 @@ const UserHomeScreen = () => {
         variant="secondary"
         onClick={async () => {
           await handleUpdateLocalDatabase();
-          navigation.navigate('ViewLost');
+          navigation.navigate('TEST_FlatlistGrid');
         }} 
         style={styles.button}
       />

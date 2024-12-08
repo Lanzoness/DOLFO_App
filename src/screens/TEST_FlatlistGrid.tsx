@@ -1,3 +1,4 @@
+//  User-side view view lost items 
 import React, { forwardRef, useImperativeHandle, useRef, useState, useEffect } from 'react';
 import { Text, StyleSheet, FlatList, Image, Dimensions, TouchableOpacity, View, TextInput, Modal } from 'react-native';
 import UserPalette from '../constants/UserPalette';
@@ -33,7 +34,7 @@ interface Item {
   id: string;
 }
 
-// declaration of  useState and useRef for each variable
+
 const TEST_FlatlistGrid = forwardRef<FilterDrawerRef>((props, ref) => {
   const navigation = useNavigation<NavigationProp>();
   const [data, setData] = useState<Item[]>([]);

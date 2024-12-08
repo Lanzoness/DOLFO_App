@@ -63,10 +63,6 @@ const SignupScreen = () => {
     }).start(() => setModalVisible(false));
   };
 
-  const handleAccountCreatedClose = async () => {
-    setAccountCreatedVisible(false);
-    navigation.navigate('UserHomeScreen');
-  };
 
   const handleSignUp = async() => {
     // Any of the 3 fields left empty will trigger the overlay to ask a user to fill in all required fields to sign up
@@ -100,13 +96,17 @@ const SignupScreen = () => {
     }
   };
 
+  // Enter admin password overlay: checks if the admin password entered matches an existing admin password  
   const handleAdminSubmit = async () => {
     const isAdmin = await matchPasswordAdmin(adminPassword);
     if (isAdmin) {
       setAdminInputValid(true);
+      console.log('User entered the correct admin password');
       closeModal();
     } else {
       setAdminInputValid(false);
+      setAdminPassword('');
+      console.log('user entered incorrect admin password');
     }
   };
 
@@ -118,6 +118,17 @@ const SignupScreen = () => {
       }).start();
     }
   }, [isModalVisible, scaleValue]);
+
+  // redirects to admin homescreen or user homescreen after a sign up
+  const handleAccountCreatedClose = () => {
+    setAccountCreatedVisible(false);
+    if (isAdminInputValid && adminPassword) {
+      navigation.navigate('AdminHomeScreen');
+    }
+    else {
+      navigation.navigate('UserHomeScreen');
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safeAreaView}>

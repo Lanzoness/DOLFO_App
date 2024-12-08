@@ -74,9 +74,11 @@ function LoginAuth(): React.JSX.Element {
 
     if (isAuthenticated) {
       if (isAdmin) {
-        setAdminSuccessVisible(true); // admin-side login success modal 
+        setAdminSuccessVisible(true); // admin-side login success modal
+        console.log('Admin logged in successfully!');
       } else {
         setUserSuccessVisible(true); // user-side login success modal
+        console.log('User logged in successfully!');
       }
     
       // 3 second delay before redirecting to the admin/ user homescreen
